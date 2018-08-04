@@ -1,0 +1,148 @@
+apply plugin: 'idea'
+apply plugin: 'java'
+apply plugin: 'maven'
+
+// Project variables:
+def projectName = 'corlib'
+def projectGroupId = 'com.stclair'
+def projectVersion = '1.0-SNAPSHOT'
+
+// Gradle variables:
+group = projectGroupId
+version = projectVersion
+archivesBaseName = projectName
+
+sourceSets.main.java.srcDirs = [ 'src/main/java' ]
+
+jar.doFirst {
+    def manifestClassPath = configurations.runtime.collect {
+        "lib/${it.getName()}"
+    }.join(' ')
+
+//    manifest {
+//        attributes 'Implementation-Title': "${projectName}",
+//                   'Implementation-Version': version,
+//                   'Main-Class' : 'mygame.Main',
+//                   'Built-With' : 'gradle',
+//                   'Class-Path' : manifestClassPath
+//    }
+}
+
+repositories {
+   mavenLocal()
+   mavenCentral()
+   maven {
+      url "https://oss.sonatype.org/content/groups/public/"
+   }
+}
+
+
+def versions = [
+//   gmock: '0.8.2',
+//   groovy: '1.8.6',
+//   hamcrest: '1.1',
+//   jme3: '3.0.0.20121220-SNAPSHOT',
+   junit: '4.10',
+//   logback: '1.0.0',
+//   slf4j: '1.6.4',
+]
+
+
+dependencies {
+//   groovy "org.codehaus.groovy:groovy-all:${versions.groovy}"
+//   compile fileTree(dir: '/home/hstclair/jmonkeyplatform/jmonkeyplatform/libs', include: '*.jar')
+//   compile "org.slf4j:slf4j-api:${versions.slf4j}"
+//   compile "ch.qos.logback:logback-classic:${versions.logback}"
+//   compile "ch.qos.logback:logback-core:${versions.logback}"
+
+//    compile "com.jme3:jmonkeyengine3:${versions.jme3}"
+//    compile "com.jme3:jME3-core:${versions.jme3}"
+//    compile "com.jme3:jME3-lwjgl:${versions.jme3}"
+//    compile "com.jme3:jME3-lwjgl-natives:${versions.jme3}"
+//    compile "com.jme3:lwjgl:${versions.jme3}"
+//    compile "com.jme3:jME3-jbullet:${versions.jme3}"
+//    compile "com.jme3:jbullet:${versions.jme3}"
+//    compile "com.jme3:jME3-blender:${versions.jme3}"
+//    compile "com.jme3:jME3-desktop:${versions.jme3}"
+//    compile "com.jme3:jME3-effects:${versions.jme3}"
+//    compile "com.jme3:jME3-networking:${versions.jme3}"
+//    compile "com.jme3:jME3-plugins:${versions.jme3}"
+//    compile "com.jme3:jME3-terrain:${versions.jme3}"
+//    compile "com.jme3:jME3-jogg:${versions.jme3}"
+//    compile "com.jme3:j-ogg-oggd:${versions.jme3}"
+//    compile "com.jme3:j-ogg-vorbisd:${versions.jme3}"
+//    compile "com.jme3:jinput:${versions.jme3}"
+//    compile "com.jme3:eventbus:${versions.jme3}"
+//    compile "com.jme3:stack-alloc:${versions.jme3}"
+//    compile "com.jme3:vecmath:${versions.jme3}"
+//    compile "com.jme3:xmlpull-xpp3:${versions.jme3}"
+//    compile "com.jme3:jME3-niftygui:${versions.jme3}"
+//    compile "com.jme3:nifty:${versions.jme3}"
+//    compile "com.jme3:nifty-default-controls:${versions.jme3}"
+//    compile "com.jme3:nifty-examples:${versions.jme3}"
+//    compile "com.jme3:nifty-style-black:${versions.jme3}"
+
+
+    testCompile "junit:junit:${versions.junit}"
+//    testCompile "org.gmock:gmock:${versions.gmock}"
+//    testCompile "org.hamcrest:hamcrest-library:${versions.hamcrest}"
+}
+
+// Allow for running integration and unit tests as separate tasks.
+// Just running 'gradle test', for safety, will still be all-inclusive.
+task unitTest(type: Test) {
+   exclude '**/*Integration*.*'
+}
+
+task integrationTest(type: Test) {
+   include '**/*Integration*.*'
+}
+
+configurations {
+    provided
+    testCompile.extendsFrom provided
+    compile.transitive = true
+}
+
+task listJars << {
+    configurations.compile.each { File file -> println file.name }
+}
+
+jar {
+   from configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+   from configurations.runtime.collect { it.isDirectory() ? it : zipTree(it) }
+}
+
+//////////////////////////////////////////////////////////////////////
+// managing the 'dist' folder which contains our distributable files
+//
+task deleteDeploy(type:Delete) {
+    delete 'dist'
+}
+
+clean.dependsOn deleteDeploy
+
+build.doLast {
+    // copying everything needed into deploy folder
+    copy {
+        from jar.archivePath
+        into 'dist'
+    }
+    copy {
+        from configurations.compile
+        into 'dist/lib'
+    }
+}
+
+
+
+// Added the provided dependency to compile classpath
+sourceSets.main.compileClasspath += configurations.provided
+
+
+uploadArchives {
+    repositories {
+    }
+}
+
+
