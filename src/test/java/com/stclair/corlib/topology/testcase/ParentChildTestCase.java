@@ -23,6 +23,11 @@ public class ParentChildTestCase extends TopologyTestCase {
         return parent;
     }
 
+    @Override
+    protected void fail(String unexpected_recursion_exception) {
+        fail(unexpected_recursion_exception);
+    }
+
     public List<TopologyElement> getExpectedResult(SorterSubtype sorterSubtype) {
 
         switch (sorterSubtype) {

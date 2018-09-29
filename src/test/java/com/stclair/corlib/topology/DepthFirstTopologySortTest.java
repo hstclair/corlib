@@ -3,8 +3,6 @@ package com.stclair.corlib.topology;
 import com.stclair.corlib.topology.testcase.*;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-
 public class DepthFirstTopologySortTest {
 
     ParentChildTestCase parentChildTestCase = new ParentChildTestCase();

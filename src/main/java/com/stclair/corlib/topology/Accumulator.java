@@ -110,9 +110,9 @@ public class Accumulator<X> {
         return true;
     }
 
-    public boolean restoreContext() {
-
-    }
+//    public boolean restoreContext() {
+//
+//    }
 
 
     // depth first,
@@ -152,14 +152,14 @@ public class Accumulator<X> {
         // push active context
     }
 
-    public boolean pop() {
-        // restore parent context
-        // return true if successful
-    }
-
-    public boolean isEmptyNew() {
-        // return true if both stack and queue are empty
-    }
+//    public boolean pop() {
+//        // restore parent context
+//        // return true if successful
+//    }
+//
+//    public boolean isEmptyNew() {
+//        // return true if both stack and queue are empty
+//    }
 
     /**
      * process a node, creating a new Context if needed
@@ -167,28 +167,28 @@ public class Accumulator<X> {
      * @return the new Context
      * @throws RecursionException if the node's neighbors include the node or one of its ancestors
      */
-    public NodeContext<X> processNode(X node, NodeContext<X> currentContext) {
-
-        LinkedList<X> neighbors = new LinkedList<>(navigator.neighbors(node));
-
-        neighbors = filterAndValidateNeighbors(node, neighbors);
-
-        if (neighbors.size() == 0) {
-
-            result.addLast(node);
-
-            return currentContext;
-        }
-
-        if (nodeFirst)
-            result.addLast(node);
-
-        ancestors.addLast(node);
-
-        pushContext(currentContext);
-
-        return new NodeContext<>(node, neighbors);
-    }
+//    public NodeContext<X> processNode(X node, NodeContext<X> currentContext) {
+//
+//        LinkedList<X> neighbors = new LinkedList<>(navigator.neighbors(node));
+//
+//        neighbors = filterAndValidateNeighbors(node, neighbors);
+//
+//        if (neighbors.size() == 0) {
+//
+//            result.addLast(node);
+//
+//            return currentContext;
+//        }
+//
+//        if (nodeFirst)
+//            result.addLast(node);
+//
+//        ancestors.addLast(node);
+//
+//        pushContext(currentContext);
+//
+//        return new NodeContext<>(node, neighbors);
+//    }
 
     /**
      * identify the first recursive node and report it by throwing a RecursionException

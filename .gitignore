@@ -2,3 +2,7 @@
 /.idea
 /*.iml
 /out
+/build
+*.jar
+.DS_Store
+

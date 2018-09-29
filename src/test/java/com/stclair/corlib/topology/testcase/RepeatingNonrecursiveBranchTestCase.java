@@ -29,6 +29,11 @@ public class RepeatingNonrecursiveBranchTestCase extends TopologyTestCase {
         return parent;
     }
 
+    @Override
+    protected void fail(String unexpected_recursion_exception) {
+        fail(unexpected_recursion_exception);
+    }
+
     public List<TopologyElement> getExpectedFilteredResult(SorterSubtype sorterSubtype) {
 
         switch (sorterSubtype) {

@@ -7,6 +7,9 @@ def projectName = 'corlib'
 def projectGroupId = 'com.stclair'
 def projectVersion = '1.0-SNAPSHOT'
 
+sourceCompatibility = JavaVersion.VERSION_1_10
+targetCompatibility = JavaVersion.VERSION_1_10
+
 // Gradle variables:
 group = projectGroupId
 version = projectVersion
@@ -104,8 +107,11 @@ configurations {
     compile.transitive = true
 }
 
-task listJars << {
-    configurations.compile.each { File file -> println file.name }
+task listJars {
+    doLast
+        {
+        configurations.compile.each { File file -> println file.name }
+    }
 }
 
 jar {

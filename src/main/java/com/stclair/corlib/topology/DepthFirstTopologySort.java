@@ -178,17 +178,17 @@ public class DepthFirstTopologySort<T> implements TopologySort<T> {
         return result;
     }
 
-    public <X> List<X> newSort(X start, Navigator<X> navigator) {
-
-        Accumulator<X> accumulator = new Accumulator<>(start, navigator, this.nodeFirst, this.suppressRepeats);
-
-        while (! accumulator.isEmpty()) {
-
-            accumulator.processNode();
-
-            // take node from queue and process
-        }
-    }
+//    public <X> List<X> newSort(X start, Navigator<X> navigator) {
+//
+//        Accumulator<X> accumulator = new Accumulator<>(start, navigator, this.nodeFirst, this.suppressRepeats);
+//
+//        while (! accumulator.isEmpty()) {
+//
+//            accumulator.processNode();
+//
+//            // take node from queue and process
+//        }
+//    }
 
     public <X> List<X> sort(X start, Navigator<X> navigator) {
         return orgSort(start, navigator);

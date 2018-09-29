@@ -24,6 +24,11 @@ public class SingleElementRecursionTestCase extends TopologyTestCase {
         return List.of(parent);
     }
 
+    @Override
+    protected void fail(String unexpected_recursion_exception) {
+        fail(unexpected_recursion_exception);
+    }
+
     public List<TopologyElement> getExpectedResult(SorterSubtype sorterSubtype) {
 
         return null;

@@ -25,6 +25,11 @@ public class ParentChildGrandchildTestCase extends TopologyTestCase {
     }
 
     @Override
+    protected void fail(String unexpected_recursion_exception) {
+        fail(unexpected_recursion_exception);
+    }
+
+    @Override
     public TopologyElement getRoot() {
         return parent;
     }

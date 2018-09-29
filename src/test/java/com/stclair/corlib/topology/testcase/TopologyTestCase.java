@@ -5,9 +5,8 @@ import com.stclair.corlib.topology.TopologySort;
 
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
+import static junit.framework.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
 
 public abstract class TopologyTestCase {
 
@@ -44,6 +43,8 @@ public abstract class TopologyTestCase {
                 fail("unexpected recursion exception");
         }
     }
+
+    protected abstract void fail(String unexpected_recursion_exception);
 
     void apply(TopologySort<?> topologySort, List<TopologyElement> expected) {
 
