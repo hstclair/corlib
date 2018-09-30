@@ -21,14 +21,6 @@ jar.doFirst {
     def manifestClassPath = configurations.runtime.collect {
         "lib/${it.getName()}"
     }.join(' ')
-
-//    manifest {
-//        attributes 'Implementation-Title': "${projectName}",
-//                   'Implementation-Version': version,
-//                   'Main-Class' : 'mygame.Main',
-//                   'Built-With' : 'gradle',
-//                   'Class-Path' : manifestClassPath
-//    }
 }
 
 repositories {
@@ -41,54 +33,14 @@ repositories {
 
 
 def versions = [
-//   gmock: '0.8.2',
-//   groovy: '1.8.6',
-//   hamcrest: '1.1',
-//   jme3: '3.0.0.20121220-SNAPSHOT',
    junit: '4.10',
-//   logback: '1.0.0',
-//   slf4j: '1.6.4',
 ]
 
 
 dependencies {
-//   groovy "org.codehaus.groovy:groovy-all:${versions.groovy}"
-//   compile fileTree(dir: '/home/hstclair/jmonkeyplatform/jmonkeyplatform/libs', include: '*.jar')
-//   compile "org.slf4j:slf4j-api:${versions.slf4j}"
-//   compile "ch.qos.logback:logback-classic:${versions.logback}"
-//   compile "ch.qos.logback:logback-core:${versions.logback}"
 
-//    compile "com.jme3:jmonkeyengine3:${versions.jme3}"
-//    compile "com.jme3:jME3-core:${versions.jme3}"
-//    compile "com.jme3:jME3-lwjgl:${versions.jme3}"
-//    compile "com.jme3:jME3-lwjgl-natives:${versions.jme3}"
-//    compile "com.jme3:lwjgl:${versions.jme3}"
-//    compile "com.jme3:jME3-jbullet:${versions.jme3}"
-//    compile "com.jme3:jbullet:${versions.jme3}"
-//    compile "com.jme3:jME3-blender:${versions.jme3}"
-//    compile "com.jme3:jME3-desktop:${versions.jme3}"
-//    compile "com.jme3:jME3-effects:${versions.jme3}"
-//    compile "com.jme3:jME3-networking:${versions.jme3}"
-//    compile "com.jme3:jME3-plugins:${versions.jme3}"
-//    compile "com.jme3:jME3-terrain:${versions.jme3}"
-//    compile "com.jme3:jME3-jogg:${versions.jme3}"
-//    compile "com.jme3:j-ogg-oggd:${versions.jme3}"
-//    compile "com.jme3:j-ogg-vorbisd:${versions.jme3}"
-//    compile "com.jme3:jinput:${versions.jme3}"
-//    compile "com.jme3:eventbus:${versions.jme3}"
-//    compile "com.jme3:stack-alloc:${versions.jme3}"
-//    compile "com.jme3:vecmath:${versions.jme3}"
-//    compile "com.jme3:xmlpull-xpp3:${versions.jme3}"
-//    compile "com.jme3:jME3-niftygui:${versions.jme3}"
-//    compile "com.jme3:nifty:${versions.jme3}"
-//    compile "com.jme3:nifty-default-controls:${versions.jme3}"
-//    compile "com.jme3:nifty-examples:${versions.jme3}"
-//    compile "com.jme3:nifty-style-black:${versions.jme3}"
-
-
+    compile "org.apfloat:apfloat:1.8.3"
     testCompile "junit:junit:${versions.junit}"
-//    testCompile "org.gmock:gmock:${versions.gmock}"
-//    testCompile "org.hamcrest:hamcrest-library:${versions.hamcrest}"
 }
 
 // Allow for running integration and unit tests as separate tasks.
