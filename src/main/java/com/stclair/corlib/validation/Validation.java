@@ -118,4 +118,14 @@ public interface Validation {
 
         return x;
     }
+
+    static <T, U> T requireInstanceOf(U that, Class<T> type, String name) {
+
+        neverNull(that, name);
+
+        if (! (type.isInstance(that)))
+            throw new IllegalArgumentException(String.format("Argument %1$s is of type %2$s, and is not an instance of %3$s", name, that.getClass().getName(), type.getName()));
+
+        return type.cast(that);
+    }
 }
