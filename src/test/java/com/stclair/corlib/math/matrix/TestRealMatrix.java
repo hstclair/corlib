@@ -56,7 +56,7 @@ public class TestRealMatrix {
 
 
     @Test
-    public void test10X10Determinant() {
+    public void test10X10DeterminantIsJustTooBig() {
         double[][] members = new double[][] {
                 { 21, 45, 5, 17, 60, 47, 52, 87, 14, 36 },
                 { 81, 20, 84, 48, 66, 10, 86, 74, 5, 0 },
@@ -69,7 +69,8 @@ public class TestRealMatrix {
                 { 77, 3, 17, 60, 60, 14, 60, 15, 71, 16 },
                 { 61, 82, 45, 16, 29, 39, 65, 75, 98, 22 }
         };
-        double expected = 1859682092504620000l;
+
+        double expected = -2583406973511122400d;
 
         RealMatrix instance = new RealMatrix(members);
 

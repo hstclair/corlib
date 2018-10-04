@@ -1,5 +1,6 @@
 package com.stclair.corlib.math.matrix;
 
+import com.stclair.corlib.math.util.ApfloatOperationStrategy;
 import org.apfloat.Apfloat;
 
 /**
@@ -15,7 +16,7 @@ public class RealBigMatrix {
     final int order;
 
     public RealBigMatrix(double[][] members) {
-        this(members, 1000);
+        this(members, 10000);
     }
 
     public RealBigMatrix(Apfloat[][] members) {
@@ -88,22 +89,11 @@ public class RealBigMatrix {
     }
 
     public Apfloat determinant() {
-        Apfloat[][] umembers=clone(this.members);
-        Apfloat determinant = Apfloat.ONE;
-        Apfloat coefficient = Apfloat.ONE;
+        MatrixLUDecomposition decomposer = new MatrixLUDecomposition();
 
-        for (int row=0; row < this.rows; row++) {
-            for (int col=0; col< this.columns; col++) {
-                if (col == row)
-                    break;
+        LUMatrixResult<Apfloat> result = decomposer.computeUpperLower(clone(this.members), new ApfloatOperationStrategy(), true);
 
-                coefficient = coefficient.multiply(subtract(umembers[row], umembers[col], col));
-            }
-
-            determinant = determinant.multiply(umembers[row][row]);
-        }
-
-        return determinant.divide(coefficient);
+        return result.determinant();
     }
 
     public RealBigMatrix minor(int mrow, int mcolumn) {

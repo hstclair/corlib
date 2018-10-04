@@ -1,7 +1,7 @@
 package com.stclair.corlib.math.matrix;
 
 
-import com.stclair.corlib.math.util.ValueFactory;
+import com.stclair.corlib.math.util.OperationStrategy;
 
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -11,28 +11,28 @@ import java.util.stream.IntStream;
  */
 public class Matrix<T> {
 
-    private final Value<T>[][] members;
+    private final T[][] members;
 
     final int rows;
     final int columns;
     final int order;
-    final ValueFactory<T> factory;
+    final OperationStrategy<T> op;
 
-    public Matrix(Value<T>[][] members, ValueFactory<T> factory) {
-        this.factory = factory;
+    public Matrix(T[][] members, OperationStrategy<T> op) {
+        this.op = op;
         this.members = members;
         rows = members.length;
         columns = columns(members);
         order = Math.min(rows, columns);
     }
 
-    public Matrix(double[][] members, ValueFactory<T> factory) {
+    public Matrix(double[][] members, OperationStrategy<T> op) {
         int columnCount = 0;
-        this.factory = factory;
-        this.members = factory.matrixArray(members.length, members[0].length);
+        this.op = op;
+        this.members = op.matrix(members.length, members[0].length);
         for (int rowIndex=0; rowIndex<members.length; rowIndex++) {
             for (int colIndex = 0; colIndex<members[rowIndex].length; colIndex++) {
-                this.members[rowIndex][colIndex] = factory.valueOf(members[rowIndex][colIndex]);
+                this.members[rowIndex][colIndex] = op.from(members[rowIndex][colIndex]);
             }
             columnCount = Math.max(columnCount, members[rowIndex].length);
         }
@@ -41,69 +41,69 @@ public class Matrix<T> {
         order = Math.min(rows, columns);
     }
 
-    private int columns(Value<T>[][] members) {
+    private int columns(T[][] members) {
         int columns = 0;
 
-        for (Value<T>[] row : members) {
+        for (T[] row : members) {
             columns = Math.max(columns, row.length);
         }
 
         return columns;
     }
 
-    private Value<T>[][] clone(Value<T>[][] original) {
-        Value<T>[][] clone= factory.matrixArray(original.length, 0);
+    private T[][] clone(T[][] original) {
+        T[][] clone= op.matrix(original.length, 0);
 
         int columns = columns(original);
 
         for (int row=0; row < original.length; row++) {
-            clone[row] = factory.vectorArray(columns);
+            clone[row] = op.array(columns);
             System.arraycopy(original[row], 0,clone[row],0, columns);
         }
 
         return clone;
     }
 
-    Value<T>[][] cloneMembers() {
+    T[][] cloneMembers() {
         return clone(members);
     }
 
-    private Value<T> subtract(Value<T>[] subtrahend, Value<T>[] minuend, int column) {
-        Value<T> subtrahendCoefficient = minuend[column];
-        Value<T> minuendCoefficient = subtrahend[column];
+    private T subtract(T[] minuend, T[] subtrahend, int column) {
+        T subtrahendCoefficient = subtrahend[column];
+        T minuendCoefficient = minuend[column];
 
-        for (int index = 0; index < subtrahend.length; index++) {
-            subtrahend[index] = subtrahend[index].multiply(subtrahendCoefficient).subtract(minuend[index].multiply(minuendCoefficient));
+        for (int index = 0; index < minuend.length; index++) {
+            minuend[index] = op.difference(op.product(minuend[index], subtrahendCoefficient), op.product(subtrahend[index], minuendCoefficient));
         }
 
         return subtrahendCoefficient;
     }
 
-    public Value<T> determinant() {
-        Value<T>[][] umembers=clone(this.members);
-        Value<T> determinant = factory.valueOfOne();
-        Value<T> coefficient = factory.valueOfOne();
+//    public Value<T> determinant() {
+//        Value<T>[][] umembers=clone(this.members);
+//        Value<T> determinant = factory.valueOfOne();
+//        Value<T> coefficient = factory.valueOfOne();
+//
+//        for (int row=0; row < this.rows; row++) {
+//            for (int col=0; col< this.columns; col++) {
+//                if (col == row)
+//                    break;
+//
+//                coefficient = coefficient.multiply(subtract(umembers[row], umembers[col], col));
+//            }
+//
+//            determinant = determinant.multiply(umembers[row][row]);
+//        }
+//
+//        return determinant.divide(coefficient);
+//    }
 
-        for (int row=0; row < this.rows; row++) {
-            for (int col=0; col< this.columns; col++) {
-                if (col == row)
-                    break;
-
-                coefficient = coefficient.multiply(subtract(umembers[row], umembers[col], col));
-            }
-
-            determinant = determinant.multiply(umembers[row][row]);
-        }
-
-        return determinant.divide(coefficient);
-    }
-
-    public Value<T> member(int row, int column) {
+    public T member(int row, int column) {
         return members[row][column];
     }
 
     public Matrix<T> minor(int mrow, int mcolumn) {
-        Value<T>[][] members = factory.matrixArray(rows-1, columns-1);
+        T[][] members = op.matrix(rows-1, columns-1);
 
         int row = 0;
 
@@ -127,7 +127,27 @@ public class Matrix<T> {
             row++;
         }
 
-        return new Matrix<T>(members, factory);
+        return new Matrix<T>(members, op);
+    }
+
+    public static <T> Matrix<T> identity(int order, OperationStrategy<T> op) {
+
+        return new Matrix<>(Matrix.identityArray(order, op), op);
+    }
+
+
+    public static <T> T[][] identityArray(int order, OperationStrategy<T> op) {
+
+        T one = op.one();
+        T zero = op.zero();
+
+        return IntStream.range(0, order)
+                .mapToObj( row ->
+                        IntStream.range(0, order)
+                                .mapToObj(column ->
+                                        row == column ? one : zero
+                                ).toArray(op::array)
+                ).toArray(op::matrix);
     }
 
     @Override

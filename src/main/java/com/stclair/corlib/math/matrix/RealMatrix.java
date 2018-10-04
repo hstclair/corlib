@@ -1,5 +1,10 @@
 package com.stclair.corlib.math.matrix;
 
+import com.stclair.corlib.math.util.DoubleOperationStrategy;
+
+import java.util.Arrays;
+import java.util.stream.IntStream;
+
 /**
  * Created by hstclair on 4/17/17.
  */
@@ -39,6 +44,16 @@ public class RealMatrix {
         return clone;
     }
 
+    private Double[][] cloneDouble(double[][] original) {
+
+        return Arrays.stream(original)
+                .map(doubles ->
+                        Arrays.stream(doubles)
+                                .boxed()
+                            .toArray(Double[]::new))
+                    .toArray(Double[][]::new);
+    }
+
     private double subtract(double[] subtrahend, double[] minuend, int column) {
         double subtrahendCoefficient = minuend[column];
         double minuendCoefficient = subtrahend[column];
@@ -51,22 +66,10 @@ public class RealMatrix {
     }
 
     public double determinant() {
-        double[][] umembers=clone(this.members);
-        double determinant = 1;
-        double coefficient = 1;
+        MatrixLUDecomposition decomposer = new MatrixLUDecomposition();
 
-        for (int row=0; row < this.rows; row++) {
+        LUMatrixResult<Double> result = decomposer.computeUpperLower(cloneDouble(this.members), new DoubleOperationStrategy(), true);
 
-            for (int col=0; col< this.columns; col++) {
-                if (col == row)
-                    break;
-
-                coefficient *= subtract(umembers[row], umembers[col], col);
-            }
-
-            determinant *= umembers[row][row];
-        }
-
-        return determinant / coefficient;
+        return result.determinant();
     }
 }

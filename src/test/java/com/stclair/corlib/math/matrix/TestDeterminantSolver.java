@@ -1,7 +1,7 @@
 package com.stclair.corlib.math.matrix;
 
-import com.stclair.corlib.math.util.ApfloatFactory;
-import com.stclair.corlib.math.util.DoubleFactory;
+import com.stclair.corlib.math.util.ApfloatOperationStrategy;
+import com.stclair.corlib.math.util.DoubleOperationStrategy;
 import org.apfloat.Apfloat;
 import org.apfloat.ApfloatMath;
 import org.junit.Test;
@@ -21,9 +21,9 @@ public class TestDeterminantSolver {
 
         double[][] members = new double[][] { {6, 1, 1}, {4, -2, 5}, {2, 8, 7} };
 
-        DeterminantSolver<Apfloat> instance = new DeterminantSolver<>(new Matrix<>(members, new ApfloatFactory()));
+        DeterminantSolver<Apfloat> instance = new DeterminantSolver<>(new Matrix<>(members, new ApfloatOperationStrategy()));
 
-        Apfloat result = instance.solve().value();
+        Apfloat result = instance.solve();
 
         result = ApfloatMath.round(result, result.precision()-1, RoundingMode.HALF_EVEN);
 
@@ -36,9 +36,9 @@ public class TestDeterminantSolver {
 
         double[][] members = new double[][] { {3, 2, -1, 4}, {2, 1, 5, 7}, {0, 5, 2, -6}, {-1, 2, 1, 0} };
 
-        DeterminantSolver<Apfloat> instance = new DeterminantSolver<>(new Matrix<>(members, new ApfloatFactory()));
+        DeterminantSolver<Apfloat> instance = new DeterminantSolver<>(new Matrix<>(members, new ApfloatOperationStrategy()));
 
-        Apfloat result = instance.solve().value();
+        Apfloat result = instance.solve();
 
         result = ApfloatMath.round(result, result.precision()-1, RoundingMode.HALF_EVEN);
 
@@ -57,9 +57,9 @@ public class TestDeterminantSolver {
 
         Apfloat expected = new Apfloat(-61089854);
 
-        DeterminantSolver<Apfloat> instance = new DeterminantSolver<>(new Matrix<>(members, new ApfloatFactory()));
+        DeterminantSolver<Apfloat> instance = new DeterminantSolver<>(new Matrix<>(members, new ApfloatOperationStrategy()));
 
-        Apfloat result = instance.solve().value();
+        Apfloat result = instance.solve();
 
         result = ApfloatMath.round(result, result.precision()-1, RoundingMode.HALF_EVEN);
 
@@ -79,9 +79,9 @@ public class TestDeterminantSolver {
 
         Apfloat expected = new Apfloat(40433588418l);
 
-        DeterminantSolver<Apfloat> instance = new DeterminantSolver<>(new Matrix<>(members, new ApfloatFactory()));
+        DeterminantSolver<Apfloat> instance = new DeterminantSolver<>(new Matrix<>(members, new ApfloatOperationStrategy()));
 
-        Apfloat result = instance.solve().value();
+        Apfloat result = instance.solve();
 
         result = ApfloatMath.round(result, result.precision()-1, RoundingMode.HALF_EVEN);
 
@@ -102,9 +102,9 @@ public class TestDeterminantSolver {
 
         Apfloat expected = new Apfloat(90344);
 
-        DeterminantSolver<Apfloat> instance = new DeterminantSolver<>(new Matrix<>(members, new ApfloatFactory()));
+        DeterminantSolver<Apfloat> instance = new DeterminantSolver<>(new Matrix<>(members, new ApfloatOperationStrategy()));
 
-        Apfloat result = instance.solve().value();
+        Apfloat result = instance.solve();
 
         result = ApfloatMath.round(result, result.precision()-1, RoundingMode.HALF_EVEN);
 
@@ -127,9 +127,9 @@ public class TestDeterminantSolver {
         };
         Apfloat expected = new Apfloat(-39656706);
 
-        DeterminantSolver<Apfloat> instance = new DeterminantSolver<>(new Matrix<>(members, new ApfloatFactory()));
+        DeterminantSolver<Apfloat> instance = new DeterminantSolver<>(new Matrix<>(members, new ApfloatOperationStrategy()));
 
-        Apfloat result = instance.solve().value();
+        Apfloat result = instance.solve();
 
         result = ApfloatMath.round(result, result.precision()-1, RoundingMode.HALF_EVEN);
 
@@ -152,9 +152,9 @@ public class TestDeterminantSolver {
         };
         Double expected = -39656706d;
 
-        DeterminantSolver<Double> instance = new DeterminantSolver<>(new Matrix<>(members, new DoubleFactory()));
+        DeterminantSolver<Double> instance = new DeterminantSolver<>(new Matrix<>(members, new DoubleOperationStrategy()));
 
-        Double result = instance.solve().value();
+        Double result = instance.solve();
 
         assertEquals(expected, result);
     }

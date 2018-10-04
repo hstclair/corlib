@@ -1,8 +1,10 @@
 package com.stclair.corlib.math.matrix;
 
-import com.stclair.corlib.math.util.ValueFactory;
+import com.stclair.corlib.math.util.OperationStrategy;
 
 public class MatrixLUDecomposition {
+
+    MatrixRowSolver matrixRowSolver = new MatrixRowSolver();
 
     public MatrixLUDecomposition() {
     }
@@ -17,9 +19,9 @@ public class MatrixLUDecomposition {
     // 0 X X
     // 0 0 X
 
-    <T> int firstSolveableRow(Value<T>[][] members, int column) {
+    <T> int firstSolveableRow(T[][] members, int column, OperationStrategy<T> op) {
         for (int row = column; row < members.length; row++) {
-            if (! members[row][column].isZero()) {
+            if (! op.isZero(members[row][column])) {
                 return row;
             }
         }
@@ -27,91 +29,98 @@ public class MatrixLUDecomposition {
         return -1;
     }
 
-    <T> Value<T>[][] switchRows(Value<T>[][] members, int rowA, int rowB) {
-        Value<T>[] temp = members[rowA];
+    <T> T[][] switchRows(T[][] members, int rowA, int rowB) {
+        T[] temp = members[rowA];
         members[rowA] = members[rowB];
         members[rowB] = temp;
 
         return members;
     }
 
-    <T> DeterminantLUSolver.RowSolutionState prepColumn(Value<T>[][] members, int column) {
-        int row = firstSolveableRow(members, column);
+    <T> RowSolutionState prepColumn(T[][] members, int column, OperationStrategy<T> op) {
+        int row = firstSolveableRow(members, column, op);
 
         if (row < column) {
-            return DeterminantLUSolver.RowSolutionState.NoSolution;   // column cannot be solved (therefore, matrix cannot be solved)
+            return RowSolutionState.NoSolution;   // column cannot be solved (therefore, matrix cannot be solved)
         }
 
         if (row == column) {
-            return DeterminantLUSolver.RowSolutionState.Solvable;    // matrix is ready for column to be solved
+            return RowSolutionState.Solvable;    // matrix is ready for column to be solved
         }
 
         switchRows(members, column, row);
-        return DeterminantLUSolver.RowSolutionState.Exchanged;        // matrix is ready for column to be solved but rows were exchanged
+        return RowSolutionState.Exchanged;        // matrix is ready for column to be solved but rows were exchanged
     }
 
-    <T> void solveRow(Value<T>[] referenceRow, Value<T>[] row, int solveColumn, Value<T> divisor, Value<T> ZERO, Value<T> ONE) {
+    <T> T solveRow(T[] referenceRow, T[] row, int solveColumn, T divisor, OperationStrategy<T> op) {
 
-        for (int column = solveColumn+1; column < row.length; column++) {
+        return matrixRowSolver.solveRow(referenceRow, row, solveColumn, divisor, op);
+    }
 
-            if (! row[column].isZero())
-                row[column] = row[column].multiply(referenceRow[solveColumn]);
+    <T> T solveColumn(T[][] upper, T[][] lower, int solveColumn, T divisor, OperationStrategy<T> op) {
 
-            row[column] = row[column].subtract(row[solveColumn].multiply(referenceRow[column]));
+        for (int row = solveColumn + 1; row < upper.length; row++) {
 
-            if (! (row[column].isZero() || divisor == ONE))
-                row[column] = row[column].divide(divisor);
+            T upperValue = upper[row][solveColumn];
+
+            T factor = solveRow(upper[solveColumn], upper[row], solveColumn, divisor, op);
+
+            if (lower != null)
+                lower[row][solveColumn] = op.quotient(upperValue, factor);
         }
 
-        row[solveColumn] = ZERO;
+        T factor = upper[solveColumn][solveColumn];
+
+        for (int col = solveColumn; col < upper[solveColumn].length; col++)
+            upper[solveColumn][col] = op.quotient(upper[solveColumn][col], divisor);
+
+        return factor;
     }
 
-    <T> Value<T> solveColumn(Value<T>[][] members, int solveColumn, Value<T> divisor, Value<T> ZERO, Value<T> ONE) {
-
-        for (int row = solveColumn + 1; row < members.length; row++) {
-            solveRow(members[solveColumn], members[row], solveColumn, divisor, ZERO, ONE);
-        }
-
-        return members[solveColumn][solveColumn];
-    }
-
-    <T> Matrix<T> computeUpper(Value<T>[][] members, ValueFactory<T> valueFactory) {
+    <T> LUMatrixResult<T> computeUpperLower(T[][] upper, OperationStrategy<T> op, boolean computeLower) {
 
         boolean negate = false;
 
-        Value<T> divisor = valueFactory.valueOfOne();
+        T divisor = op.one();
 
-        Value<T> prevDivisor = valueFactory.valueOfOne();
+        T prevDivisor = op.one();
 
-        int order = members.length;
+        int order = upper.length;
+
+        T[][] lower = computeLower ? Matrix.identityArray(order, op) : null;
 
         for (int column = 0; column < order; column++) {
-            DeterminantLUSolver.RowSolutionState state = prepColumn(members, column);
 
-            if (state == DeterminantLUSolver.RowSolutionState.NoSolution)
+            RowSolutionState state = prepColumn(upper, column, op);
+
+            if (state == RowSolutionState.NoSolution)
                 return null;
 
-            if (state == DeterminantLUSolver.RowSolutionState.Exchanged)
+            if (state == RowSolutionState.Exchanged)
                 negate = ! negate;
 
             prevDivisor = divisor;
 
-            divisor = solveColumn(members, column, divisor, valueFactory.valueOfZero(), valueFactory.valueOfOne());
+            divisor = solveColumn(upper, lower, column, divisor, op);
         }
 
-        members[order - 1][order - 1] = members[order - 1][order - 1].divide(prevDivisor);
+        if (negate) {
+            upper[order - 1][order - 1] = op.negate(upper[order - 1][order - 1]);
+            divisor = op.negate(divisor);
+        }
 
-        if (negate)
-            members[order-1][order-1] = members[order-1][order-1].negate();
-
-        return new Matrix<>(members, valueFactory);
+        return new LUMatrixResult<>(computeLower ? new Matrix<>(lower, op) : null, new Matrix<>(upper, op), divisor);
     }
 
     public <T> Matrix<T> computeUpper(Matrix<T> matrix) {
+        return computeUpperLower(matrix.cloneMembers(), matrix.op, false).getUpper();
+    }
 
-        Value<T>[][] members = matrix.cloneMembers();    // get member array
+    public <T> LUMatrixResult<T> computeUpperLower(Matrix<T> matrix) {
 
-        return computeUpper(members, matrix.factory);
+        T[][] members = matrix.cloneMembers();
+
+        return computeUpperLower(members, matrix.op, true);
     }
 
 

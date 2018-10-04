@@ -83,7 +83,7 @@ public class TestRealBigMatrix {
     }
 
     @Test
-    public void test7x7Determinant() {
+    public void test7x7DeterminantFails() {
         double[][] members = new double[][] {
                 {0,-5,-4,2,-2,-5,-5},
                 {-4,-1,0,-1,-4,0,-3},

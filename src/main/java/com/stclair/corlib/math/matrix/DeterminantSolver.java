@@ -1,5 +1,7 @@
 package com.stclair.corlib.math.matrix;
 
+import com.stclair.corlib.math.util.OperationStrategy;
+
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -9,21 +11,27 @@ import java.util.List;
  */
 public class DeterminantSolver<T> {
     class Task {
-        final Value<T> coefficient;
+        final T coefficient;
 
         final Matrix<T> matrix;
 
-        Task(Value<T> coefficient, Matrix<T> matrix) {
+        final OperationStrategy<T> op;
+
+        Task(T coefficient, Matrix<T> matrix) {
             this.coefficient = coefficient;
             this.matrix = matrix;
+            this.op = matrix.op;
         }
 
         boolean canSolve() {
             return matrix.order == 2;
         }
 
-        Value<T> evaluate() {
-            return coefficient.multiply(matrix.member(0,0).multiply(matrix.member(1, 1)).subtract(matrix.member(0, 1).multiply(matrix.member(1, 0))));
+        T evaluate() {
+            return op.product(coefficient,
+                    op.difference(
+                            op.product(matrix.member(0,0), matrix.member(1, 1)),
+                            op.product(matrix.member(0, 1), matrix.member(1, 0))));
         }
 
         List<Task> createTasks() {
@@ -37,17 +45,17 @@ public class DeterminantSolver<T> {
             boolean negate = true;
 
             for (int col = 0; col < matrix.order; col++) {
-                Value newCoefficient = matrix.member(0, col);
+                T newCoefficient = matrix.member(0, col);
 
                 negate = !negate;
 
-                if (newCoefficient.equals(matrix.factory.valueOfZero()))
+                if (op.isZero(newCoefficient))
                     continue;
 
                 if (negate)
-                    newCoefficient = newCoefficient.negate();
+                    newCoefficient = op.negate(newCoefficient);
 
-                result.add(new Task(newCoefficient.multiply(coefficient), matrix.minor(0, col)));
+                result.add(new Task(op.product(newCoefficient, coefficient), matrix.minor(0, col)));
             }
 
             return result;
@@ -56,12 +64,14 @@ public class DeterminantSolver<T> {
 
     final LinkedList<Task> tasks = new LinkedList<>();
     final LinkedList<Task> results = new LinkedList<>();
+    final OperationStrategy<T> op;
 
     public DeterminantSolver(Matrix<T> matrix) {
-        tasks.add(new Task(matrix.factory.valueOfOne(), matrix));
+        tasks.add(new Task(matrix.op.one(), matrix));
+        op = matrix.op;
     }
 
-    public Value<T> solve() {
+    public T solve() {
         while (! tasks.isEmpty()) {
             Task task = tasks.removeLast();
 
@@ -76,17 +86,17 @@ public class DeterminantSolver<T> {
             }
         }
 
-        Value<T> accumulator = null;
+        T accumulator = null;
 
         while (! results.isEmpty()) {
             Task result = results.remove();
 
-            Value<T> evaluation = result.evaluate();
+            T evaluation = result.evaluate();
 
             if (accumulator == null)
                 accumulator = evaluation;
             else
-                accumulator = accumulator.add(evaluation);
+                accumulator = op.sum(accumulator, evaluation);
         }
 
         return accumulator;

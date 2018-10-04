@@ -1,7 +1,9 @@
 package com.stclair.corlib.math.matrix;
 
 import com.stclair.corlib.math.util.ApfloatFactory;
+import com.stclair.corlib.math.util.ApfloatOperationStrategy;
 import com.stclair.corlib.math.util.DoubleFactory;
+import com.stclair.corlib.math.util.DoubleOperationStrategy;
 import org.apfloat.Apfloat;
 import org.apfloat.ApfloatMath;
 import org.junit.Test;
@@ -21,9 +23,9 @@ public class TestDeterminantLUSolver {
 
         double[][] members = new double[][] { {6, 1, 1}, {4, -2, 5}, {2, 8, 7} };
 
-        DeterminantLUSolver<Double> instance = new DeterminantLUSolver<>(new Matrix<>(members, new DoubleFactory()));
+        DeterminantLUSolver instance = new DeterminantLUSolver();
 
-        Double result = instance.solve();
+        Double result = instance.solve(new Matrix<>(members, new DoubleOperationStrategy()));
 
         assertEquals(expected, result);
     }
@@ -34,9 +36,9 @@ public class TestDeterminantLUSolver {
 
         double[][] members = new double[][] { {6, 1, 1}, {4, -2, 5}, {2, 8, 7} };
 
-        DeterminantLUSolver<Apfloat> instance = new DeterminantLUSolver<>(new Matrix<>(members, new ApfloatFactory()));
+        DeterminantLUSolver instance = new DeterminantLUSolver();
 
-        Apfloat result = instance.solve();
+        Apfloat result = instance.solve(new Matrix<>(members, new ApfloatOperationStrategy()));
 
         result = ApfloatMath.round(result, result.precision()-1, RoundingMode.HALF_EVEN);
 
@@ -49,9 +51,9 @@ public class TestDeterminantLUSolver {
 
         double[][] members = new double[][] { {3, 2, -1, 4}, {2, 1, 5, 7}, {0, 5, 2, -6}, {-1, 2, 1, 0} };
 
-        DeterminantLUSolver<Apfloat> instance = new DeterminantLUSolver<>(new Matrix<>(members, new ApfloatFactory()));
+        DeterminantLUSolver instance = new DeterminantLUSolver();
 
-        Apfloat result = instance.solve();
+        Apfloat result = instance.solve(new Matrix<>(members, new ApfloatOperationStrategy()));
 
         result = ApfloatMath.round(result, result.precision()-1, RoundingMode.HALF_EVEN);
 
@@ -70,9 +72,9 @@ public class TestDeterminantLUSolver {
 
         Apfloat expected = new Apfloat(-61089854);
 
-        DeterminantLUSolver<Apfloat> instance = new DeterminantLUSolver<>(new Matrix<>(members, new ApfloatFactory()));
+        DeterminantLUSolver instance = new DeterminantLUSolver();
 
-        Apfloat result = instance.solve();
+        Apfloat result = instance.solve(new Matrix<>(members, new ApfloatOperationStrategy()));
 
         result = ApfloatMath.round(result, result.precision()-1, RoundingMode.HALF_EVEN);
 
@@ -92,9 +94,9 @@ public class TestDeterminantLUSolver {
 
         Double expected = 36027d;
 
-        DeterminantLUSolver<Double> instance = new DeterminantLUSolver<>(new Matrix<>(members, new DoubleFactory()));
+        DeterminantLUSolver instance = new DeterminantLUSolver();
 
-        Double result = instance.solve();
+        Double result = instance.solve(new Matrix<>(members, new DoubleOperationStrategy()));
 
         assertEquals(expected, result);
     }
@@ -112,9 +114,9 @@ public class TestDeterminantLUSolver {
 
         Apfloat expected = new Apfloat(40433588418l);
 
-        DeterminantLUSolver<Apfloat> instance = new DeterminantLUSolver<>(new Matrix<>(members, new ApfloatFactory()));
+        DeterminantLUSolver instance = new DeterminantLUSolver();
 
-        Apfloat result = instance.solve();
+        Apfloat result = instance.solve(new Matrix<>(members, new ApfloatOperationStrategy()));
 
         result = ApfloatMath.round(result, result.precision()-1, RoundingMode.HALF_EVEN);
 
@@ -135,9 +137,9 @@ public class TestDeterminantLUSolver {
 
         Double expected = 90344d;
 
-        DeterminantLUSolver<Double> instance = new DeterminantLUSolver<>(new Matrix<>(members, new DoubleFactory()));
+        DeterminantLUSolver instance = new DeterminantLUSolver();
 
-        Double result = instance.solve();
+        Double result = instance.solve(new Matrix<>(members, new DoubleOperationStrategy()));
 
         assertEquals(expected, result);
     }
@@ -156,9 +158,9 @@ public class TestDeterminantLUSolver {
 
         Apfloat expected = new Apfloat(90344);
 
-        DeterminantLUSolver<Apfloat> instance = new DeterminantLUSolver<>(new Matrix<>(members, new ApfloatFactory()));
+        DeterminantLUSolver instance = new DeterminantLUSolver();
 
-        Apfloat result = instance.solve();
+        Apfloat result = instance.solve(new Matrix<>(members, new ApfloatOperationStrategy()));
 
         result = ApfloatMath.round(result, result.precision()-1, RoundingMode.HALF_EVEN);
 
@@ -181,9 +183,9 @@ public class TestDeterminantLUSolver {
         };
         Apfloat expected = new Apfloat(-39656706);
 
-        DeterminantLUSolver<Apfloat> instance = new DeterminantLUSolver<>(new Matrix<>(members, new ApfloatFactory()));
+        DeterminantLUSolver instance = new DeterminantLUSolver();
 
-        Apfloat result = instance.solve();
+        Apfloat result = instance.solve(new Matrix<>(members, new ApfloatOperationStrategy()));
 
         result = ApfloatMath.round(result, result.precision()-1, RoundingMode.HALF_EVEN);
 
@@ -206,9 +208,9 @@ public class TestDeterminantLUSolver {
         };
         Double expected = -39656706d;
 
-        DeterminantLUSolver<Double> instance = new DeterminantLUSolver<>(new Matrix<>(members, new DoubleFactory()));
+        DeterminantLUSolver instance = new DeterminantLUSolver();
 
-        Double result = instance.solve();
+        Double result = instance.solve(new Matrix<>(members, new DoubleOperationStrategy()));
 
         assertEquals(expected, result);
     }
@@ -229,9 +231,9 @@ public class TestDeterminantLUSolver {
         };
         double expected = -2583406973511121400l;
 
-        DeterminantLUSolver<Double> instance = new DeterminantLUSolver<>(new Matrix<>(members, new DoubleFactory()));
+        DeterminantLUSolver instance = new DeterminantLUSolver();
 
-        Double result = instance.solve();
+        Double result = instance.solve(new Matrix<>(members, new DoubleOperationStrategy()));
 
         assertEquals(expected, result);
     }
