@@ -456,8 +456,11 @@ public class Polynomial {
     public int lowestDegree() {
         int lowestDegree = 0;
 
-        while (coefficients[lowestDegree] == 0)
+        while (lowestDegree < coefficients.length && coefficients[lowestDegree] == 0)
             lowestDegree++;
+
+        if (lowestDegree == coefficients.length)
+            return 0;
 
         return lowestDegree;
     }

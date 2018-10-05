@@ -17,6 +17,12 @@ import static junit.framework.Assert.assertEquals;
  */
 public class TestVASComputationExperimental {
 
+    // the problem is that this code is testing the wrong thing.  The VASComputation algorithm flatly rejects
+    // this polynomial so that the Experimental version must do so as well.
+
+    // TODO Update object to reject this polynomial.  Update test to expect polynomial to be rejected.
+    // TODO Update object to reject polynomial without sign changes, as well.
+
     @Test
     public void evaluateReducesDegreeUntilNonzeroConstantThenReportsASingleZeroRoot() {
 

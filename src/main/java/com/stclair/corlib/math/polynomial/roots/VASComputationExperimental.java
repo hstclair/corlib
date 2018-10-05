@@ -61,8 +61,13 @@ public class VASComputationExperimental implements VASOperation {
             // add [b/d, b/d] to rootlist,
             roots.add(new Interval(mobius.transform(0)));
 
+            int lowestDegree = polynomial.lowestDegree();
+
+            if (lowestDegree == 0)
+                return buildResult(roots, operations);
+
             // and set p(x) ← p(x)/x
-            operations.add(createOperation(polynomial.reduceDegree(polynomial.lowestDegree()), mobius));
+            operations.add(createOperation(polynomial.reduceDegree(lowestDegree), mobius));
 
             return buildResult(roots, operations);
         }
