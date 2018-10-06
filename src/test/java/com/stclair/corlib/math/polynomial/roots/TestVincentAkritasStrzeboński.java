@@ -245,7 +245,6 @@ public class TestVincentAkritasStrzeboński {
     // of a Double so they cannot be supported in the current implementation.  To carry this implementation beyond
     // this limitation will require a BigDecimal implementation or a Rational implementation (or something more exotic)
     // For example, this test fails:
-    @Ignore
     @Test
     public void factorEquationWithTwentyTwoPrimeRoots() {
         double[] expectedRoots = new double[] { 2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71 };
