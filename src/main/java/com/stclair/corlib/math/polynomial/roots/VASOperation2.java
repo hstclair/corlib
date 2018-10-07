@@ -44,7 +44,7 @@ public class VASOperation2 {
 
     public VASOperation2 createResultMessage(Interval root) {
 
-        if (complete)
+        if (this.root != null)
             return this;
 
         return new VASOperation2(ancestor, polynomial, mobius, strzebońskiAlpha, lowerBoundComputed, root, true);

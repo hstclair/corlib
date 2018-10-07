@@ -39,111 +39,127 @@ public class VASComputationExperimental2 {
         this(defaultStrzebońskiAlpha);
     }
 
+    public VASOperation2 processPolynomial(Polynomial polynomial) {
+        return new VASOperation2(polynomial, RealMobiusTransformation.IDENTITY);
+    }
+
     public VASOperation2 processOperation(Consumer<VASOperation2> registerFn, VASOperation2 op) {
         return processorFunction.apply(registerFn, op);
     }
 
-    public Function<Consumer<VASOperation2>, Function<VASOperation2, VASOperation2>> constantTest = registerNewEntry -> frame -> {
+    public Function<Consumer<VASOperation2>, Function<VASOperation2, VASOperation2>> constantTest = registerNewEntry -> op -> {
 
-        if (frame.complete)
-            return frame;
+        if (op.complete)
+            return op;
 
-        if (frame.polynomial.constant() != 0)
-            return frame;
+        if (op.polynomial.constant() != 0)
+            return op;
 
         // if the constant portion of the current polynomial is zero, we have found one of the roots and
         // it's value is precisely M(0).   Add this root to the list then reduce the degree of the polynomial by
         // dividing by X (of course, this will never result in a non-zero a/x term because we've already determined the
         // constant term to be zero).
 
-        frame = frame.createCompletionMessage();
+        op = op.createCompletionMessage();
 
         // add [b/d, b/d] to rootlist,
-        Interval root = new Interval(frame.mobius.transform(0));
+        Interval root = new Interval(op.mobius.transform(0));
 
-        int lowestDegree = frame.polynomial.lowestDegree();
+        int lowestDegree = op.polynomial.lowestDegree();
 
-        registerNewEntry.accept(frame.createResultMessage(root));
+        registerNewEntry.accept(op.createResultMessage(root));
 
         if (lowestDegree > 0) {
             // and set p(x) ← p(x)/x
-            registerNewEntry.accept(frame.createOperationMessage(frame.polynomial.reduceDegree(lowestDegree), frame.mobius));
+            registerNewEntry.accept(op.createOperationMessage(op.polynomial.reduceDegree(lowestDegree), op.mobius));
         }
 
-        return frame;
+        return op;
     };
 
-    public Function<Consumer<VASOperation2>, Function<VASOperation2, VASOperation2>> verifySignChanges = registerNewEntry -> frame -> {
+    public Function<Consumer<VASOperation2>, Function<VASOperation2, VASOperation2>> verifySignChanges = registerNewEntry -> op -> {
 
-        if (frame.complete)
-            return frame;
+        if (op.complete)
+            return op;
 
         // Count the sign changes in our polynomial.  There must be at least one sign change if the polynomial has
         // any remaining positive roots.
-        int signChanges = frame.polynomial.signChanges();
+        int signChanges = op.polynomial.signChanges();
 
         if (signChanges > 1)
-            return frame;
+            return op;
 
-        frame = frame.createCompletionMessage();
+        op = op.createCompletionMessage();
 
         if (signChanges != 0)
-            registerNewEntry.accept(frame.createResultMessage(intervalOf(frame.mobius)));
+            registerNewEntry.accept(op.createResultMessage(intervalOf(op.mobius)));
 
-        return frame;
+        return op;
     };
 
-    public Function<Consumer<VASOperation2>, Function<VASOperation2, VASOperation2>> estimateLowerBound = registerNewEntry -> frame -> {
+    public Function<Consumer<VASOperation2>, Function<VASOperation2, VASOperation2>> estimateLowerBound = registerNewEntry -> op -> {
+
+        if (op.complete)
+            return op;
 
         // Compute a lower bound α ∈ Z on the positive roots of p.
-        return frame.createLowerBoundMessage(lowerBound(frame.polynomial));
+        return op.createLowerBoundMessage(lowerBound(op.polynomial));
     };
 
 
-    public Function<Consumer<VASOperation2>, Function<VASOperation2, VASOperation2>> applyStrzebońskiAlpha = registerNewEntry -> frame -> {
+    public Function<Consumer<VASOperation2>, Function<VASOperation2, VASOperation2>> applyStrzebońskiAlpha = registerNewEntry -> op -> {
+
+        if (op.complete)
+            return op;
 
         // if the lower bound of the polynomial's roots is greater than the polynomial's constant term then scale the
         // polynomial (and the associated Mobius Transformation) so that this lower bound coincides with x=1
         //
         //  If α > α0 set p(x) ← p(αx), a ← αa, c ← αc, and α ← 1
-        if (frame.lowerBoundComputed < strzebońskiAlpha)
-            return frame;
+        if (op.lowerBoundComputed < strzebońskiAlpha)
+            return op;
 
         // Strzeboński's contribution
 
 //        System.out.printf("Lower bound is greater than %f.  Transforming polynomial so that lower bound is exactly 1\n", strzebońskiAlpha);
 
-        Polynomial polynomial = frame.polynomial.apply(Polynomial.of(new double[] { 0, frame.lowerBoundComputed }));
-        RealMobiusTransformation mobius = frame.mobius.composeAlphaX(frame.lowerBoundComputed);
+        Polynomial polynomial = op.polynomial.apply(Polynomial.of(new double[] { 0, op.lowerBoundComputed }));
+        RealMobiusTransformation mobius = op.mobius.composeAlphaX(op.lowerBoundComputed);
 
-        return frame.createOperationMessage(polynomial, mobius, 1);
+        return op.createOperationMessage(polynomial, mobius, 1);
     };
 
-    public Function<Consumer<VASOperation2>, Function<VASOperation2, VASOperation2>> testLowerBound = registerNewEntry -> frame -> {
+    public Function<Consumer<VASOperation2>, Function<VASOperation2, VASOperation2>> testLowerBound = registerNewEntry -> op -> {
+
+        if (op.complete)
+            return op;
 
 //        // Compute a lower bound α ∈ Z on the positive roots of p.
 //        double lowerBoundComputed = lowerBound(frame.polynomial);
 
-        if (frame.lowerBoundComputed < 1)
-            return frame;
+        if (op.lowerBoundComputed < 1)
+            return op;
 
         // if the lower bound is greater than or equal to 1, compose the polynomial with (x + lowerBound) so that
         // the lower bound now coincides with zero
         //
         // If α ≥ 1, set p(x) ← p(x + α), b ← αa + b, and d ← αc + d
-        Polynomial composed = Polynomial.of(new double[]{frame.lowerBoundComputed, 1});
+        Polynomial composed = Polynomial.of(new double[]{op.lowerBoundComputed, 1});
 
-        Polynomial newPolynomial = frame.polynomial.apply(composed);
-        RealMobiusTransformation newMobius = frame.mobius.composeXPlusK(frame.lowerBoundComputed);
+        Polynomial newPolynomial = op.polynomial.apply(composed);
+        RealMobiusTransformation newMobius = op.mobius.composeXPlusK(op.lowerBoundComputed);
 
-        frame = frame.createCompletionMessage();
+        op = op.createCompletionMessage();
 
-        registerNewEntry.accept(frame.createOperationMessage(newPolynomial, newMobius));
+        registerNewEntry.accept(op.createOperationMessage(newPolynomial, newMobius));
 
-        return frame;
+        return op;
     };
 
-    public Function<Consumer<VASOperation2>, Function<VASOperation2, VASOperation2>> generateOperations = registerNewEntry -> frame -> {
+    public Function<Consumer<VASOperation2>, Function<VASOperation2, VASOperation2>> generateOperations = registerNewEntry -> op -> {
+
+        if (op.complete)
+            return op;
 
         // prior transformations ensure there are now one or more roots in (0, 1) and one or more roots in (1, infinity)
         // (5)
@@ -151,23 +167,23 @@ public class VASComputationExperimental2 {
         // Use Taylor shift polynomial so that roots within (1, infinity) now lie within interval (0, infinity)
         // then re-apply VAS
         // Compute p1(x) ← p(x + 1)
-        Polynomial polynomial1 = frame.polynomial.apply(xPlusOne);
+        Polynomial polynomial1 = op.polynomial.apply(xPlusOne);
 
         // set a1 ← a, b1 ← a + b, c1 ← c, d1 ← c + d
-        RealMobiusTransformation mobius1 = frame.mobius.composeXPlusK(1);
+        RealMobiusTransformation mobius1 = op.mobius.composeXPlusK(1);
 
         // Prepare for identification of roots within interval (0, 1)
         // Use Budan's Theorem to transform polynomial then re-apply VAS
         // a2 ← b, b2 ← a + b, c2 ← d, and d2 ← c + d
-        RealMobiusTransformation mobius2 = frame.mobius.budansTheorem();
-        Polynomial polynomial2 = frame.polynomial.budansTheorem();
+        RealMobiusTransformation mobius2 = op.mobius.budansTheorem();
+        Polynomial polynomial2 = op.polynomial.budansTheorem();
 
-        frame.createCompletionMessage();
+        op = op.createCompletionMessage();
 
-        registerNewEntry.accept(frame.createOperationMessage(polynomial1, mobius1));
-        registerNewEntry.accept(frame.createOperationMessage(polynomial2, mobius2));
+        registerNewEntry.accept(op.createOperationMessage(polynomial1, mobius1));
+        registerNewEntry.accept(op.createOperationMessage(polynomial2, mobius2));
 
-        return frame;
+        return op;
     };
 
 //    public List<VASOperation> evaluate() {
