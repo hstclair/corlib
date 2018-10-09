@@ -24,6 +24,8 @@ public interface OperationStrategy<T> {
 
     T[] array(int size);
 
+    T[] arrayOf(T... values);
+
     T[][] matrix(int rows, int cols);
 
     default T[][] matrix(int rows) {
@@ -31,4 +33,31 @@ public interface OperationStrategy<T> {
     }
 
     T from(double dblValue);
+
+    T[] from(double[] dblValues);
+
+    T max(T a, T b);
+
+    T min(T a, T b);
+
+    T abs(T a);
+
+    T floor(T a);
+
+    T mod(T a, T b);
+
+    boolean negative(T a);
+
+    boolean positive(T a);
+
+    boolean greaterThan(T a, T b);
+
+    boolean lessThan(T a, T b);
+
+    boolean greaterThanOrEqual(T a, T b);
+
+    boolean lessThanOrEqual(T a, T b);
+
+    T pow(T base, T exponent);
+
 }

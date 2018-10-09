@@ -2,7 +2,6 @@ package com.stclair.corlib.math.polynomial.roots;
 
 
 import com.stclair.corlib.math.Interval;
-import com.stclair.corlib.math.RealMobiusTransformation;
 import com.stclair.corlib.math.polynomial.Polynomial;
 
 import java.util.*;
@@ -44,7 +43,7 @@ public class VincentAkritasStrzeboński2 {
         if (signs == 1) {
             Interval interval = new Interval(0, Double.POSITIVE_INFINITY);
 
-            return Collections.singletonList(new VASOperation2(null, null, null, 0d, 0d, interval, true));
+            return Collections.singletonList(new VASOperation2(null, null, null, 0d, 0d, interval, true, "fixed result"));
         }
 
         return process(polynomial);

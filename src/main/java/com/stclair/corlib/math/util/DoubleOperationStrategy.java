@@ -1,5 +1,8 @@
 package com.stclair.corlib.math.util;
 
+import java.util.Arrays;
+import java.util.stream.DoubleStream;
+
 public class DoubleOperationStrategy implements OperationStrategy<Double> {
 
     @Override
@@ -34,7 +37,7 @@ public class DoubleOperationStrategy implements OperationStrategy<Double> {
 
     @Override
     public boolean isZero(Double value) {
-        return value == 0;
+        return value == 0d;
     }
 
     @Override
@@ -54,20 +57,99 @@ public class DoubleOperationStrategy implements OperationStrategy<Double> {
 
     @Override
     public Double[] array(int size) {
-        return new Double[size];
+        Double[] result = new Double[size];
+
+        Arrays.fill(result, 0d);
+
+        return result;
+    }
+
+    @Override
+    public Double[] arrayOf(Double... values) {
+        return Arrays.stream(values)
+                .toArray(Double[]::new);
     }
 
     @Override
     public Double[][] matrix(int rows, int cols) {
 
-        if (cols == 0)
-            return new Double[rows][];
+        Double[][] result = new Double[rows][];
 
-        return new Double[rows][cols];
+        Arrays.fill(result, array(cols));
+
+        return result;
     }
 
     @Override
     public Double from(double dblValue) {
         return dblValue;
+    }
+
+    @Override
+    public Double[] from(double[] dblValues) {
+
+        return DoubleStream.of(dblValues)
+                .boxed()
+                .toArray(Double[]::new);
+    }
+
+    @Override
+    public Double max(Double a, Double b) {
+        return Math.max(a, b);
+    }
+
+    @Override
+    public Double min(Double a, Double b) {
+        return Math.min(a, b);
+    }
+
+    @Override
+    public Double abs(Double a) {
+        return Math.abs(a);
+    }
+
+    @Override
+    public Double floor(Double a) {
+        return Math.floor(a);
+    }
+
+    @Override
+    public Double mod(Double a, Double b) {
+        return a % b;
+    }
+
+    @Override
+    public boolean negative(Double a) {
+        return a < 0;
+    }
+
+    @Override
+    public boolean positive(Double a) {
+        return a > 0;
+    }
+
+    @Override
+    public boolean greaterThan(Double a, Double b) {
+        return a > b;
+    }
+
+    @Override
+    public boolean lessThan(Double a, Double b) {
+        return a < b;
+    }
+
+    @Override
+    public boolean greaterThanOrEqual(Double a, Double b) {
+        return a >= b;
+    }
+
+    @Override
+    public boolean lessThanOrEqual(Double a, Double b) {
+        return a <= b;
+    }
+
+    @Override
+    public Double pow(Double base, Double exponent) {
+        return Math.pow(base, exponent);
     }
 }

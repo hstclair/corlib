@@ -60,18 +60,18 @@ public class VASComputationExperimental2 {
         // dividing by X (of course, this will never result in a non-zero a/x term because we've already determined the
         // constant term to be zero).
 
-        op = op.createCompletionMessage();
+        op = op.createCompletionMessage("constant is zero - root found");
 
         // add [b/d, b/d] to rootlist,
         Interval root = new Interval(op.mobius.transform(0));
 
         int lowestDegree = op.polynomial.lowestDegree();
 
-        registerNewEntry.accept(op.createResultMessage(root));
+        registerNewEntry.accept(op.createResultMessage(root, "found precise value of root"));
 
         if (lowestDegree > 0) {
             // and set p(x) ← p(x)/x
-            registerNewEntry.accept(op.createOperationMessage(op.polynomial.reduceDegree(lowestDegree), op.mobius));
+            registerNewEntry.accept(op.createOperationMessage(op.polynomial.reduceDegree(lowestDegree), op.mobius, "not fully solved after precise root"));
         }
 
         return op;
@@ -89,10 +89,10 @@ public class VASComputationExperimental2 {
         if (signChanges > 1)
             return op;
 
-        op = op.createCompletionMessage();
+        op = op.createCompletionMessage("found zero or one remaining sign changes");
 
         if (signChanges != 0)
-            registerNewEntry.accept(op.createResultMessage(intervalOf(op.mobius)));
+            registerNewEntry.accept(op.createResultMessage(intervalOf(op.mobius), "single sign change - at least one root in range"));
 
         return op;
     };
@@ -126,7 +126,7 @@ public class VASComputationExperimental2 {
         Polynomial polynomial = op.polynomial.apply(Polynomial.of(new double[] { 0, op.lowerBoundComputed }));
         RealMobiusTransformation mobius = op.mobius.composeAlphaX(op.lowerBoundComputed);
 
-        return op.createOperationMessage(polynomial, mobius, 1);
+        return op.createOperationMessage(polynomial, mobius, 1, "scaled polynomial per Strzeboński");
     };
 
     public Function<Consumer<VASOperation2>, Function<VASOperation2, VASOperation2>> testLowerBound = registerNewEntry -> op -> {
@@ -149,9 +149,9 @@ public class VASComputationExperimental2 {
         Polynomial newPolynomial = op.polynomial.apply(composed);
         RealMobiusTransformation newMobius = op.mobius.composeXPlusK(op.lowerBoundComputed);
 
-        op = op.createCompletionMessage();
+        op = op.createCompletionMessage("lower bound >= 1");
 
-        registerNewEntry.accept(op.createOperationMessage(newPolynomial, newMobius));
+        registerNewEntry.accept(op.createOperationMessage(newPolynomial, newMobius, "composed with 'y = x + lowerBound' so that lower bound is now 0"));
 
         return op;
     };
@@ -178,10 +178,10 @@ public class VASComputationExperimental2 {
         RealMobiusTransformation mobius2 = op.mobius.budansTheorem();
         Polynomial polynomial2 = op.polynomial.budansTheorem();
 
-        op = op.createCompletionMessage();
+        op = op.createCompletionMessage("one or more roots in (0-1) and one or more roots in (1-infinity)");
 
-        registerNewEntry.accept(op.createOperationMessage(polynomial1, mobius1));
-        registerNewEntry.accept(op.createOperationMessage(polynomial2, mobius2));
+        registerNewEntry.accept(op.createOperationMessage(polynomial1, mobius1, "Taylor-shifted to place roots in (1 - infinity) in new range (0 - infinity)"));
+        registerNewEntry.accept(op.createOperationMessage(polynomial2, mobius2, "Budan's theorem applied - roots in original (0-1) range are now bounded by number of sign changes"));
 
         return op;
     };

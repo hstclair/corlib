@@ -256,4 +256,36 @@ public class TestVincentAkritasStrzeboński2 {
         assertEquals(expectedRoots.length, results.size());
         assertRootsWithinResults(expectedRoots, results);
     }
+
+
+    public static Polynomial fromRoots(double[] roots) {
+        Polynomial result = Polynomial.of(1);
+
+        for (double root : roots) {
+            Polynomial multiplier = Polynomial.of(new double[] { -root, 1});
+
+            System.out.printf("product of %1$s and %2$s\n", multiplier, result);
+
+            result = result.product(multiplier);
+        }
+
+        System.out.printf("returning %1$s", result);
+
+        return result;
+    }
+
+    // Higher-order polynomials (those with larger roots or additional, distinct roots) appear to exceed the precision
+    // of a Double so they cannot be supported in the current implementation.  To carry this implementation beyond
+    // this limitation will require a BigDecimal implementation or a Rational implementation (or something more exotic)
+    // For example, this test fails:
+    @Test
+    public void factorEquationWithTwentyTwoPrimeRootsShowWork() {
+        double[] expectedRoots = new double[] { 2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71 };
+        Polynomial polynomial = fromRoots(expectedRoots);
+
+        VincentAkritasStrzeboński2 vas = new VincentAkritasStrzeboński2();
+
+        vas.solveRootIntervals(polynomial)
+                .forEach(System.out::println);
+    }
 }
