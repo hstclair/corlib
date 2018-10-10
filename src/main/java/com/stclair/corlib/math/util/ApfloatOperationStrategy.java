@@ -95,6 +95,10 @@ public class ApfloatOperationStrategy implements OperationStrategy<Apfloat> {
         return result;
     }
 
+    @Override
+    public double value(Apfloat a) {
+        return a.doubleValue();
+    }
 
     @Override
     public Apfloat from(double value) {

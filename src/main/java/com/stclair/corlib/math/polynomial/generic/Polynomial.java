@@ -1,6 +1,7 @@
 package com.stclair.corlib.math.polynomial.generic;
 
 
+import com.stclair.corlib.math.Complex;
 import com.stclair.corlib.math.util.OperationStrategy;
 
 import java.text.DecimalFormat;
@@ -298,34 +299,34 @@ public class Polynomial<T> {
         return result;
     }
 
-//    /**
-//     * Apply this polynomial to a complex number.
-//     *
-//     * @param complex
-//     * @return
-//     */
-//    public Complex apply(Complex complex) {
-//
-//        Objects.requireNonNull(complex);
-//
-//        if (this == ZERO)
-//            return Complex.ZERO;
-//
-//        if (complex == Complex.ZERO || degree() == 0)
-//            return Complex.of(coefficients[0]);
-//
-//        if (complex == Complex.ONE)
-//            return Complex.of(sumOfCoefficients());
-//
-//        // use Horner's Rule:
-//        Complex result = complex.product(coefficients[degree()]);
-//
-//        for (int index = degree() - 1; index > 0; index--) {
-//            result = result.sum(coefficients[index]).product(complex);
-//        }
-//
-//        return result.sum(coefficients[0]);
-//    }
+    /**
+     * Apply this polynomial to a complex number.
+     *
+     * @param complex
+     * @return
+     */
+    public Complex apply(Complex complex) {
+
+        Objects.requireNonNull(complex);
+
+        if (this.isZero())
+            return Complex.ZERO;
+
+        if (complex == Complex.ZERO || degree() == 0)
+            return Complex.of(op.value(coefficients[0]));
+
+        if (complex == Complex.ONE)
+            return Complex.of(op.value(sumOfCoefficients()));
+
+        // use Horner's Rule:
+        Complex result = complex.product(op.value(coefficients[degree()]));
+
+        for (int index = degree() - 1; index > 0; index--) {
+            result = result.sum(op.value(coefficients[index])).product(complex);
+        }
+
+        return result.sum(op.value(coefficients[0]));
+    }
 
     /**
      * Apply this polynomial to another polynomial expression.
@@ -345,7 +346,7 @@ public class Polynomial<T> {
         if (this.isZero())
             return this;
 
-        if (polynomial.isZero() || polynomial.degree() == 0)
+        if (polynomial.isZero() || degree() == 0)
             return Polynomial.of(op, coefficients[0]);
 
         if (polynomial.isIdentity())
@@ -383,7 +384,7 @@ public class Polynomial<T> {
         return Polynomial.of(op, newCoefficients);
     }
 
-    public Polynomial integral() {
+    public Polynomial<T> integral() {
         if (degree() < 0)
             return zero();
 
@@ -742,7 +743,7 @@ public class Polynomial<T> {
 
             coefficient = op.abs(coefficient);
 
-            if (coefficient != op.one() || degree == 0) {
+            if ((! op.isOne(coefficient)) || degree == 0) {
                 if (op.floor(coefficient).equals(coefficient))
                     sb.append(integerFormat.format(coefficient));
                 else

@@ -81,6 +81,11 @@ public class DoubleOperationStrategy implements OperationStrategy<Double> {
     }
 
     @Override
+    public double value(Double a) {
+        return a;
+    }
+
+    @Override
     public Double from(double dblValue) {
         return dblValue;
     }

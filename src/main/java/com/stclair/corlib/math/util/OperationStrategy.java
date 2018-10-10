@@ -60,4 +60,6 @@ public interface OperationStrategy<T> {
 
     T pow(T base, T exponent);
 
+    double value(T a);
+
 }
