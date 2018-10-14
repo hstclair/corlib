@@ -24,7 +24,7 @@ public interface OperationStrategy<T> {
 
     T[] array(int size);
 
-    T[] arrayOf(T... values);
+//    T[] arrayOf(T... values);
 
     T[][] matrix(int rows, int cols);
 
@@ -46,9 +46,9 @@ public interface OperationStrategy<T> {
 
     T mod(T a, T b);
 
-    boolean negative(T a);
+    boolean isNegative(T a);
 
-    boolean positive(T a);
+    boolean isPositive(T a);
 
     boolean greaterThan(T a, T b);
 
@@ -62,4 +62,11 @@ public interface OperationStrategy<T> {
 
     double value(T a);
 
+    boolean isPositiveInfinity(T a);
+
+    T positiveInfinity();
+
+    boolean isNegativeInfinity(T a);
+
+    T negativeInfinity();
 }

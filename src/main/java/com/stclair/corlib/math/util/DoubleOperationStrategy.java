@@ -65,12 +65,6 @@ public class DoubleOperationStrategy implements OperationStrategy<Double> {
     }
 
     @Override
-    public Double[] arrayOf(Double... values) {
-        return Arrays.stream(values)
-                .toArray(Double[]::new);
-    }
-
-    @Override
     public Double[][] matrix(int rows, int cols) {
 
         Double[][] result = new Double[rows][];
@@ -124,12 +118,12 @@ public class DoubleOperationStrategy implements OperationStrategy<Double> {
     }
 
     @Override
-    public boolean negative(Double a) {
+    public boolean isNegative(Double a) {
         return a < 0;
     }
 
     @Override
-    public boolean positive(Double a) {
+    public boolean isPositive(Double a) {
         return a > 0;
     }
 
@@ -156,5 +150,25 @@ public class DoubleOperationStrategy implements OperationStrategy<Double> {
     @Override
     public Double pow(Double base, Double exponent) {
         return Math.pow(base, exponent);
+    }
+
+    @Override
+    public boolean isPositiveInfinity(Double a) {
+        return a == Double.POSITIVE_INFINITY;
+    }
+
+    @Override
+    public Double positiveInfinity() {
+        return Double.POSITIVE_INFINITY;
+    }
+
+    @Override
+    public boolean isNegativeInfinity(Double a) {
+        return a == Double.NEGATIVE_INFINITY;
+    }
+
+    @Override
+    public Double negativeInfinity() {
+        return Double.NEGATIVE_INFINITY;
     }
 }

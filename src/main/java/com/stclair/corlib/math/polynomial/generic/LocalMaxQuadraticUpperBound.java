@@ -30,7 +30,7 @@ public class LocalMaxQuadraticUpperBound<T> {
         if (polynomial.degree() < 2)
             throw new IllegalArgumentException("polynomial degree must be at least 2");
 
-        if (op.negative(polynomial.getCoefficients()[polynomial.degree()]))
+        if (op.isNegative(polynomial.getCoefficients()[polynomial.degree()]))
             polynomial = polynomial.negate();
 
         if (polynomial.signChanges() == 0)
@@ -45,7 +45,7 @@ public class LocalMaxQuadraticUpperBound<T> {
         T estimate = null;
 
         for (int index = degree - 1; index >= 0; index--) {
-            if (op.negative(coefficients[index])) {
+            if (op.isNegative(coefficients[index])) {
                 if (estimate == null)
                     estimate = estimateNegativeCoefficient(op, index, coefficients, decomposedPositiveCoefficients);
                 else
@@ -90,7 +90,7 @@ public class LocalMaxQuadraticUpperBound<T> {
         Optional<Supplier<T>>[] result = new Optional[coefficients.length];
 
         for (int index = 0; index < coefficients.length; index++) {
-            if (op.negative(coefficients[index]) || op.isZero(coefficients[index]))
+            if (op.isNegative(coefficients[index]) || op.isZero(coefficients[index]))
                 result[index] = Optional.empty();
             else
                 result[index] = Optional.of(new DecomposedCoefficientSupplier<T>(op, coefficients[index]));

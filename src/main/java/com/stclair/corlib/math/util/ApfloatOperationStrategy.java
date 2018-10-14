@@ -80,12 +80,6 @@ public class ApfloatOperationStrategy implements OperationStrategy<Apfloat> {
     }
 
     @Override
-    public Apfloat[] arrayOf(Apfloat... values) {
-        return Arrays.stream(values)
-                .toArray(Apfloat[]::new);
-    }
-
-    @Override
     public Apfloat[][] matrix(int rows, int cols) {
 
         Apfloat[][] result = new Apfloat[rows][];
@@ -143,12 +137,12 @@ public class ApfloatOperationStrategy implements OperationStrategy<Apfloat> {
     }
 
     @Override
-    public boolean negative(Apfloat a) {
+    public boolean isNegative(Apfloat a) {
         return a.signum() == -1;
     }
 
     @Override
-    public boolean positive(Apfloat a) {
+    public boolean isPositive(Apfloat a) {
         return a.signum() == 1;
     }
 
@@ -175,5 +169,25 @@ public class ApfloatOperationStrategy implements OperationStrategy<Apfloat> {
     @Override
     public Apfloat pow(Apfloat base, Apfloat exponent) {
         return ApfloatMath.pow(base, exponent);
+    }
+
+    @Override
+    public boolean isPositiveInfinity(Apfloat a) {
+        return false;
+    }
+
+    @Override
+    public Apfloat positiveInfinity() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public boolean isNegativeInfinity(Apfloat a) {
+        return false;
+    }
+
+    @Override
+    public Apfloat negativeInfinity() {
+        throw new UnsupportedOperationException();
     }
 }

@@ -16,7 +16,7 @@ public class DecomposedCoefficientSupplier<T> implements Supplier<T> {
 
     int timesUsed;
 
-    DecomposedCoefficientSupplier(OperationStrategy<T> op, T coefficient) {
+    public DecomposedCoefficientSupplier(OperationStrategy<T> op, T coefficient) {
         this.coefficient = coefficient;
         this.op = op;
         timesUsed = 0;

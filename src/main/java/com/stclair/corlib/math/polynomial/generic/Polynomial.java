@@ -18,15 +18,8 @@ import java.util.function.Function;
  * @since 8/16/15 1:59 PM
  */
 public class Polynomial<T> {
-//    public static final Polynomial IDENTITY = new Polynomial(new double[] {1});
-
-//    static final Object[] EMPTY = new Object[0];
 
     final OperationStrategy<T> op;
-
-//    public static final Polynomial ZERO = new Polynomial();
-
-//    public static final Polynomial ONE = new Polynomial(1);
 
     T[] coefficients;
 
@@ -62,6 +55,10 @@ public class Polynomial<T> {
             coefficients = op.array(1);
             coefficients[0] = coefficient;
         }
+    }
+
+    public OperationStrategy<T> getOperationStrategy() {
+        return op;
     }
 
 
@@ -597,7 +594,7 @@ public class Polynomial<T> {
         T lastSign = op.zero();
 
         for (T coefficient : coefficients) {
-            if ((op.isZero(coefficient)) || (op.negative(lastSign) && op.negative(coefficient)) || (op.positive(lastSign) && op.positive(coefficient)))
+            if ((op.isZero(coefficient)) || (op.isNegative(lastSign) && op.isNegative(coefficient)) || (op.isPositive(lastSign) && op.isPositive(coefficient)))
                 continue;
 
             count++;
