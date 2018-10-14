@@ -132,104 +132,32 @@ public class ApfloatInfiniteOperationStrategy implements OperationStrategy<Apflo
 
     @Override
     public ApfloatInfinite max(ApfloatInfinite a, ApfloatInfinite b) {
-
-        if (a == ApfloatInfinite.Undefined || b == ApfloatInfinite.Undefined)
-            return ApfloatInfinite.Undefined;
-
-        if (a == b)
-            return a;
-
-        if (a == ApfloatInfinite.PositiveInfinity || b == ApfloatInfinite.PositiveInfinity)
-            return ApfloatInfinite.PositiveInfinity;
-
-        if (a == ApfloatInfinite.NegativeInfinity)
-            return b;
-
-        if (b == ApfloatInfinite.NegativeInfinity)
-            return a;
-
-        return a.compareTo(b) < 0 ? b : a;
+        return ApfloatInfinite.max(a, b);
     }
 
     @Override
     public ApfloatInfinite min(ApfloatInfinite a, ApfloatInfinite b) {
-
-        if (a == ApfloatInfinite.Undefined || b == ApfloatInfinite.Undefined)
-            return ApfloatInfinite.Undefined;
-
-        if (a == b)
-            return a;
-
-        if (a == ApfloatInfinite.NegativeInfinity || b == ApfloatInfinite.NegativeInfinity)
-            return ApfloatInfinite.NegativeInfinity;
-
-        if (a == ApfloatInfinite.PositiveInfinity)
-            return b;
-
-        if (b == ApfloatInfinite.PositiveInfinity)
-            return a;
-
-        return a.compareTo(b) > 0 ? b : a;
+        return ApfloatInfinite.min(a, b);
     }
 
     @Override
     public boolean greaterThan(ApfloatInfinite a, ApfloatInfinite b) {
-
-        if (a == ApfloatInfinite.Undefined || b == ApfloatInfinite.Undefined)
-            return false;
-
-        if (a == b)
-            return false;
-
-        if (isInfinite(a) || isInfinite(b))
-            return a == ApfloatInfinite.PositiveInfinity || b == ApfloatInfinite.NegativeInfinity;
-
-        return a.compareTo(b) > 0;
+        return a.greaterThan(b);
     }
 
     @Override
     public boolean lessThan(ApfloatInfinite a, ApfloatInfinite b) {
-
-        if (a == ApfloatInfinite.Undefined || b == ApfloatInfinite.Undefined)
-            return false;
-
-        if (a == b)
-            return false;
-
-        if (isInfinite(a) || isInfinite(b))
-            return a == ApfloatInfinite.NegativeInfinity || b == ApfloatInfinite.PositiveInfinity;
-
-        return a.compareTo(b) < 0;
+        return a.lessThan(b);
     }
 
     @Override
     public boolean greaterThanOrEqual(ApfloatInfinite a, ApfloatInfinite b) {
-
-        if (a == ApfloatInfinite.Undefined || b == ApfloatInfinite.Undefined)
-            return false;
-
-        if (a == b)
-            return true;
-
-        if (isInfinite(a) || isInfinite(b))
-            return a == ApfloatInfinite.PositiveInfinity || b == ApfloatInfinite.NegativeInfinity;
-
-        return a.compareTo(b) >= 0;
+        return a.greaterThanOrEqual(b);
     }
 
     @Override
     public boolean lessThanOrEqual(ApfloatInfinite a, ApfloatInfinite b) {
-
-        if (a == ApfloatInfinite.Undefined || b == ApfloatInfinite.Undefined)
-            return false;
-
-        if (a == b)
-            return true;
-
-        if (isInfinite(a) || isInfinite(b))
-            return a == ApfloatInfinite.NegativeInfinity || b == ApfloatInfinite.PositiveInfinity;
-
-        return a.compareTo(b) <= 0;
+        return a.lessThanOrEqual(b);
     }
 
     @Override
@@ -255,9 +183,5 @@ public class ApfloatInfiniteOperationStrategy implements OperationStrategy<Apflo
     @Override
     public ApfloatInfinite negativeInfinity() {
         return ApfloatInfinite.NegativeInfinity;
-    }
-
-    public boolean isInfinite(ApfloatInfinite a) {
-        return a.isInfinite;
     }
 }

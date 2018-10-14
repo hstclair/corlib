@@ -748,7 +748,7 @@ public class Polynomial<T> {
             }
 
             if (degree > 1)
-                sb.append(String.format("X^%d", degree));
+                sb.append(String.format("X^%s", degree));
             else if (degree == 1)
                 sb.append(String.format("X"));
 

@@ -351,6 +351,92 @@ public class ApfloatInfinite {
         return value.doubleValue();
     }
 
+    public boolean greaterThan(ApfloatInfinite that) {
+
+        if (this == Undefined || that == Undefined)
+            return false;
+
+        if (this.equals(that))
+            return false;
+
+        if (this.isInfinite || that.isInfinite)
+            return this == PositiveInfinity || that == NegativeInfinity;
+
+        return this.value.compareTo(that.value) > 0;
+    }
+
+    public boolean greaterThanOrEqual(ApfloatInfinite that) {
+
+        if (this == Undefined || that == Undefined)
+            return false;
+
+        if (this.equals(that))
+            return true;
+
+        if (this.isInfinite || that.isInfinite)
+            return this == PositiveInfinity || that == NegativeInfinity;
+
+        return this.value.compareTo(that.value) > 0;
+    }
+
+    public boolean lessThan(ApfloatInfinite that) {
+
+        if (this == Undefined || that == Undefined)
+            return false;
+
+        if (this.equals(that))
+            return false;
+
+        if (this.isInfinite || that.isInfinite)
+            return this == NegativeInfinity || that == PositiveInfinity;
+
+        return this.value.compareTo(that.value) < 0;
+    }
+
+    public boolean lessThanOrEqual(ApfloatInfinite that) {
+
+        if (this == Undefined || that == Undefined)
+            return false;
+
+        if (this.equals(that))
+            return true;
+
+        if (this.isInfinite || that.isInfinite)
+            return this == NegativeInfinity || that == PositiveInfinity;
+
+        return this.value.compareTo(that.value) < 0;
+    }
+
+    public static ApfloatInfinite max(ApfloatInfinite a, ApfloatInfinite b) {
+
+        if (a == Undefined || b == Undefined)
+            return Undefined;
+
+        if (a.isInfinite || b.isInfinite) {
+            if (a == PositiveInfinity || b == PositiveInfinity)
+                return PositiveInfinity;
+
+            return a == NegativeInfinity ? b : a;
+        }
+
+        return a.value.compareTo(b.value) >= 0 ? a : b;
+    }
+
+    public static ApfloatInfinite min(ApfloatInfinite a, ApfloatInfinite b) {
+
+        if (a == Undefined || b == Undefined)
+            return Undefined;
+
+        if (a.isInfinite || b.isInfinite) {
+            if (a == NegativeInfinity || b == NegativeInfinity)
+                return NegativeInfinity;
+
+            return a == PositiveInfinity ? b : a;
+        }
+
+        return a.value.compareTo(b.value) <= 0 ? a : b;
+    }
+
     public int compareTo(ApfloatInfinite x) {
 
         return value.compareTo(x.value);

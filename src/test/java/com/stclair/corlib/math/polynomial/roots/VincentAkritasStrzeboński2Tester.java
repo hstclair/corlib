@@ -189,88 +189,88 @@ public class VincentAkritasStrzeboński2Tester<T> {
         assertRootsWithinResults(expectedRoots, results);
     }
 
-//    @Test
-//    public void factorEquationWithFiveRoots() {
-//        // X^5 - 26 X^4 + 231 X^3 - 862 X^2 + 1328 X - 672
-//        // with roots 1, 2, 4, 12, 7
-//        Polynomial polynomial = Polynomial.of(new double[] { -672, 1328, -862, 231, -26, 1 });
-//        double[] expectedRoots = new double[] { 1, 2, 4, 12, 7 };
+    @Test
+    public void factorEquationWithFiveRoots() {
+        // X^5 - 26 X^4 + 231 X^3 - 862 X^2 + 1328 X - 672
+        // with roots 1, 2, 4, 12, 7
+        Polynomial<T> polynomial = Polynomial.of(op, op.from(new double[] { -672, 1328, -862, 231, -26, 1 }));
+        T[] expectedRoots = op.from(new double[] { 1, 2, 4, 12, 7 });
+
+        VincentAkritasStrzeboński2<T> vas = new VincentAkritasStrzeboński2<>(op);
+
+        List<Interval<T>> results = vas.findRootIntervals(polynomial);
+
+        assertEquals(5, results.size());
+        assertRootsWithinResults(expectedRoots, results);
+    }
+
+
+
+    @Test
+    public void factorEquationWithSixRoots() {
+        // x^6 - 29 X^5 + 309 X^4 - 1555 X^3 + 3914 X^2 - 4656 X + 2016
+        // with roots 1, 2, 3, 4, 7, 12
+        Polynomial<T> polynomial = Polynomial.of(op, op.from(new double[] { 2016, -4656, 3914, -1555, 309, -29, 1 }));
+        T[] expectedRoots = op.from(new double[] { 1, 2, 3, 4, 7, 12 });
+
+        VincentAkritasStrzeboński2<T> vas = new VincentAkritasStrzeboński2<>(op);
+
+        List<Interval<T>> results = vas.findRootIntervals(polynomial);
+
+        assertEquals(6, results.size());
+        assertRootsWithinResults(expectedRoots, results);
+    }
+
+    @Test
+    public void factorEquationWithFifteenRoots() {
+        T[] expectedRoots = op.from(new double[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 });
+        Polynomial<T> polynomial = Polynomial.fromRoots(op, expectedRoots);
+
+        VincentAkritasStrzeboński2<T> vas = new VincentAkritasStrzeboński2<>(op);
+
+        List<Interval<T>> results = vas.findRootIntervals(polynomial);
+
+        assertEquals(expectedRoots.length, results.size());
+        assertRootsWithinResults(expectedRoots, results);
+    }
+
+    @Test
+    public void factorEquationWithTwentyTwoRoots() {
+        T[] expectedRoots = op.from(new double[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22 });
+        Polynomial<T> polynomial = Polynomial.fromRoots(op, expectedRoots);
+
+        VincentAkritasStrzeboński2<T> vas = new VincentAkritasStrzeboński2<>(op);
+
+        List<Interval<T>> results = vas.findRootIntervals(polynomial);
+
+        assertEquals(expectedRoots.length, results.size());
+        assertRootsWithinResults(expectedRoots, results);
+    }
+
+
+    // Higher-order polynomials (those with larger roots or additional, distinct roots) appear to exceed the precision
+    // of a Double so they cannot be supported in the current implementation.  To carry this implementation beyond
+    // this limitation will require a BigDecimal implementation or a Rational implementation (or something more exotic)
+    // For example, this test fails:
+    @Test
+    public void factorEquationWithTwentyTwoPrimeRoots() {
+        T[] expectedRoots = op.from(new double[] { 2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71 });
+        Polynomial<T> polynomial = Polynomial.fromRoots(op, expectedRoots);
+
+        VincentAkritasStrzeboński2<T> vas = new VincentAkritasStrzeboński2<>(op);
+
+        List<Interval<T>> results = vas.findRootIntervals(polynomial);
+
+        assertEquals(expectedRoots.length, results.size());
+        assertRootsWithinResults(expectedRoots, results);
+    }
+
+
+//    public static <T> Polynomial<T> fromRoots(OperationStrategy<T> op, T[] roots) {
+//        Polynomial<T> result = Polynomial.of(op, op.from(1));
 //
-//        VincentAkritasStrzeboński2 vas = new VincentAkritasStrzeboński2();
-//
-//        List<Interval> results = vas.findRootIntervals(polynomial);
-//
-//        assertEquals(5, results.size());
-//        assertRootsWithinResults(expectedRoots, results);
-//    }
-//
-//
-//
-//    @Test
-//    public void factorEquationWithSixRoots() {
-//        // x^6 - 29 X^5 + 309 X^4 - 1555 X^3 + 3914 X^2 - 4656 X + 2016
-//        // with roots 1, 2, 3, 4, 7, 12
-//        Polynomial polynomial = Polynomial.of(new double[] { 2016, -4656, 3914, -1555, 309, -29, 1 });
-//        double[] expectedRoots = new double[] { 1, 2, 3, 4, 7, 12 };
-//
-//        VincentAkritasStrzeboński2 vas = new VincentAkritasStrzeboński2();
-//
-//        List<Interval> results = vas.findRootIntervals(polynomial);
-//
-//        assertEquals(6, results.size());
-//        assertRootsWithinResults(expectedRoots, results);
-//    }
-//
-//    @Test
-//    public void factorEquationWithFifteenRoots() {
-//        double[] expectedRoots = new double[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 };
-//        Polynomial polynomial = Polynomial.fromRoots(expectedRoots);
-//
-//        VincentAkritasStrzeboński2 vas = new VincentAkritasStrzeboński2();
-//
-//        List<Interval> results = vas.findRootIntervals(polynomial);
-//
-//        assertEquals(expectedRoots.length, results.size());
-//        assertRootsWithinResults(expectedRoots, results);
-//    }
-//
-//    @Test
-//    public void factorEquationWithTwentyTwoRoots() {
-//        double[] expectedRoots = new double[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22 };
-//        Polynomial polynomial = Polynomial.fromRoots(expectedRoots);
-//
-//        VincentAkritasStrzeboński2 vas = new VincentAkritasStrzeboński2();
-//
-//        List<Interval> results = vas.findRootIntervals(polynomial);
-//
-//        assertEquals(expectedRoots.length, results.size());
-//        assertRootsWithinResults(expectedRoots, results);
-//    }
-//
-//
-//    // Higher-order polynomials (those with larger roots or additional, distinct roots) appear to exceed the precision
-//    // of a Double so they cannot be supported in the current implementation.  To carry this implementation beyond
-//    // this limitation will require a BigDecimal implementation or a Rational implementation (or something more exotic)
-//    // For example, this test fails:
-//    @Test
-//    public void factorEquationWithTwentyTwoPrimeRoots() {
-//        double[] expectedRoots = new double[] { 2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71 };
-//        Polynomial polynomial = Polynomial.fromRoots(expectedRoots);
-//
-//        VincentAkritasStrzeboński2 vas = new VincentAkritasStrzeboński2();
-//
-//        List<Interval> results = vas.findRootIntervals(polynomial);
-//
-//        assertEquals(expectedRoots.length, results.size());
-//        assertRootsWithinResults(expectedRoots, results);
-//    }
-//
-//
-//    public static Polynomial fromRoots(double[] roots) {
-//        Polynomial result = Polynomial.of(1);
-//
-//        for (double root : roots) {
-//            Polynomial multiplier = Polynomial.of(new double[] { -root, 1});
+//        for (T root : roots) {
+//            Polynomial multiplier = Polynomial.of(op, op.from(new double[] { root.negate(), 1}));
 //
 //            System.out.printf("product of %1$s and %2$s\n", multiplier, result);
 //
@@ -281,19 +281,19 @@ public class VincentAkritasStrzeboński2Tester<T> {
 //
 //        return result;
 //    }
-//
-//    // Higher-order polynomials (those with larger roots or additional, distinct roots) appear to exceed the precision
-//    // of a Double so they cannot be supported in the current implementation.  To carry this implementation beyond
-//    // this limitation will require a BigDecimal implementation or a Rational implementation (or something more exotic)
-//    // For example, this test fails:
-//    @Test
-//    public void factorEquationWithTwentyTwoPrimeRootsShowWork() {
-//        double[] expectedRoots = new double[] { 2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71 };
-//        Polynomial polynomial = fromRoots(expectedRoots);
-//
-//        VincentAkritasStrzeboński2 vas = new VincentAkritasStrzeboński2();
-//
-//        vas.solveRootIntervals(polynomial)
-//                .forEach(System.out::println);
-//    }
+
+    // Higher-order polynomials (those with larger roots or additional, distinct roots) appear to exceed the precision
+    // of a Double so they cannot be supported in the current implementation.  To carry this implementation beyond
+    // this limitation will require a BigDecimal implementation or a Rational implementation (or something more exotic)
+    // For example, this test fails:
+    @Test
+    public void factorEquationWithTwentyTwoPrimeRootsShowWork() {
+        T[] expectedRoots = op.from(new double[] { 2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71 });
+        Polynomial<T> polynomial = Polynomial.fromRoots(op, expectedRoots);
+
+        VincentAkritasStrzeboński2<T> vas = new VincentAkritasStrzeboński2<>(op);
+
+        vas.solveRootIntervals(polynomial)
+                .forEach(System.out::println);
+    }
 }

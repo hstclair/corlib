@@ -55,4 +55,34 @@ public class TestVincentAkritasStrzeboński2Double {
     public void factorEquationWithFourRoots() {
         test.factorEquationWithFourRoots();
     }
+
+    @Test
+    public void factorEquationWithFiveRoots() {
+        test.factorEquationWithFiveRoots();
+    }
+
+    @Test
+    public void factorEquationWithSixRoots() {
+        test.factorEquationWithSixRoots();
+    }
+
+    @Test
+    public void factorEquationWithFifteenRoots() {
+        test.factorEquationWithFifteenRoots();
+    }
+
+    @Test
+    public void factorEquationWithTwentyTwoRoots() {
+        test.factorEquationWithTwentyTwoRoots();
+    }
+
+    @Test
+    public void factorEquationWithTwentyTwoPrimeRoots() {
+        test.factorEquationWithTwentyTwoPrimeRoots();
+    }
+
+    @Test
+    public void factorEquationWithTwentyTwoPrimeRootsShowWork() {
+        test.factorEquationWithTwentyTwoPrimeRootsShowWork();
+    }
 }
