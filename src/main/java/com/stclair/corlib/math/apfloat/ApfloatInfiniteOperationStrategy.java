@@ -3,8 +3,11 @@ package com.stclair.corlib.math.apfloat;
 import com.stclair.corlib.math.util.OperationStrategy;
 import org.apfloat.Apfloat;
 
+import java.io.StringWriter;
 import java.util.Arrays;
+import java.util.Formatter;
 import java.util.stream.DoubleStream;
+import java.util.stream.IntStream;
 
 
 public class ApfloatInfiniteOperationStrategy implements OperationStrategy<ApfloatInfinite> {
@@ -81,11 +84,12 @@ public class ApfloatInfiniteOperationStrategy implements OperationStrategy<Apflo
     @Override
     public ApfloatInfinite[][] matrix(int rows, int cols) {
 
-        ApfloatInfinite[][] result = new ApfloatInfinite[rows][];
-
-        Arrays.fill(result, array(cols));
-
-        return result;
+        return IntStream.range(0, rows)
+                .mapToObj(
+                        row -> IntStream.range(0, cols)
+                        .mapToObj(col -> ApfloatInfinite.ZERO)
+                        .toArray(ApfloatInfinite[]::new)
+                ).toArray(ApfloatInfinite[][]::new);
     }
 
     @Override
@@ -183,5 +187,15 @@ public class ApfloatInfiniteOperationStrategy implements OperationStrategy<Apflo
     @Override
     public ApfloatInfinite negativeInfinity() {
         return ApfloatInfinite.NegativeInfinity;
+    }
+
+    @Override
+    public String toIntegerString(ApfloatInfinite value) {
+        return String.format("%#s", value.value);
+    }
+
+    @Override
+    public String toDecimalString(ApfloatInfinite value) {
+        return String.format("%#s", value.value);
     }
 }

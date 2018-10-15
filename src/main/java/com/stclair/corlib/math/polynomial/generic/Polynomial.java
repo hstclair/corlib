@@ -742,9 +742,9 @@ public class Polynomial<T> {
 
             if ((! op.isOne(coefficient)) || degree == 0) {
                 if (op.floor(coefficient).equals(coefficient))
-                    sb.append(integerFormat.format(coefficient));
+                    sb.append(op.toIntegerString(coefficient));
                 else
-                    sb.append(floatFormat.format(coefficient));
+                    sb.append(op.toDecimalString(coefficient));
             }
 
             if (degree > 1)

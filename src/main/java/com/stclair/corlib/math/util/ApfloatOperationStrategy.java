@@ -4,8 +4,11 @@ import com.stclair.corlib.math.matrix.Value;
 import org.apfloat.Apfloat;
 import org.apfloat.ApfloatMath;
 
+import java.io.StringWriter;
 import java.util.Arrays;
+import java.util.Formatter;
 import java.util.stream.DoubleStream;
+import java.util.stream.IntStream;
 
 
 public class ApfloatOperationStrategy implements OperationStrategy<Apfloat> {
@@ -82,11 +85,12 @@ public class ApfloatOperationStrategy implements OperationStrategy<Apfloat> {
     @Override
     public Apfloat[][] matrix(int rows, int cols) {
 
-        Apfloat[][] result = new Apfloat[rows][];
-
-        Arrays.fill(result, array(cols));
-
-        return result;
+        return IntStream.range(0, rows)
+                .mapToObj(
+                        row -> IntStream.range(0, cols)
+                                .mapToObj(col -> Apfloat.ZERO)
+                                .toArray(Apfloat[]::new)
+                ).toArray(Apfloat[][]::new);
     }
 
     @Override
@@ -189,5 +193,15 @@ public class ApfloatOperationStrategy implements OperationStrategy<Apfloat> {
     @Override
     public Apfloat negativeInfinity() {
         throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public String toIntegerString(Apfloat value) {
+        return String.format("%#s", value);
+    }
+
+    @Override
+    public String toDecimalString(Apfloat value) {
+        return String.format("%#s", value);
     }
 }

@@ -69,4 +69,8 @@ public interface OperationStrategy<T> {
     boolean isNegativeInfinity(T a);
 
     T negativeInfinity();
+
+    String toIntegerString(T value);
+
+    String toDecimalString(T value);
 }

@@ -1,7 +1,9 @@
 package com.stclair.corlib.math.util;
 
+import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.stream.DoubleStream;
+import java.util.stream.IntStream;
 
 public class DoubleOperationStrategy implements OperationStrategy<Double> {
 
@@ -67,11 +69,9 @@ public class DoubleOperationStrategy implements OperationStrategy<Double> {
     @Override
     public Double[][] matrix(int rows, int cols) {
 
-        Double[][] result = new Double[rows][];
-
-        Arrays.fill(result, array(cols));
-
-        return result;
+        return IntStream.range(0, rows)
+                .mapToObj(it -> new Double[cols])
+                .toArray(Double[][]::new);
     }
 
     @Override
@@ -170,5 +170,24 @@ public class DoubleOperationStrategy implements OperationStrategy<Double> {
     @Override
     public Double negativeInfinity() {
         return Double.NEGATIVE_INFINITY;
+    }
+
+    @Override
+    public String toIntegerString(Double value) {
+
+        DecimalFormat integerFormat = new DecimalFormat();
+        integerFormat.setMaximumFractionDigits(0);
+
+        return integerFormat.format(value);
+    }
+
+    @Override
+    public String toDecimalString(Double value) {
+
+        DecimalFormat floatFormat = new DecimalFormat();
+        floatFormat.setMaximumFractionDigits(17);
+        floatFormat.setMinimumFractionDigits(0);
+
+        return floatFormat.format(value);
     }
 }

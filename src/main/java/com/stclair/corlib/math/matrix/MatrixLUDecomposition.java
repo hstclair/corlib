@@ -49,6 +49,7 @@ public class MatrixLUDecomposition {
         }
 
         switchRows(members, column, row);
+
         return RowSolutionState.Exchanged;        // matrix is ready for column to be solved but rows were exchanged
     }
 
@@ -83,8 +84,6 @@ public class MatrixLUDecomposition {
 
         T divisor = op.one();
 
-        T prevDivisor = op.one();
-
         int order = upper.length;
 
         T[][] lower = computeLower ? Matrix.identityArray(order, op) : null;
@@ -98,8 +97,6 @@ public class MatrixLUDecomposition {
 
             if (state == RowSolutionState.Exchanged)
                 negate = ! negate;
-
-            prevDivisor = divisor;
 
             divisor = solveColumn(upper, lower, column, divisor, op);
         }
