@@ -141,13 +141,18 @@ public class Matrix<T> {
         T one = op.one();
         T zero = op.zero();
 
-        return IntStream.range(0, order)
-                .mapToObj( row ->
-                        IntStream.range(0, order)
-                                .mapToObj(column ->
-                                        row == column ? one : zero
-                                ).toArray(op::array)
+        T[][] matrix = IntStream.range(0, order)
+                .mapToObj( row -> {
+                    T[] result = IntStream.range(0, order)
+                            .mapToObj(column ->
+                                    row == column ? one : zero
+                            ).toArray(op::array);
+
+                        return result;
+                    }
                 ).toArray(op::matrix);
+
+        return matrix;
     }
 
     @Override

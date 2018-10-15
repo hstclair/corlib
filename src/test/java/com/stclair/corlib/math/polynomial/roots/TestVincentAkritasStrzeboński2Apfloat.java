@@ -2,13 +2,11 @@ package com.stclair.corlib.math.polynomial.roots;
 
 import com.stclair.corlib.math.apfloat.ApfloatInfinite;
 import com.stclair.corlib.math.apfloat.ApfloatInfiniteOperationStrategy;
-import com.stclair.corlib.math.util.ApfloatOperationStrategy;
-import org.apfloat.Apfloat;
 import org.junit.Test;
 
 public class TestVincentAkritasStrzeboński2Apfloat {
 
-    VincentAkritasStrzeboński2Tester<ApfloatInfinite> test = new VincentAkritasStrzeboński2Tester<>(new ApfloatInfiniteOperationStrategy());
+    VincentAkritasStrzeboński2Tester<ApfloatInfinite> test = new VincentAkritasStrzeboński2Tester<>(new ApfloatInfiniteOperationStrategy(128));
 
     public TestVincentAkritasStrzeboński2Apfloat() {
 
@@ -80,13 +78,13 @@ public class TestVincentAkritasStrzeboński2Apfloat {
     }
 
     @Test
-    public void factorEquationWithTwentyTwoPrimeRoots() {
-        test.factorEquationWithTwentyTwoPrimeRoots();
+    public void factorEquationWithFifteenPrimeRoots() {
+        test.factorEquationWithFifteenPrimeRoots();
     }
 
     @Test
-    public void factorEquationWithTwentyTwoPrimeRootsShowWork() {
-        test.factorEquationWithTwentyTwoPrimeRootsShowWork();
+    public void factorEquationWithFifteenPrimeRootsShowWork() {
+        test.factorEquationWithFifteenPrimeRootsShowWork();
     }
 }
 

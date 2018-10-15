@@ -16,7 +16,7 @@ public class ApfloatInfiniteOperationStrategy implements OperationStrategy<Apflo
     }
 
     public ApfloatInfiniteOperationStrategy() {
-        this(1000);
+        this(128);
     }
 
     @Override

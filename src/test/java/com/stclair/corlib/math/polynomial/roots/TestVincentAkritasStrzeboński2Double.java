@@ -77,12 +77,12 @@ public class TestVincentAkritasStrzeboński2Double {
     }
 
     @Test
-    public void factorEquationWithTwentyTwoPrimeRoots() {
-        test.factorEquationWithTwentyTwoPrimeRoots();
+    public void factorEquationWithFifteenPrimeRoots() {
+        test.factorEquationWithFifteenPrimeRoots();
     }
 
     @Test
-    public void factorEquationWithTwentyTwoPrimeRootsShowWork() {
-        test.factorEquationWithTwentyTwoPrimeRootsShowWork();
+    public void factorEquationWithFifteenPrimeRootsShowWork() {
+        test.factorEquationWithFifteenPrimeRootsShowWork();
     }
 }
