@@ -2,6 +2,10 @@ package com.stclair.corlib.math.matrix;
 
 import com.stclair.corlib.math.util.OperationStrategy;
 
+import java.util.function.Function;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
+
 public class MatrixLUDecomposition {
 
     MatrixRowSolver matrixRowSolver = new MatrixRowSolver();
@@ -11,7 +15,7 @@ public class MatrixLUDecomposition {
 
     enum RowSolutionState {
         NoSolution,     // matrix has no solution
-        Solvable,      // row may be solved
+        Solvable,       // row may be solved
         Exchanged       // row may be solved but rows were transposed
     }
 
@@ -19,14 +23,19 @@ public class MatrixLUDecomposition {
     // 0 X X
     // 0 0 X
 
-    <T> int firstSolveableRow(T[][] members, int column, OperationStrategy<T> op) {
-        for (int row = column; row < members.length; row++) {
-            if (! op.isZero(members[row][column])) {
-                return row;
-            }
-        }
+    <T> boolean isRowSolveable(T[] members, int column, OperationStrategy<T> op) {
+        return ! op.isZero(members[column]);
+    }
 
-        return -1;
+    <T> int firstMatchingEntry(T[] entries, int start, int end, int alternative, Function<T, Boolean> filter) {
+        return IntStream.range(start, end)
+                .filter(index -> filter.apply(entries[index]))
+                .findFirst()
+                .orElse(alternative);
+    }
+
+    <T> int firstSolveableRow(T[][] members, int column, OperationStrategy<T> op) {
+        return firstMatchingEntry(members, column, members.length, -1, it -> isRowSolveable(it, column, op));
     }
 
     <T> T[][] switchRows(T[][] members, int rowA, int rowB) {
