@@ -1,5 +1,7 @@
 package com.stclair.corlib.math.util;
 
+import com.stclair.corlib.math.array.Array2D;
+
 public interface OperationStrategy<T> {
 
     T product(T multiplicand, T multiplier);
@@ -26,9 +28,9 @@ public interface OperationStrategy<T> {
 
 //    T[] arrayOf(T... values);
 
-    T[][] matrix(int rows, int cols);
+    Array2D<T> matrix(int rows, int cols);
 
-    default T[][] matrix(int rows) {
+    default Array2D<T> matrix(int rows) {
         return matrix(rows, 0);
     }
 

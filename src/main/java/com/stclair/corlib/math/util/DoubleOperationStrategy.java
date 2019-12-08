@@ -1,5 +1,8 @@
 package com.stclair.corlib.math.util;
 
+import com.stclair.corlib.math.array.Array2D;
+import com.stclair.corlib.math.array.Array2DConcrete;
+
 import java.util.Arrays;
 import java.util.stream.DoubleStream;
 
@@ -65,13 +68,9 @@ public class DoubleOperationStrategy implements OperationStrategy<Double> {
     }
 
     @Override
-    public Double[][] matrix(int rows, int cols) {
+    public Array2D<Double> matrix(int rows, int cols) {
 
-        Double[][] result = new Double[rows][];
-
-        Arrays.fill(result, array(cols));
-
-        return result;
+        return new Array2DConcrete<Double>(cols, rows, indexor -> 0d);
     }
 
     @Override

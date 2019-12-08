@@ -6,6 +6,7 @@ import com.stclair.corlib.math.util.OperationStrategy;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.function.Function;
 
@@ -763,7 +764,7 @@ public class TestPolynomial<T extends Double> {
         T[] coefficients2 = op.from(new double[] { 3, 2, 1, 0 });
         T[] coefficients3 = op.from(new double[] { 1, 1, 1, 0, 0, 5, 0 });
 
-        T[][] coefficients = op.matrix(3);
+        T[][] coefficients = (T[][]) Array.newInstance(op.zero().getClass(), 3, 0);
 
         coefficients[0] = coefficients1;
         coefficients[1] = coefficients2;

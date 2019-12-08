@@ -1,6 +1,11 @@
 package com.stclair.corlib.math.matrix;
 
+import com.stclair.corlib.math.array.Array2D;
+import com.stclair.corlib.math.array.Array2DConcrete;
+import com.stclair.corlib.math.array.Indexor;
 import com.stclair.corlib.math.util.OperationStrategy;
+
+import java.util.function.Function;
 
 public class MatrixLUDecomposition {
 
@@ -15,13 +20,39 @@ public class MatrixLUDecomposition {
         Exchanged       // row may be solved but rows were transposed
     }
 
+    static class SolutionState<T> {
+        public final RowSolutionState rowSolutionState;
+
+        public final Array2D<T> values;
+
+        public SolutionState(RowSolutionState rowSolutionState, Array2D<T> values) {
+            this.rowSolutionState = rowSolutionState;
+            this.values = values;
+        }
+    }
+
+    static class ColumnSolution<T> {
+        public final T factor;
+
+        public final Array2D<T> lower;
+
+        public final Array2D<T> upper;
+
+        public ColumnSolution(T factor, Array2D<T> lower, Array2D<T> upper) {
+            this.factor = factor;
+            this.lower = lower;
+            this.upper = upper;
+        }
+    }
+
+
     // X X X
     // 0 X X
     // 0 0 X
 
-    <T> int firstSolveableRow(T[][] members, int column, OperationStrategy<T> op) {
-        for (int row = column; row < members.length; row++) {
-            if (! op.isZero(members[row][column])) {
+    <T> int firstSolveableRow(Array2D<T> members, int column, OperationStrategy<T> op) {
+        for (int row = column; row < members.getHeight(); row++) {
+            if (! op.isZero(members.get(column, row))) {
                 return row;
             }
         }
@@ -29,27 +60,33 @@ public class MatrixLUDecomposition {
         return -1;
     }
 
-    <T> T[][] switchRows(T[][] members, int rowA, int rowB) {
-        T[] temp = members[rowA];
-        members[rowA] = members[rowB];
-        members[rowB] = temp;
+    <T> Function<Indexor<T>, T> switchRows(int rowA, int rowB) {
 
-        return members;
+        return (indexor) -> {
+
+            if (indexor.getRow() == rowA)
+                return indexor.getSource().get(indexor.getColumn(), rowB);
+
+            if (indexor.getRow() == rowB)
+                return indexor.getSource().get(indexor.getColumn(), rowA);
+
+            return indexor.getValue();
+        };
     }
 
-    <T> RowSolutionState prepColumn(T[][] members, int column, OperationStrategy<T> op) {
+    <T> SolutionState<T> prepColumn(Array2D<T> members, int column, OperationStrategy<T> op) {
         int row = firstSolveableRow(members, column, op);
 
         if (row < column) {
-            return RowSolutionState.NoSolution;   // column cannot be solved (therefore, matrix cannot be solved)
+            return new SolutionState<>(RowSolutionState.NoSolution, members);   // column cannot be solved (therefore, matrix cannot be solved)
         }
 
         if (row == column) {
-            return RowSolutionState.Solvable;    // matrix is ready for column to be solved
+            return new SolutionState<>(RowSolutionState.Solvable, members);    // matrix is ready for column to be solved
         }
 
-        switchRows(members, column, row);
-        return RowSolutionState.Exchanged;        // matrix is ready for column to be solved but rows were exchanged
+        // matrix is ready for column to be solved but rows were exchanged
+        return new SolutionState<>(RowSolutionState.Exchanged, new Array2DConcrete<T>(members, switchRows(column, row)));
     }
 
     <T> T solveRow(T[] referenceRow, T[] row, int solveColumn, T divisor, OperationStrategy<T> op) {
@@ -57,55 +94,110 @@ public class MatrixLUDecomposition {
         return matrixRowSolver.solveRow(referenceRow, row, solveColumn, divisor, op);
     }
 
-    <T> T solveColumn(T[][] upper, T[][] lower, int solveColumn, T divisor, OperationStrategy<T> op) {
+//    <T> T solveColumnOrg(Array2D<T> upper, Array2D<T> lower, int solveColumn, T divisor, OperationStrategy<T> op) {
+//
+//        for (int row = solveColumn + 1; row < upper.getHeight(); row++) {
+//
+//            T upperValue = upper.get(solveColumn, row);
+//
+//            T factor = solveRow(upper[solveColumn], upper[row], solveColumn, divisor, op);
+//
+//            if (lower != null)
+//                lower[row][solveColumn] = op.quotient(upperValue, factor);
+//        }
+//
+//        T factor = upper[solveColumn][solveColumn];
+//
+//        for (int col = solveColumn; col < upper[solveColumn].length; col++)
+//            upper[solveColumn][col] = op.quotient(upper[solveColumn][col], divisor);
+//
+//        return factor;
+//    }
 
-        for (int row = solveColumn + 1; row < upper.length; row++) {
+    <T> ColumnSolution<T> solveColumn(Array2D<T> upper, Array2D<T> lower, int solveColumn, T divisor, OperationStrategy<T> op) {
 
-            T upperValue = upper[row][solveColumn];
+        T factor = upper.get(solveColumn, solveColumn);
 
-            T factor = solveRow(upper[solveColumn], upper[row], solveColumn, divisor, op);
+        Function<Indexor<T>, T> upperSolver = indexor -> {
 
-            if (lower != null)
-                lower[row][solveColumn] = op.quotient(upperValue, factor);
-        }
+            if (indexor.getRow() < solveColumn + 1)
+                return indexor.getValue();
 
-        T factor = upper[solveColumn][solveColumn];
+            if (indexor.getColumn() == solveColumn)
+                return op.zero();
 
-        for (int col = solveColumn; col < upper[solveColumn].length; col++)
-            upper[solveColumn][col] = op.quotient(upper[solveColumn][col], divisor);
+            if (indexor.getColumn() < solveColumn + 1)
+                return indexor.getValue();
 
-        return factor;
+            T value = indexor.getValue();
+
+            if (! op.isZero(indexor.getValue()))
+                value = op.product(value, /* upper.get(solveColumn, solveColumn) */ factor);
+
+            value = op.difference(value, op.product(upper.get(solveColumn, indexor.getRow()), upper.get(indexor.getColumn(), solveColumn)));
+
+            if (! (op.isZero(value) || op.isOne(divisor)))
+                value = op.quotient(value, divisor);
+
+            return value;
+        };
+
+        Array2D<T> solvedUpper = new Array2DConcrete<T>(upper, upperSolver);
+
+        Function<Indexor<T>, T> lowerSolver = indexor -> {
+
+            if (indexor.getColumn() != solveColumn)
+                return indexor.getValue();
+
+            return op.quotient(solvedUpper.get(solveColumn, indexor.getRow()), factor);
+        };
+
+        if (lower != null)
+            lower = new Array2DConcrete<T>(lower, lowerSolver);
+
+        return new ColumnSolution<T>(factor, lower, solvedUpper);
     }
 
-    <T> LUMatrixResult<T> computeUpperLower(T[][] upper, OperationStrategy<T> op, boolean computeLower) {
+    <T> LUMatrixResult<T> computeUpperLower(Array2D<T> upper, OperationStrategy<T> op, boolean computeLower) {
 
         boolean negate = false;
 
         T divisor = op.one();
 
+        ColumnSolution<T> columnSolution;
+
         T prevDivisor = op.one();
 
-        int order = upper.length;
+        int order = Math.min(upper.getHeight(), upper.getWidth());
 
-        T[][] lower = computeLower ? Matrix.identityArray(order, op) : null;
+        Array2D<T> lower = computeLower ? Matrix.identityArray(order, op) : null;
 
         for (int column = 0; column < order; column++) {
 
-            RowSolutionState state = prepColumn(upper, column, op);
+            SolutionState<T> state = prepColumn(upper, column, op);
 
-            if (state == RowSolutionState.NoSolution)
+            if (state.rowSolutionState == RowSolutionState.NoSolution)
                 return null;
 
-            if (state == RowSolutionState.Exchanged)
+            if (state.rowSolutionState == RowSolutionState.Exchanged)
                 negate = ! negate;
 
             prevDivisor = divisor;
 
-            divisor = solveColumn(upper, lower, column, divisor, op);
+            columnSolution = solveColumn(upper, lower, column, divisor, op);
+
+            divisor = columnSolution.factor;
+            upper = columnSolution.upper;
+            lower = columnSolution.lower;
         }
 
         if (negate) {
-            upper[order - 1][order - 1] = op.negate(upper[order - 1][order - 1]);
+            upper = new Array2DConcrete<T>(upper, indexor -> {
+                if (indexor.getRow() == indexor.getColumn() && indexor.getRow() == order - 1)
+                    return op.negate(indexor.getValue());
+
+                return indexor.getValue();
+            });
             divisor = op.negate(divisor);
         }
 
@@ -118,7 +210,7 @@ public class MatrixLUDecomposition {
 
     public <T> LUMatrixResult<T> computeUpperLower(Matrix<T> matrix) {
 
-        T[][] members = matrix.cloneMembers();
+        Array2D<T> members = matrix.cloneMembers();
 
         return computeUpperLower(members, matrix.op, true);
     }
