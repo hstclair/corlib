@@ -25,7 +25,7 @@ public class DeterminantSolverApfloat {
         }
 
         public Apfloat evaluate() {
-            return coefficient.multiply(matrix.members[0][0].multiply(matrix.members[1][1]).subtract(matrix.members[0][1].multiply(matrix.members[1][0])));
+            return coefficient.multiply(matrix.members.get(0, 0).multiply(matrix.members.get(1, 1)).subtract(matrix.members.get(1, 0).multiply(matrix.members.get(0, 1))));
         }
 
         List<Task> createTasks() {
@@ -39,7 +39,7 @@ public class DeterminantSolverApfloat {
             boolean negate = true;
 
             for (int col = 0; col < matrix.order; col++) {
-                Apfloat newCoefficient = matrix.members[0][col];
+                Apfloat newCoefficient = matrix.members.get(col, 0);
 
                 negate = !negate;
 

@@ -1,5 +1,7 @@
 package com.stclair.corlib.math.util;
 
+import com.stclair.corlib.math.array.Array2D;
+import com.stclair.corlib.math.array.Array2DConcrete;
 import com.stclair.corlib.math.matrix.Value;
 import org.apfloat.Apfloat;
 import org.apfloat.ApfloatMath;
@@ -83,14 +85,9 @@ public class ApfloatOperationStrategy implements OperationStrategy<Apfloat> {
     }
 
     @Override
-    public Apfloat[][] matrix(int rows, int cols) {
+    public Array2D<Apfloat> matrix(int rows, int cols) {
 
-        return IntStream.range(0, rows)
-                .mapToObj(
-                        row -> IntStream.range(0, cols)
-                                .mapToObj(col -> Apfloat.ZERO)
-                                .toArray(Apfloat[]::new)
-                ).toArray(Apfloat[][]::new);
+        return new Array2DConcrete<>(cols, rows, indexor -> Apfloat.ZERO);
     }
 
     @Override

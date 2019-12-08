@@ -1,6 +1,9 @@
 package com.stclair.corlib.math.util;
 
 import java.text.DecimalFormat;
+import com.stclair.corlib.math.array.Array2D;
+import com.stclair.corlib.math.array.Array2DConcrete;
+
 import java.util.Arrays;
 import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
@@ -67,11 +70,9 @@ public class DoubleOperationStrategy implements OperationStrategy<Double> {
     }
 
     @Override
-    public Double[][] matrix(int rows, int cols) {
+    public Array2D<Double> matrix(int rows, int cols) {
 
-        return IntStream.range(0, rows)
-                .mapToObj(it -> new Double[cols])
-                .toArray(Double[][]::new);
+        return new Array2DConcrete<Double>(cols, rows, indexor -> 0d);
     }
 
     @Override

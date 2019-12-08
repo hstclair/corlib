@@ -1,5 +1,7 @@
 package com.stclair.corlib.math.matrix;
 
+import com.stclair.corlib.math.array.Array2D;
+import com.stclair.corlib.math.array.Array2DConcrete;
 import com.stclair.corlib.math.util.DoubleOperationStrategy;
 
 import java.util.Arrays;
@@ -10,18 +12,18 @@ import java.util.stream.IntStream;
  */
 public class RealMatrix {
 
-    final double[][] members;
+    final Array2D<Double> members;
 
     final int rows;
     final int columns;
 
     public RealMatrix(double[][] members) {
-        this.members = members;
+        this.members = new Array2DConcrete<Double>(columns(members), members.length, (indexor) -> members[indexor.getRow()][indexor.getColumn()]);
         rows = members.length;
         columns = columns(members);
     }
 
-    private int columns(double[][] members) {
+    private static int columns(double[][] members) {
         int columns = 0;
 
         for (double[] member : members) {
@@ -68,7 +70,7 @@ public class RealMatrix {
     public double determinant() {
         MatrixLUDecomposition decomposer = new MatrixLUDecomposition();
 
-        LUMatrixResult<Double> result = decomposer.computeUpperLower(cloneDouble(this.members), new DoubleOperationStrategy(), true);
+        LUMatrixResult<Double> result = decomposer.computeUpperLower(this.members, new DoubleOperationStrategy(), true);
 
         return result.determinant();
     }

@@ -1,14 +1,19 @@
 package com.stclair.corlib.math.matrix;
 
+import com.stclair.corlib.math.array.Array2D;
+import com.stclair.corlib.math.array.Array2DConcrete;
+import com.stclair.corlib.math.array.Indexor;
 import com.stclair.corlib.math.util.ApfloatOperationStrategy;
 import org.apfloat.Apfloat;
+
+import java.util.function.Function;
 
 /**
  * Created by hstclair on 4/17/17.
  */
 public class RealBigMatrix {
 
-    final Apfloat[][] members;
+    final Array2D<Apfloat> members;
 
     final int rows;
     final int columns;
@@ -19,10 +24,10 @@ public class RealBigMatrix {
         this(members, 10000);
     }
 
-    public RealBigMatrix(Apfloat[][] members) {
+    public RealBigMatrix(Array2D<Apfloat> members) {
         this.members = members;
-        rows = members.length;
-        columns = columns(members);
+        rows = members.getHeight();
+        columns = members.getWidth();
         order = Math.min(rows, columns);
         precision = precision(members);
     }
@@ -30,13 +35,7 @@ public class RealBigMatrix {
     public RealBigMatrix(double[][] members, long precision) {
         int columnCount = 0;
         this.precision = precision;
-        this.members = new Apfloat[members.length][members[0].length];
-        for (int rowIndex=0; rowIndex<members.length; rowIndex++) {
-            for (int colIndex = 0; colIndex<members[rowIndex].length; colIndex++) {
-                this.members[rowIndex][colIndex] = new Apfloat(members[rowIndex][colIndex], precision);
-            }
-            columnCount = Math.max(columnCount, members[rowIndex].length);
-        }
+        this.members = new Array2DConcrete<>(members[0].length, members.length, apfloatIndexor -> new Apfloat(members[apfloatIndexor.getRow()][apfloatIndexor.getColumn()], precision));
         rows = members.length;
         columns = columnCount;
         order = Math.min(rows, columns);
@@ -52,29 +51,13 @@ public class RealBigMatrix {
         return columns;
     }
 
-    private long precision(Apfloat[][] members) {
-        long precision = 0;
+    private long precision(Array2D<Apfloat> members) {
 
-        for (Apfloat[] row: members) {
-            for (Apfloat member : row) {
-                precision = Math.max(precision, member.precision());
-            }
-        }
+        long[] precisionArray = new long[] { 0 };
 
-        return precision;
-    }
+        members.traverse(indexor -> precisionArray[0] = Math.max(precisionArray[0], indexor.getValue().precision()));
 
-    private Apfloat[][] clone(Apfloat[][] original) {
-        Apfloat[][] clone=new Apfloat[original.length][];
-
-        int columns = columns(original);
-
-        for (int row=0; row < original.length; row++) {
-            clone[row] = new Apfloat[columns];
-            System.arraycopy(original[row], 0,clone[row],0, columns);
-        }
-
-        return clone;
+        return precisionArray[0];
     }
 
     private Apfloat subtract(Apfloat[] subtrahend, Apfloat[] minuend, int column) {
@@ -91,36 +74,56 @@ public class RealBigMatrix {
     public Apfloat determinant() {
         MatrixLUDecomposition decomposer = new MatrixLUDecomposition();
 
-        LUMatrixResult<Apfloat> result = decomposer.computeUpperLower(clone(this.members), new ApfloatOperationStrategy(), true);
+        LUMatrixResult<Apfloat> result = decomposer.computeUpperLower(this.members, new ApfloatOperationStrategy(), true);
 
         return result.determinant();
     }
 
     public RealBigMatrix minor(int mrow, int mcolumn) {
-        Apfloat[][] members = new Apfloat[rows-1][columns-1];
 
-        int row = 0;
+        Function<Indexor<Apfloat>, Apfloat> initializer = indexor -> {
+            int currentRow = indexor.getRow();
+            int currentColumn = indexor.getColumn();
 
-        for (int srcRow = 0; srcRow < rows; srcRow++) {
+            if (currentColumn >= mcolumn)
+                currentColumn--;
 
-            if (srcRow == mrow)
-                continue;
+            if (currentRow >= mrow)
+                currentRow--;
 
-            int col = 0;
+            return members.get(currentColumn, currentRow);
+        };
 
-            for (int srcCol = 0; srcCol < columns; srcCol++) {
-
-                if (srcCol == mcolumn)
-                    continue;
-
-                members[row][col] = this.members[srcRow][srcCol];
-
-                col++;
-            }
-
-            row++;
-        }
+        Array2D<Apfloat> members = new Array2DConcrete<Apfloat>(this.members.getWidth() - 1, this.members.getHeight() - 1, initializer);
 
         return new RealBigMatrix(members);
     }
+
+//    public RealBigMatrix minor(int mrow, int mcolumn) {
+//        Apfloat[][] members = new Apfloat[rows-1][columns-1];
+//
+//        int row = 0;
+//
+//        for (int srcRow = 0; srcRow < rows; srcRow++) {
+//
+//            if (srcRow == mrow)
+//                continue;
+//
+//            int col = 0;
+//
+//            for (int srcCol = 0; srcCol < columns; srcCol++) {
+//
+//                if (srcCol == mcolumn)
+//                    continue;
+//
+//                members[row][col] = this.members[srcRow][srcCol];
+//
+//                col++;
+//            }
+//
+//            row++;
+//        }
+//
+//        return new RealBigMatrix(members);
+//    }
 }
