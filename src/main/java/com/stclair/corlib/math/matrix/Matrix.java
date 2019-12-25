@@ -49,6 +49,14 @@ public class Matrix<T> {
         return columns;
     }
 
+    private Array2D<T> clone(Array2D<T> original) {
+        return op.matrix(original.getHeight(), original.getWidth());
+    }
+
+    Array2D<T> cloneMembers() {
+        return clone(members);
+    }
+
     private T subtract(T[] minuend, T[] subtrahend, int column) {
         T subtrahendCoefficient = subtrahend[column];
         T minuendCoefficient = minuend[column];

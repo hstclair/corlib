@@ -213,7 +213,7 @@ public class MatrixLUDecomposition {
 
     public <T> LUMatrixResult<T> computeUpperLower(Matrix<T> matrix) {
 
-        Array2D<T> members = matrix.members;
+        Array2D<T> members = matrix.cloneMembers();
 
         return computeUpperLower(members, matrix.op, true);
     }
