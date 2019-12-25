@@ -174,6 +174,15 @@ public class DoubleOperationStrategy implements OperationStrategy<Double> {
     }
 
     @Override
+    public long significantBits(Double value) {
+        long bits = Double.doubleToLongBits(value);
+
+        long mantissa = (bits & 0x000fffffffffffffL) | 0x0010000000000000L;
+
+        return 64 - Long.numberOfLeadingZeros(mantissa) - Long.numberOfTrailingZeros(mantissa);
+    }
+
+    @Override
     public String toIntegerString(Double value) {
 
         DecimalFormat integerFormat = new DecimalFormat();

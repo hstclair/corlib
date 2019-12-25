@@ -201,4 +201,9 @@ public class ApfloatOperationStrategy implements OperationStrategy<Apfloat> {
     public String toDecimalString(Apfloat value) {
         return String.format("%#s", value);
     }
+
+    @Override
+    public long significantBits(Apfloat value) {
+        return value.toRadix(2).size();
+    }
 }

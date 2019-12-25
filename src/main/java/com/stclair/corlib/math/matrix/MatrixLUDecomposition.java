@@ -141,8 +141,10 @@ public class MatrixLUDecomposition {
 
             value = op.difference(value, op.product(upper.get(solveColumn, indexor.getRow()), upper.get(indexor.getColumn(), solveColumn)));
 
+            T upperValue = upper.get(solveColumn, indexor.getRow());
+
             if (! (op.isZero(value) || op.isOne(divisor)))
-                value = op.quotient(value, divisor);
+                value = op.quotient(value, upperValue);
 
             return value;
         };
@@ -206,12 +208,12 @@ public class MatrixLUDecomposition {
     }
 
     public <T> Matrix<T> computeUpper(Matrix<T> matrix) {
-        return computeUpperLower(matrix.cloneMembers(), matrix.op, false).getUpper();
+        return computeUpperLower(matrix.members, matrix.op, false).getUpper();
     }
 
     public <T> LUMatrixResult<T> computeUpperLower(Matrix<T> matrix) {
 
-        Array2D<T> members = matrix.cloneMembers();
+        Array2D<T> members = matrix.members;
 
         return computeUpperLower(members, matrix.op, true);
     }

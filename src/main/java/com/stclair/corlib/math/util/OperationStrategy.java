@@ -75,4 +75,14 @@ public interface OperationStrategy<T> {
     String toIntegerString(T value);
 
     String toDecimalString(T value);
+
+    /**
+     * returns the number of significant bits in the provided value
+     * (analogous to significant digits)
+     * @param value the value to be examined
+     * @return a natural number (positive) value indicating the
+     * number of bits required to represent the <i>mantissa</i>
+     * component of the value supplied
+     */
+    long significantBits(T value);
 }

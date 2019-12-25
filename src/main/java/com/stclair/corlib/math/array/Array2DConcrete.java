@@ -96,7 +96,7 @@ public class Array2DConcrete<T> implements Array2D<T> {
 
                     @Override
                     public T getValue() {
-                        return elements[currentColumn + currentColumn * width];
+                        return elements[currentColumn + currentRow * width];
                     }
                 };
 
@@ -173,12 +173,14 @@ public class Array2DConcrete<T> implements Array2D<T> {
                     }
                 };
 
-                T result = mapFunction.apply(indexor);
+                T value = mapFunction.apply(indexor);
 
-                Class<T> elementClass = getClass(result);
+                Class<T> elementClass = getClass(value);
 
                 if (elements == null)
                     elements = buildArray(elementClass, height * width);
+
+                elements[currentColumn + currentRow * width] = value;
             }
         }
 

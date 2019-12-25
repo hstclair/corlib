@@ -195,4 +195,12 @@ public class ApfloatInfiniteOperationStrategy implements OperationStrategy<Apflo
     public String toDecimalString(ApfloatInfinite value) {
         return String.format("%#s", value.value);
     }
+
+    @Override
+    public long significantBits(ApfloatInfinite value) {
+
+        Apfloat apfloat = value.value.toRadix(2);
+
+        return apfloat.size();
+    }
 }
