@@ -4,6 +4,7 @@ import com.stclair.corlib.collection.Tuple;
 import com.stclair.corlib.math.array.Array2D;
 import com.stclair.corlib.math.array.Array2DConcrete;
 import com.stclair.corlib.math.array.Indexor;
+import com.stclair.corlib.math.util.LongOperationStrategy;
 import com.stclair.corlib.math.util.OperationStrategy;
 import com.stclair.corlib.math.util.Permutation;
 
@@ -23,7 +24,7 @@ public class Array2DPresortEvaluator<T> {
 
     public Array2D<T> presort(Array2D<T> original) {
 
-        Array2D<Long> significantBits = new Array2DConcrete<>(original, (indexor) -> operationStrategy.significantBits(indexor.getValue()) );
+        Array2D<Long> significantBits = new Array2DConcrete<>(new LongOperationStrategy(), original, (indexor) -> operationStrategy.significantBits(indexor.getValue()) );
 
         Integer[] sequence = sequenceOf(significantBits.getWidth());
 
@@ -41,10 +42,10 @@ public class Array2DPresortEvaluator<T> {
         Function<Indexor<T>, T> accessor = baseAccessor;
 
         if ((selectedPermutation & 1) != 0)
-            accessor = (indexor) -> indexor.getRow() == indexor.getColumn() && indexor.getRow() == permutation.length ?
+            accessor = (indexor) -> indexor.getRow() == indexor.getColumn() && indexor.getRow() == permutation.length - 1 ?
                     operationStrategy.negate(baseAccessor.apply(indexor)) : baseAccessor.apply(indexor);
 
-        return new Array2DConcrete<T>(original, accessor);
+        return new Array2DConcrete<T>(operationStrategy, original, accessor);
     }
 
 

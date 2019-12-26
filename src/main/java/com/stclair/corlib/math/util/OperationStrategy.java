@@ -26,6 +26,8 @@ public interface OperationStrategy<T> {
 
     T[] array(int size);
 
+    Class<T> getElementClass();
+
 //    T[] arrayOf(T... values);
 
     Array2D<T> matrix(int rows, int cols);

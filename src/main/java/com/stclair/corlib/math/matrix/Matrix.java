@@ -33,7 +33,7 @@ public class Matrix<T> {
 
     public Matrix(double[][] members, OperationStrategy<T> op) {
         this.op = op;
-        this.members = new Array2DConcrete<T>(members[0].length, members.length, indexor -> op.from(members[indexor.getRow()][indexor.getColumn()]));
+        this.members = new Array2DConcrete<T>(op, members[0].length, members.length, indexor -> op.from(members[indexor.getRow()][indexor.getColumn()]));
         rows = this.members.getHeight();
         columns = this.members.getWidth();
         order = Math.min(rows, columns);
@@ -98,15 +98,15 @@ public class Matrix<T> {
             int currentColumn = indexor.getColumn();
 
             if (currentColumn >= mcolumn)
-                currentColumn--;
+                currentColumn++;
 
             if (currentRow >= mrow)
-                currentRow--;
+                currentRow++;
 
             return members.get(currentColumn, currentRow);
         };
 
-        Array2D<T> members = new Array2DConcrete<T>(this.members.getWidth() - 1, this.members.getHeight() - 1, initializer);
+        Array2D<T> members = new Array2DConcrete<T>(this.op, this.members.getWidth() - 1, this.members.getHeight() - 1, initializer);
 
         return new Matrix<T>(members, op);
     }
@@ -133,7 +133,7 @@ public class Matrix<T> {
             return currentValue;
         };
 
-        return new Array2DConcrete<T>(order, order, initializer);
+        return new Array2DConcrete<T>(op, order, order, initializer);
     }
 
     @Override

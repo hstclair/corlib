@@ -15,6 +15,15 @@ public class TestMatrixLUDecomposition {
         Matrix<Double> value = new Matrix<>(new double[][] { { 4, 3 }, { 6, 3 } }, op);
         Matrix<Double> expected = new Matrix<>(new double[][] { { 4, 3 }, { 0, -1.5 } }, op);
 
+        // 4*6, 3*6
+        // 6*4, 3*4
+
+        // 4, 3
+        // 0, 18-12
+
+        // 4, 3
+        // 0, 6
+
         MatrixLUDecomposition instance = new MatrixLUDecomposition();
 
         Matrix<Double> result = instance.computeUpper(value);

@@ -87,7 +87,12 @@ public class ApfloatOperationStrategy implements OperationStrategy<Apfloat> {
     @Override
     public Array2D<Apfloat> matrix(int rows, int cols) {
 
-        return new Array2DConcrete<>(cols, rows, indexor -> Apfloat.ZERO);
+        return new Array2DConcrete<>(this, cols, rows, indexor -> Apfloat.ZERO);
+    }
+
+    @Override
+    public Class<Apfloat> getElementClass() {
+        return Apfloat.class;
     }
 
     @Override

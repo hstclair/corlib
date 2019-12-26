@@ -35,7 +35,7 @@ public class RealBigMatrix {
     public RealBigMatrix(double[][] members, long precision) {
         int columnCount = 0;
         this.precision = precision;
-        this.members = new Array2DConcrete<>(members[0].length, members.length, apfloatIndexor -> new Apfloat(members[apfloatIndexor.getRow()][apfloatIndexor.getColumn()], precision));
+        this.members = new Array2DConcrete<>(new ApfloatOperationStrategy(), members[0].length, members.length, apfloatIndexor -> new Apfloat(members[apfloatIndexor.getRow()][apfloatIndexor.getColumn()], precision));
         rows = members.length;
         columns = columnCount;
         order = Math.min(rows, columns);
@@ -94,7 +94,7 @@ public class RealBigMatrix {
             return members.get(currentColumn, currentRow);
         };
 
-        Array2D<Apfloat> members = new Array2DConcrete<Apfloat>(this.members.getWidth() - 1, this.members.getHeight() - 1, initializer);
+        Array2D<Apfloat> members = new Array2DConcrete<Apfloat>(new ApfloatOperationStrategy(), this.members.getWidth() - 1, this.members.getHeight() - 1, initializer);
 
         return new RealBigMatrix(members);
     }

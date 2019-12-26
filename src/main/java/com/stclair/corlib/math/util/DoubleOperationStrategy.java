@@ -72,7 +72,12 @@ public class DoubleOperationStrategy implements OperationStrategy<Double> {
     @Override
     public Array2D<Double> matrix(int rows, int cols) {
 
-        return new Array2DConcrete<Double>(cols, rows, indexor -> 0d);
+        return new Array2DConcrete<Double>(this, cols, rows, indexor -> 0d);
+    }
+
+    @Override
+    public Class<Double> getElementClass() {
+        return Double.class;
     }
 
     @Override

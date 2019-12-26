@@ -18,7 +18,7 @@ public class RealMatrix {
     final int columns;
 
     public RealMatrix(double[][] members) {
-        this.members = new Array2DConcrete<Double>(columns(members), members.length, (indexor) -> members[indexor.getRow()][indexor.getColumn()]);
+        this.members = new Array2DConcrete<Double>(new DoubleOperationStrategy(), columns(members), members.length, (indexor) -> members[indexor.getRow()][indexor.getColumn()]);
         rows = members.length;
         columns = columns(members);
     }

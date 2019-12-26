@@ -7,6 +7,7 @@ import com.stclair.corlib.math.util.DoubleOperationStrategy;
 import org.junit.Test;
 
 import java.time.chrono.MinguoDate;
+import java.util.Arrays;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -21,7 +22,7 @@ public class Array2DPresortEvaluatorTest {
 
         double[][] values = sortedValues;
 
-        Array2D<Double> matrix = new Array2DConcrete<>(3, 3, indexor -> values[indexor.getRow()][indexor.getColumn()]);
+        Array2D<Double> matrix = new Array2DConcrete<>(new DoubleOperationStrategy(), 3, 3, indexor -> values[indexor.getRow()][indexor.getColumn()]);
 
         Array2DPresortEvaluator<Double> presorter = new Array2DPresortEvaluator<>(new DoubleOperationStrategy());
 
@@ -33,11 +34,15 @@ public class Array2DPresortEvaluatorTest {
     }
 
     @Test
-    public void presortTransposesFirstTwoRows() {
+    public void presortTransposesFirstTwoRowsAndNegatesLastValue() {
 
-        double[][] values = new double[][] { { 7, 1, 3 }, { 1, 3, 7 }, { 3, 7, 1} };
+        double[] finalRow = Arrays.copyOf(sortedValues[2], sortedValues.length);
 
-        Array2D<Double> matrix = new Array2DConcrete<>(3, 3, indexor -> values[indexor.getRow()][indexor.getColumn()]);
+        finalRow[finalRow.length - 1] = -finalRow[finalRow.length - 1];
+
+        double[][] values = new double[][] { sortedValues[1], sortedValues[0], finalRow };
+
+        Array2D<Double> matrix = new Array2DConcrete<>(new DoubleOperationStrategy(), 3, 3, indexor -> values[indexor.getRow()][indexor.getColumn()]);
 
         Array2DPresortEvaluator<Double> presorter = new Array2DPresortEvaluator<>(new DoubleOperationStrategy());
 

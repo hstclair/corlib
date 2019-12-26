@@ -86,7 +86,12 @@ public class ApfloatInfiniteOperationStrategy implements OperationStrategy<Apflo
     @Override
     public Array2D<ApfloatInfinite> matrix(int rows, int cols) {
 
-        return new Array2DConcrete<>(cols, rows, indexor -> ApfloatInfinite.ZERO);
+        return new Array2DConcrete<>(this, cols, rows, indexor -> ApfloatInfinite.ZERO);
+    }
+
+    @Override
+    public Class<ApfloatInfinite> getElementClass() {
+        return ApfloatInfinite.class;
     }
 
     @Override

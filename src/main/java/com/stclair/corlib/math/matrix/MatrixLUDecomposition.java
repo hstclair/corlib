@@ -13,6 +13,8 @@ public class MatrixLUDecomposition {
 
     MatrixRowSolver matrixRowSolver = new MatrixRowSolver();
 
+    // TODO Use Presort to arrange rows before solving L & U
+
     public MatrixLUDecomposition() {
     }
 
@@ -91,7 +93,7 @@ public class MatrixLUDecomposition {
         }
 
         // matrix is ready for column to be solved but rows were exchanged
-        return new SolutionState<>(RowSolutionState.Exchanged, new Array2DConcrete<T>(members, switchRows(column, row)));
+        return new SolutionState<>(RowSolutionState.Exchanged, new Array2DConcrete<T>(members.getOperationStrategy(), members, switchRows(column, row)));
     }
 
     <T> T solveRow(T[] referenceRow, T[] row, int solveColumn, T divisor, OperationStrategy<T> op) {
@@ -149,7 +151,7 @@ public class MatrixLUDecomposition {
             return value;
         };
 
-        Array2D<T> solvedUpper = new Array2DConcrete<T>(upper, upperSolver);
+        Array2D<T> solvedUpper = new Array2DConcrete<T>(upper.getOperationStrategy(), upper, upperSolver);
 
         Function<Indexor<T>, T> lowerSolver = indexor -> {
 
@@ -160,7 +162,7 @@ public class MatrixLUDecomposition {
         };
 
         if (lower != null)
-            lower = new Array2DConcrete<T>(lower, lowerSolver);
+            lower = new Array2DConcrete<T>(lower.getOperationStrategy(), lower, lowerSolver);
 
         return new ColumnSolution<T>(factor, lower, solvedUpper);
     }
@@ -195,7 +197,7 @@ public class MatrixLUDecomposition {
         }
 
         if (negate) {
-            upper = new Array2DConcrete<T>(upper, indexor -> {
+            upper = new Array2DConcrete<T>(upper.getOperationStrategy(), upper, indexor -> {
                 if (indexor.getRow() == indexor.getColumn() && indexor.getRow() == order - 1)
                     return op.negate(indexor.getValue());
 

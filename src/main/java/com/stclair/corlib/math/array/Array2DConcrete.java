@@ -1,5 +1,7 @@
 package com.stclair.corlib.math.array;
 
+import com.stclair.corlib.math.util.OperationStrategy;
+
 import java.lang.reflect.Array;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -15,38 +17,51 @@ public class Array2DConcrete<T> implements Array2D<T> {
     final int width;
     final int height;
 
-    public Array2DConcrete(Class<T> cls, int size) {
-        this(cls, size, size);
+    final OperationStrategy<T> operationStrategy;
+
+    public Array2DConcrete(OperationStrategy<T> operationStrategy, int size) {
+        this(operationStrategy, size, size);
     }
 
-    public Array2DConcrete(Class<T> cls, int width, int height) {
+    public Array2DConcrete(OperationStrategy<T> operationStrategy, int width, int height) {
         this.width = width;
         this.height = height;
 
-        elements = buildArray(cls, width * height);
-        elementClass = cls;
+        this.operationStrategy = operationStrategy;
+
+        elements = operationStrategy.array(width * height);
+        elementClass = operationStrategy.getElementClass();
     }
 
-    public Array2DConcrete(int width, int height, Function<Indexor<T>, T> initializer) {
+    public Array2DConcrete(OperationStrategy<T> operationStrategy, int width, int height, Function<Indexor<T>, T> initializer) {
+        this.operationStrategy = operationStrategy;
         this.width = width;
         this.height = height;
 
-        elements = map(initializer, width, height);
-        elementClass = getElementClass(elements);
+        elements = map(operationStrategy, initializer, width, height);
+        elementClass = operationStrategy.getElementClass();
     }
 
-    public <K> Array2DConcrete(Array2D<K> source, Function<Indexor<K>, T> mapFunction) {
+    public <K> Array2DConcrete(OperationStrategy<T> operationStrategy, Array2D<K> source, Function<Indexor<K>, T> mapFunction) {
 
         width = source.getWidth();
         height = source.getHeight();
-        elements = map(source, mapFunction);
 
-        elementClass = getElementClass(elements);
+        this.operationStrategy = operationStrategy;
+
+        elements = map(operationStrategy, source, mapFunction);
+
+        elementClass = operationStrategy.getElementClass();
     }
 
     @Override
     public Class<T> getElementClass() {
-        return elementClass;
+        return operationStrategy.getElementClass();
+    }
+
+    @Override
+    public OperationStrategy<T> getOperationStrategy() {
+        return operationStrategy;
     }
 
     @Override
@@ -105,7 +120,7 @@ public class Array2DConcrete<T> implements Array2D<T> {
         }
     }
 
-    public static <K, T> T[] map(Array2D<K> source, Function<Indexor<K>, T> mapFunction) {
+    public static <K, T> T[] map(OperationStrategy<T> operationStrategy, Array2D<K> source, Function<Indexor<K>, T> mapFunction) {
 
         Function<Indexor<T>, T> innerMapFunction = tIndexor -> {
 
@@ -137,10 +152,10 @@ public class Array2DConcrete<T> implements Array2D<T> {
             return mapFunction.apply(indexor);
         };
 
-        return map(innerMapFunction, source.getWidth(), source.getHeight());
+        return map(operationStrategy, innerMapFunction, source.getWidth(), source.getHeight());
     }
 
-    public static <T> T[] map(Function<Indexor<T>, T> mapFunction, int width, int height) {
+    public static <T> T[] map(OperationStrategy<T> operationStrategy, Function<Indexor<T>, T> mapFunction, int width, int height) {
 
         T[] elements = null;
 
@@ -175,30 +190,13 @@ public class Array2DConcrete<T> implements Array2D<T> {
 
                 T value = mapFunction.apply(indexor);
 
-                Class<T> elementClass = getClass(value);
-
                 if (elements == null)
-                    elements = buildArray(elementClass, height * width);
+                    elements = operationStrategy.array(height * width);
 
                 elements[currentColumn + currentRow * width] = value;
             }
         }
 
         return elements;
-    }
-
-    @SuppressWarnings("unchecked")
-    public static <T> Class<T> getElementClass(T[] instance) {
-        return (Class<T>) instance.getClass().getComponentType();
-    }
-
-    @SuppressWarnings("unchecked")
-    public static <T> Class<T> getClass(T instance) {
-        return (Class<T>) instance.getClass();
-    }
-
-    @SuppressWarnings("unchecked")
-    public static <T> T[] buildArray(Class<T> cls, int size) {
-        return (T[]) Array.newInstance(cls, size);
     }
 }
