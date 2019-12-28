@@ -87,4 +87,18 @@ public interface OperationStrategy<T> {
      * component of the value supplied
      */
     long significantBits(T value);
+
+    default T[] sequenceOf(long count) {
+
+        T counter = zero();
+
+        T[] result = array((int) count);
+
+        for (int index = 0; index < count; index++) {
+            result[index] = counter;
+            counter = this.sum(counter, one());
+        }
+
+        return result;
+    }
 }

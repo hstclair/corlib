@@ -5,6 +5,9 @@ import com.stclair.corlib.math.array.Array2D;
 import com.stclair.corlib.math.array.Array2DConcrete;
 import com.stclair.corlib.math.array.Indexor;
 import com.stclair.corlib.math.util.OperationStrategy;
+import com.stclair.corlib.permutation.HalsHeapsAlgorithmPermutation;
+import com.stclair.corlib.permutation.Permutations;
+import com.stclair.corlib.permutation.ReversingPermutations;
 
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -22,6 +25,8 @@ public class Matrix<T> {
     final int columns;
     final int order;
     final OperationStrategy<T> op;
+
+    Permutations permutations = new HalsHeapsAlgorithmPermutation();
 
     public Matrix(Array2D<T> members, OperationStrategy<T> op) {
         this.op = op;
@@ -47,14 +52,6 @@ public class Matrix<T> {
         }
 
         return columns;
-    }
-
-    private Array2D<T> clone(Array2D<T> original) {
-        return op.matrix(original.getHeight(), original.getWidth());
-    }
-
-    Array2D<T> cloneMembers() {
-        return clone(members);
     }
 
     private T subtract(T[] minuend, T[] subtrahend, int column) {
@@ -109,6 +106,36 @@ public class Matrix<T> {
         Array2D<T> members = new Array2DConcrete<T>(this.op, this.members.getWidth() - 1, this.members.getHeight() - 1, initializer);
 
         return new Matrix<T>(members, op);
+    }
+
+
+    public T determinant() {
+
+        T accumulator = op.zero();
+
+        Integer[] sequence = IntStream.range(0, rows).boxed().toArray(Integer[]::new);
+
+        int permutationNum = 0;
+
+        for (Integer[] permutation : permutations.of(sequence)) {
+
+            int row = 0;
+
+            T product = op.one();
+
+            for (int column: permutation) {
+                product = op.product(product, members.get(column, row++));
+            }
+
+            if ((permutationNum & 1) == 0)
+                accumulator = op.sum(accumulator, product);
+            else
+                accumulator = op.difference(accumulator, product);
+
+            permutationNum++;
+        }
+
+        return accumulator;
     }
 
     public static <T> Matrix<T> identity(int order, OperationStrategy<T> op) {

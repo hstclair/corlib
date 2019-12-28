@@ -1,15 +1,14 @@
-package com.stclair.corlib.math.util;
+package com.stclair.corlib.permutation;
 
-import com.stclair.corlib.collection.Resolvable;
-import com.stclair.corlib.collection.ResolvableSequence;
 import com.stclair.corlib.collection.Tuple;
+import com.stclair.corlib.permutation.Permutations;
 
 import java.util.*;
 import java.util.function.Function;
 
-public class Permutation {
+public class ReversingPermutations implements Permutations {
 
-    public static <T> List<T[]> of(T[] values) {
+    public <T> List<T[]> of(T[] values) {
         List<Function<T[], T[]>> functions = new ArrayList<>();
 
         functions = permutations(values.length);
@@ -79,9 +78,5 @@ public class Permutation {
 
             return values;
         };
-
     }
-
-
-
 }

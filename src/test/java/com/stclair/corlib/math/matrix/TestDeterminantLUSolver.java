@@ -1,14 +1,15 @@
 package com.stclair.corlib.math.matrix;
 
-import com.stclair.corlib.math.util.ApfloatFactory;
-import com.stclair.corlib.math.util.ApfloatOperationStrategy;
-import com.stclair.corlib.math.util.DoubleFactory;
-import com.stclair.corlib.math.util.DoubleOperationStrategy;
+import com.stclair.corlib.math.util.*;
+import com.stclair.corlib.permutation.HalsHeapsAlgorithmPermutation;
+import com.stclair.corlib.permutation.Permutations;
+import com.stclair.corlib.permutation.ReversingPermutations;
 import org.apfloat.Apfloat;
 import org.apfloat.ApfloatMath;
 import org.junit.Test;
 
 import java.math.RoundingMode;
+import java.util.List;
 
 import static junit.framework.TestCase.assertEquals;
 
@@ -18,7 +19,7 @@ import static junit.framework.TestCase.assertEquals;
 public class TestDeterminantLUSolver {
 
     @Test
-    public void test3x3DeterminantDouble() {
+    public void test3x3DeterminantLUDouble() {
         Double expected = -306d;
 
         double[][] members = new double[][] { {6, 1, 1}, {4, -2, 5}, {2, 8, 7} };
@@ -31,7 +32,18 @@ public class TestDeterminantLUSolver {
     }
 
     @Test
-    public void test3x3Determinant() {
+    public void test3x3DeterminantDouble() {
+        Double expected = -306d;
+
+        double[][] members = new double[][] { {6, 1, 1}, {4, -2, 5}, {2, 8, 7} };
+
+        Double result = new Matrix<>(members, new DoubleOperationStrategy()).determinant();
+
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void test3x3DeterminantLU() {
         Apfloat expected = new Apfloat(-306);
 
         double[][] members = new double[][] { {6, 1, 1}, {4, -2, 5}, {2, 8, 7} };
@@ -46,7 +58,7 @@ public class TestDeterminantLUSolver {
     }
 
     @Test
-    public void test4x4Determinant() {
+    public void test4x4DeterminantLU() {
         Apfloat expected = new Apfloat(-418);
 
         double[][] members = new double[][] { {3, 2, -1, 4}, {2, 1, 5, 7}, {0, 5, 2, -6}, {-1, 2, 1, 0} };
@@ -61,7 +73,34 @@ public class TestDeterminantLUSolver {
     }
 
     @Test
-    public void test5x5Determinant() {
+    public void test4x4Determinant() {
+
+        Apfloat expected = new Apfloat(-418);
+
+        double[][] members = new double[][] { {3, 2, -1, 4}, {2, 1, 5, 7}, {0, 5, 2, -6}, {-1, 2, 1, 0} };
+
+        Apfloat result = new Matrix<>(members, new ApfloatOperationStrategy()).determinant();
+
+        result = ApfloatMath.round(result, result.precision()-1, RoundingMode.HALF_EVEN);
+
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void testPermutationsOf4() {
+
+        Integer[] sequence = {1, 2, 3, 4};
+
+        Permutations instance = new HalsHeapsAlgorithmPermutation();
+
+        List<Integer[]> permutations = instance.of(sequence);
+
+        System.out.println();
+    }
+
+
+    @Test
+    public void test5x5DeterminantLU() {
         double[][] members = new double[][] {
                 { -5, 36, 38, 6, 11 },
                 { -33, 3, 24, 22, -9 },
@@ -82,7 +121,7 @@ public class TestDeterminantLUSolver {
     }
 
     @Test
-    public void test6x6DeterminantDouble() {
+    public void test6x6DeterminantDoubleLU() {
         double[][] members = new double[][] {
                 { -3, 0, -5, -4, -1, -5 },
                 { -4, 2, -2, 3, 2, -3 },
@@ -102,7 +141,7 @@ public class TestDeterminantLUSolver {
     }
 
     @Test
-    public void test6x6Determinant() {
+    public void test6x6DeterminantLU() {
         double[][] members = new double[][] {
                 { 3, 36, 16, 2, 38, -41 },
                 { -34, -39, 1, -44, 20, 14 },
@@ -124,7 +163,7 @@ public class TestDeterminantLUSolver {
     }
 
     @Test
-    public void test7x7DeterminantDouble() {
+    public void test7x7DeterminantDoubleLU() {
         double[][] members = new double[][] {
                 {0,-5,-4,2,-2,-5,-5},
                 {-4,-1,0,-1,-4,0,-3},
@@ -145,7 +184,7 @@ public class TestDeterminantLUSolver {
     }
 
     @Test
-    public void test7x7Determinant() {
+    public void test7x7DeterminantLU() {
         double[][] members = new double[][] {
                 {0,-5,-4,2,-2,-5,-5},
                 {-4,-1,0,-1,-4,0,-3},
@@ -168,7 +207,7 @@ public class TestDeterminantLUSolver {
     }
 
     @Test
-    public void test10x10Determinant() {
+    public void test10x10DeterminantLU() {
         double[][] members = new double[][] {
                 {1,0,0,-1,-1,1,-1,0,3,-3},
                 {2,3,-4,-2,2,3,-2,-4,0,4},
@@ -193,7 +232,7 @@ public class TestDeterminantLUSolver {
     }
 
     @Test
-    public void test10x10DeterminantDouble() {
+    public void test10x10DeterminantLUDouble() {
         double[][] members = new double[][] {
                 {1,0,0,-1,-1,1,-1,0,3,-3},
                 {2,3,-4,-2,2,3,-2,-4,0,4},
@@ -216,7 +255,7 @@ public class TestDeterminantLUSolver {
     }
 
     @Test
-    public void testAnother10X10Determinant() {
+    public void testAnother10X10DeterminantLU() {
         double[][] members = new double[][] {
                 { 21, 45, 5, 17, 60, 47, 52, 87, 14, 36 },
                 { 81, 20, 84, 48, 66, 10, 86, 74, 5, 0 },

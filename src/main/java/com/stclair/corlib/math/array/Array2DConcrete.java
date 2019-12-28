@@ -3,6 +3,7 @@ package com.stclair.corlib.math.array;
 import com.stclair.corlib.math.util.OperationStrategy;
 
 import java.lang.reflect.Array;
+import java.util.Arrays;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -75,20 +76,39 @@ public class Array2DConcrete<T> implements Array2D<T> {
     }
 
     @Override
-    public T get(int x, int y) {
+    public T[] getRow(int row) {
 
-        inRange(x, 0, width - 1, "x");
-        inRange(y, 0, height - 1, "y");
+        return Arrays.copyOfRange(elements, row * getWidth(), (row+1) * getWidth());
+    }
 
-        int index = y * width + x;
+    @Override
+    public T[] getColumn(int column) {
+
+        T[] result = operationStrategy.array(getHeight());
+
+        int srcIndex = column;
+
+        for (int dstIndex = 0; dstIndex < getHeight(); dstIndex++, column += getWidth())
+            result[dstIndex] = elements[srcIndex];
+
+        return result;
+    }
+
+    @Override
+    public T get(int column, int row) {
+
+        inRange(column, 0, getWidth() - 1, "column");
+        inRange(row, 0, getHeight() - 1, "row");
+
+        int index = row * getWidth() + column;
 
         return elements[index];
     }
 
     @Override
     public void traverse(Consumer<Indexor<T>> elementConsumer) {
-        for (int column = 0; column < width; column++) {
-            for (int row = 0; row < height; row++) {
+        for (int column = 0; column < getWidth(); column++) {
+            for (int row = 0; row < getHeight(); row++) {
                 int currentColumn = column;
                 int currentRow = row;
 
@@ -111,7 +131,7 @@ public class Array2DConcrete<T> implements Array2D<T> {
 
                     @Override
                     public T getValue() {
-                        return elements[currentColumn + currentRow * width];
+                        return elements[currentColumn + currentRow * getWidth()];
                     }
                 };
 

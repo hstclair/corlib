@@ -9,11 +9,15 @@ public interface Array2D<T> {
 
     Class<T> getElementClass();
 
-    T get(int x, int y);
+    T get(int column, int row);
 
     int getWidth();
 
     int getHeight();
+
+    T[] getRow(int row);
+
+    T[] getColumn(int column);
 
     void traverse(Consumer<Indexor<T>> elementConsumer);
 

@@ -1,12 +1,12 @@
 package com.stclair.corlib.math.matrix;
 
-import com.stclair.corlib.collection.Tuple;
 import com.stclair.corlib.math.array.Array2D;
 import com.stclair.corlib.math.array.Array2DConcrete;
 import com.stclair.corlib.math.array.Indexor;
 import com.stclair.corlib.math.util.LongOperationStrategy;
 import com.stclair.corlib.math.util.OperationStrategy;
-import com.stclair.corlib.math.util.Permutation;
+import com.stclair.corlib.permutation.Permutations;
+import com.stclair.corlib.permutation.ReversingPermutations;
 
 import java.util.*;
 import java.util.function.Function;
@@ -18,6 +18,8 @@ public class Array2DPresortEvaluator<T> {
 
     OperationStrategy<T> operationStrategy;
 
+    Permutations permutations = new ReversingPermutations();
+
     public Array2DPresortEvaluator(OperationStrategy<T> operationStrategy) {
         this.operationStrategy = operationStrategy;
     }
@@ -28,9 +30,12 @@ public class Array2DPresortEvaluator<T> {
 
         Integer[] sequence = sequenceOf(significantBits.getWidth());
 
-        List<Integer[]> permutations = Permutation.of(sequence);
+        List<Integer[]> permutations = this.permutations.of(sequence);
 
         int selectedPermutation = selectPermutation(significantBits, permutations);
+
+        if (selectedPermutation == -1)
+            return null;
 
         if (selectedPermutation == 0)
             return original;
