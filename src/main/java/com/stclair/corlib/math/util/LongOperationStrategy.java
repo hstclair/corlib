@@ -24,6 +24,16 @@ public class LongOperationStrategy implements OperationStrategy<Long> {
     }
 
     @Override
+    public Long increment(Long value) {
+        return value + 1;
+    }
+
+    @Override
+    public Long decrement(Long value) {
+        return value - 1;
+    }
+
+    @Override
     public Long negate(Long value) {
         return -value;
     }
@@ -120,6 +130,11 @@ public class LongOperationStrategy implements OperationStrategy<Long> {
     @Override
     public boolean isPositive(Long a) {
         return a > 0L;
+    }
+
+    @Override
+    public boolean isEqual(Long a, Long b) {
+        return (long) a == (long) b;
     }
 
     @Override

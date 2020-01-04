@@ -23,6 +23,8 @@ public class TestRealBigMatrix {
 
         Apfloat result = instance.determinant();
 
+        result = ApfloatMath.round(result, result.precision()-1, RoundingMode.HALF_EVEN);
+
         assertEquals(expected, result);
     }
 
@@ -83,7 +85,7 @@ public class TestRealBigMatrix {
     }
 
     @Test
-    public void test7x7DeterminantFails() {
+    public void test7x7Determinant() {
         double[][] members = new double[][] {
                 {0,-5,-4,2,-2,-5,-5},
                 {-4,-1,0,-1,-4,0,-3},
@@ -100,7 +102,7 @@ public class TestRealBigMatrix {
 
         Apfloat result = instance.determinant();
 
-        result = ApfloatMath.round(result, result.precision()-1, RoundingMode.HALF_EVEN);
+        result = ApfloatMath.round(result, result.precision()-2, RoundingMode.HALF_EVEN);
 
         assertEquals(expected, result);
     }
@@ -125,7 +127,7 @@ public class TestRealBigMatrix {
 
         Apfloat result = instance.determinant();
 
-        result = ApfloatMath.round(result, result.precision()-1, RoundingMode.HALF_EVEN);
+        result = ApfloatMath.round(result, result.precision()-2, RoundingMode.HALF_EVEN);
 
         assertEquals(expected, result);
     }

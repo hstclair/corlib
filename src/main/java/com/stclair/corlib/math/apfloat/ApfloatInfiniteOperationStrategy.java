@@ -45,6 +45,16 @@ public class ApfloatInfiniteOperationStrategy implements OperationStrategy<Apflo
     }
 
     @Override
+    public ApfloatInfinite increment(ApfloatInfinite value) {
+        return value.add(ApfloatInfinite.ONE);
+    }
+
+    @Override
+    public ApfloatInfinite decrement(ApfloatInfinite value) {
+        return value.subtract(ApfloatInfinite.ONE);
+    }
+
+    @Override
     public ApfloatInfinite negate(ApfloatInfinite value) {
         return value.negate();
     }
@@ -144,6 +154,11 @@ public class ApfloatInfiniteOperationStrategy implements OperationStrategy<Apflo
     @Override
     public ApfloatInfinite min(ApfloatInfinite a, ApfloatInfinite b) {
         return ApfloatInfinite.min(a, b);
+    }
+
+    @Override
+    public boolean isEqual(ApfloatInfinite a, ApfloatInfinite b) {
+        return a.compareTo(b) == 0;
     }
 
     @Override

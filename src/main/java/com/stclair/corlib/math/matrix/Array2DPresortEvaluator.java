@@ -5,6 +5,7 @@ import com.stclair.corlib.math.array.Array2DConcrete;
 import com.stclair.corlib.math.array.Indexor;
 import com.stclair.corlib.math.util.LongOperationStrategy;
 import com.stclair.corlib.math.util.OperationStrategy;
+import com.stclair.corlib.permutation.HalsHeapsAlgorithmPermutation;
 import com.stclair.corlib.permutation.Permutations;
 import com.stclair.corlib.permutation.ReversingPermutations;
 
@@ -18,7 +19,7 @@ public class Array2DPresortEvaluator<T> {
 
     OperationStrategy<T> operationStrategy;
 
-    Permutations permutations = new ReversingPermutations();
+    Permutations permutations = new HalsHeapsAlgorithmPermutation();
 
     public Array2DPresortEvaluator(OperationStrategy<T> operationStrategy) {
         this.operationStrategy = operationStrategy;
@@ -42,12 +43,15 @@ public class Array2DPresortEvaluator<T> {
 
         Integer[] permutation = permutations.get(selectedPermutation);
 
-        Function<Indexor<T>, T> baseAccessor = (indexor) -> original.get(permutation[indexor.getRow()], indexor.getColumn());
+        Function<Indexor<T>, T> baseAccessor = (indexor) -> original.get(indexor.getColumn(), permutation[indexor.getRow()]);
 
         Function<Indexor<T>, T> accessor = baseAccessor;
 
+
+        // if the selected permutation has odd parity (requires an odd number of row swaps)
+        // then the computed determinant will be negated.
         if ((selectedPermutation & 1) != 0)
-            accessor = (indexor) -> indexor.getRow() == indexor.getColumn() && indexor.getRow() == permutation.length - 1 ?
+            accessor = (indexor) -> indexor.getRow() == permutation.length - 1 ?
                     operationStrategy.negate(baseAccessor.apply(indexor)) : baseAccessor.apply(indexor);
 
         return new Array2DConcrete<T>(operationStrategy, original, accessor);

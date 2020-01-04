@@ -31,6 +31,16 @@ public class DoubleOperationStrategy implements OperationStrategy<Double> {
     }
 
     @Override
+    public Double increment(Double value) {
+        return value + 1;
+    }
+
+    @Override
+    public Double decrement(Double value) {
+        return value - 1;
+    }
+
+    @Override
     public Double negate(Double value) {
         return -value;
     }
@@ -131,6 +141,11 @@ public class DoubleOperationStrategy implements OperationStrategy<Double> {
     @Override
     public boolean isPositive(Double a) {
         return a > 0;
+    }
+
+    @Override
+    public boolean isEqual(Double a, Double b) {
+        return (double) a == (double) b;
     }
 
     @Override

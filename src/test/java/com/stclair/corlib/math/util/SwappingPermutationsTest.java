@@ -7,19 +7,30 @@ import org.junit.Test;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+
 public class SwappingPermutationsTest {
 
     @Test
     public void of() {
 
-        Integer[] array = { 1, 2, 3, 4, 5, 6, 7 };
+        Integer[] array = { 1, 2, 3, };
+
+        List<Integer[]> expected = Arrays.asList(
+                new Integer[]{ 1, 2, 3 },
+                new Integer[]{ 1, 3, 2 },
+                new Integer[]{ 2, 3, 1 },
+                new Integer[]{ 2, 1, 3 },
+                new Integer[]{ 3, 1, 2 },
+                new Integer[]{ 3, 2, 1 });
 
         Permutations permutations = new HalsHeapsAlgorithmPermutation();
 
-        List<Integer[]> result = permutations.of(array);
+        List<Integer[]> actual = permutations.of(array);
 
-        for (Integer[] permutation : result)
-            System.out.printf("[%1s]\n", join(permutation));
+        for (int index = 0; index < actual.size(); index++)
+            assertArrayEquals(expected.get(index), actual.get(index));
     }
 
     public <T> String report(List<Integer[]> result) {
@@ -36,10 +47,5 @@ public class SwappingPermutationsTest {
                 .map(Object::toString)
                 .reduce((a, b) -> String.format("%1s, %2s", a, b))
                 .orElse("");
-    }
-
-
-    @Test
-    public void swap() {
     }
 }

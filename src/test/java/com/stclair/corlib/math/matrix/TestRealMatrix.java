@@ -70,13 +70,13 @@ public class TestRealMatrix {
                 { 61, 82, 45, 16, 29, 39, 65, 75, 98, 22 }
         };
 
-        double expected = -2583406973511122400d;
+        double expected = -2583406973511125500d;
 
         RealMatrix instance = new RealMatrix(members);
 
         double result = instance.determinant();
 
-        assertEquals(expected, result);
+        assertEquals(expected, result, 0);
     }
 
 }

@@ -102,8 +102,8 @@ public class MatrixLUDecomposition {
 
             value = op.difference(value, op.product(upper.get(solveColumn, indexor.getRow()), sourceRow[indexor.getColumn()]));
 
-            if (! (op.isZero(value) || op.isOne(divisor)))
-                value = op.quotient(value, divisor);
+            if (! (op.isZero(value) || op.isOne(sourceRow[solveColumn])))
+                value = op.quotient(value, sourceRow[solveColumn]);
 
             return value;
         });
@@ -168,17 +168,26 @@ public class MatrixLUDecomposition {
         if (upper == null)
             return null;
 
-        T divisor = op.one();
-
         ColumnSolution<T> columnSolution;
 
         int order = Math.min(upper.getHeight(), upper.getWidth());
 
         Array2D<T> lower = computeLower ? Matrix.identityArray(order, op) : null;
 
+        T determinate = op.one();
+
         for (int column = 0; column < order; column++) {
 
+            T divisor;
+
+            if (column == 0)
+                divisor = op.one();
+            else
+                divisor = upper.get(column - 1, column - 1);
+
             upper = solveColumnUpper(upper, column, divisor);
+
+            determinate = op.product(determinate, upper.get(column, column));
 
 //            columnSolution = solveColumn(upper, lower, column, divisor, op);
 
@@ -187,7 +196,8 @@ public class MatrixLUDecomposition {
 //            lower = columnSolution.lower;
         }
 
-        return new LUMatrixResult<>(computeLower ? new Matrix<>(lower, op) : null, new Matrix<>(upper, op), upper.get(upper.getWidth()-1, upper.getHeight()-1));
+        return new LUMatrixResult<>(computeLower ? new Matrix<>(lower, op) : null, new Matrix<>(upper, op), determinate);
+//        return new LUMatrixResult<>(computeLower ? new Matrix<>(lower, op) : null, new Matrix<>(upper, op), upper.get(upper.getWidth()-1, upper.getHeight()-1));
     }
 
     public <T> Matrix<T> computeUpper(Matrix<T> matrix) {

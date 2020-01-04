@@ -2,6 +2,11 @@ package com.stclair.corlib.math.util;
 
 import com.stclair.corlib.math.array.Array2D;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Queue;
+import java.util.Stack;
+
 public interface OperationStrategy<T> {
 
     T product(T multiplicand, T multiplier);
@@ -11,6 +16,10 @@ public interface OperationStrategy<T> {
     T difference(T minuend, T subtrahend);
 
     T sum(T auguend, T addend);
+
+    T increment(T value);
+
+    T decrement(T value);
 
     T negate(T value);
 
@@ -54,6 +63,8 @@ public interface OperationStrategy<T> {
 
     boolean isPositive(T a);
 
+    boolean isEqual(T a, T b);
+
     boolean greaterThan(T a, T b);
 
     boolean lessThan(T a, T b);
@@ -87,6 +98,49 @@ public interface OperationStrategy<T> {
      * component of the value supplied
      */
     long significantBits(T value);
+
+    default String toBaseF(T value) {
+
+        final String digits = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+        if (isZero(value))
+            return "0";
+
+        T currentBase = one();
+
+        T currentFactor = one();
+
+        Stack<T> bases = new Stack<>();
+
+        while (lessThanOrEqual(currentBase, value)) {
+            bases.push(currentBase);
+
+            currentFactor = sum(currentFactor, one());
+
+            currentBase = product(currentBase, currentFactor);
+        }
+
+        StringBuilder result = new StringBuilder();
+
+        T workingValue = value;
+
+        while (! bases.empty()) {
+
+            currentBase = bases.pop();
+
+            T currentValue = workingValue;
+
+            workingValue = mod(currentValue, currentBase);
+
+            currentValue = difference(currentValue, workingValue);
+
+            T digit = floor(quotient(currentValue, currentBase));
+
+            result.append(digits.charAt((int) value(digit)));
+        }
+
+        return result.toString();
+    }
 
     default T[] sequenceOf(long count) {
 

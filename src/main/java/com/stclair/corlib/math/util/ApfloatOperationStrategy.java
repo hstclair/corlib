@@ -46,6 +46,16 @@ public class ApfloatOperationStrategy implements OperationStrategy<Apfloat> {
     }
 
     @Override
+    public Apfloat increment(Apfloat value) {
+        return value.add(Apfloat.ONE);
+    }
+
+    @Override
+    public Apfloat decrement(Apfloat value) {
+        return value.subtract(Apfloat.ONE);
+    }
+
+    @Override
     public Apfloat negate(Apfloat value) {
         return value.negate();
     }
@@ -150,6 +160,11 @@ public class ApfloatOperationStrategy implements OperationStrategy<Apfloat> {
     @Override
     public boolean isPositive(Apfloat a) {
         return a.signum() == 1;
+    }
+
+    @Override
+    public boolean isEqual(Apfloat a, Apfloat b) {
+        return a.compareTo(b) == 0;
     }
 
     @Override
