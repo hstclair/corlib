@@ -5,7 +5,7 @@ import org.junit.Test;
 
 import static junit.framework.TestCase.assertEquals;
 
-public class TestMatrixLUDecomposition {
+public class TestMatrixLUDecomposor {
 
     @Test
     public void test2X2Double() {
@@ -24,7 +24,7 @@ public class TestMatrixLUDecomposition {
         // 4, 3
         // 0, 6
 
-        MatrixLUDecomposition instance = new MatrixLUDecomposition();
+        MatrixLUDecomposor instance = new MatrixLUDecomposor();
 
         Matrix<Double> result = instance.computeUpper(value);
 
@@ -40,7 +40,7 @@ public class TestMatrixLUDecomposition {
         Matrix<Double> value = new Matrix<>(new double[][] { {6, 1, 1}, {4, -2, 5}, {2, 8, 7} }, op);
         Matrix<Double> expected = new Matrix<>(new double[][] { {2, 8, 7}, {0, -23, -20}, {-0d, -0d, 153d/23d} }, op);
 
-        MatrixLUDecomposition instance = new MatrixLUDecomposition();
+        MatrixLUDecomposor instance = new MatrixLUDecomposor();
 
         Matrix<Double> result = instance.computeUpper(value);
 
@@ -57,7 +57,7 @@ public class TestMatrixLUDecomposition {
 
         Matrix<Double> expectedLower = new Matrix<>(new double[][] {{1, 0, 0}, {3, 1, 0}, {2, 18/23d, 1}}, op);
 
-        MatrixLUDecomposition instance = new MatrixLUDecomposition();
+        MatrixLUDecomposor instance = new MatrixLUDecomposor();
 
         LUMatrixResult<Double> result = instance.computeUpperLower(value);
 

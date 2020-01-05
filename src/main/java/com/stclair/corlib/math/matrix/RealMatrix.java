@@ -5,7 +5,6 @@ import com.stclair.corlib.math.array.Array2DConcrete;
 import com.stclair.corlib.math.util.DoubleOperationStrategy;
 
 import java.util.Arrays;
-import java.util.stream.IntStream;
 
 /**
  * Created by hstclair on 4/17/17.
@@ -68,9 +67,9 @@ public class RealMatrix {
     }
 
     public double determinant() {
-        MatrixLUDecomposition decomposer = new MatrixLUDecomposition();
+        MatrixLUDecomposor decomposer = new MatrixLUDecomposor();
 
-        LUMatrixResult<Double> result = decomposer.computeUpperLower(this.members, new DoubleOperationStrategy(), true);
+        LUMatrixResult<Double> result = decomposer.computeUpperLower(this.members);
 
         return result.determinant();
     }

@@ -17,14 +17,14 @@ public class Array2DPresortEvaluatorTest {
 
     double[][] sortedValues = new double[][] { { 1, 3, 7 }, { 7, 1, 3 }, { 3, 7, 1} };
 
+    Array2DPresortEvaluator presorter = new Array2DPresortEvaluator();
+
     @Test
     public void presortDoesNotChangeProperlySortedMatrix() {
 
         double[][] values = sortedValues;
 
         Array2D<Double> matrix = new Array2DConcrete<>(new DoubleOperationStrategy(), 3, 3, indexor -> values[indexor.getRow()][indexor.getColumn()]);
-
-        Array2DPresortEvaluator<Double> presorter = new Array2DPresortEvaluator<>(new DoubleOperationStrategy());
 
         Array2D<Double> result = presorter.presort(matrix);
 
@@ -42,8 +42,6 @@ public class Array2DPresortEvaluatorTest {
 
         Array2D<Double> matrix = new Array2DConcrete<>(new DoubleOperationStrategy(), 3, 3, indexor -> values[indexor.getRow()][indexor.getColumn()]);
 
-        Array2DPresortEvaluator<Double> presorter = new Array2DPresortEvaluator<>(new DoubleOperationStrategy());
-
         Array2D<Double> result = presorter.presort(matrix);
 
         double[][] actual = extract(result);
@@ -56,8 +54,6 @@ public class Array2DPresortEvaluatorTest {
         double[][] values = new double[][] { {6, 1, 1}, {4, -2, 5}, {2, 8, 7} };
 
         Array2D<Double> matrix = new Array2DConcrete<>(new DoubleOperationStrategy(), 3, 3, indexor -> values[indexor.getRow()][indexor.getColumn()]);
-
-        Array2DPresortEvaluator<Double> presorter = new Array2DPresortEvaluator<>(new DoubleOperationStrategy());
 
         Array2D<Double> result = presorter.presort(matrix);
 

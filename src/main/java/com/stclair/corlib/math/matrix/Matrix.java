@@ -28,8 +28,8 @@ public class Matrix<T> {
 
     Permutations permutations = new HalsHeapsAlgorithmPermutation();
 
-    public Matrix(Array2D<T> members, OperationStrategy<T> op) {
-        this.op = op;
+    public Matrix(Array2D<T> members) {
+        this.op = members.getOperationStrategy();
         this.members = members;
         rows = members.getHeight();
         columns = members.getWidth();
@@ -65,25 +65,6 @@ public class Matrix<T> {
         return subtrahendCoefficient;
     }
 
-//    public Value<T> determinant() {
-//        Value<T>[][] umembers=clone(this.members);
-//        Value<T> determinant = factory.valueOfOne();
-//        Value<T> coefficient = factory.valueOfOne();
-//
-//        for (int row=0; row < this.rows; row++) {
-//            for (int col=0; col< this.columns; col++) {
-//                if (col == row)
-//                    break;
-//
-//                coefficient = coefficient.multiply(subtract(umembers[row], umembers[col], col));
-//            }
-//
-//            determinant = determinant.multiply(umembers[row][row]);
-//        }
-//
-//        return determinant.divide(coefficient);
-//    }
-
     public T member(int row, int column) {
         return members.get(column, row);
     }
@@ -105,7 +86,7 @@ public class Matrix<T> {
 
         Array2D<T> members = new Array2DConcrete<T>(this.op, this.members.getWidth() - 1, this.members.getHeight() - 1, initializer);
 
-        return new Matrix<T>(members, op);
+        return new Matrix<T>(members);
     }
 
 
@@ -140,7 +121,7 @@ public class Matrix<T> {
 
     public static <T> Matrix<T> identity(int order, OperationStrategy<T> op) {
 
-        return new Matrix<>(Matrix.identityArray(order, op), op);
+        return new Matrix<>(Matrix.identityArray(order, op));
     }
 
 

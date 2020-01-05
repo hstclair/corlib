@@ -72,9 +72,9 @@ public class RealBigMatrix {
     }
 
     public Apfloat determinant() {
-        MatrixLUDecomposition decomposer = new MatrixLUDecomposition();
+        MatrixLUDecomposor decomposer = new MatrixLUDecomposor();
 
-        LUMatrixResult<Apfloat> result = decomposer.computeUpperLower(this.members, new ApfloatOperationStrategy(), true);
+        LUMatrixResult<Apfloat> result = decomposer.computeUpperLower(this.members);
 
         return result.determinant();
     }
