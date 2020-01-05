@@ -268,7 +268,7 @@ public class TestDeterminantLUSolver {
                 { 77, 3, 17, 60, 60, 14, 60, 15, 71, 16 },
                 { 61, 82, 45, 16, 29, 39, 65, 75, 98, 22 }
         };
-        double expected = -2583406973511121400l;
+        double expected = -2583406973511131100l;
 
         DeterminantLUSolver instance = new DeterminantLUSolver();
 

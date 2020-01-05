@@ -11,7 +11,10 @@ import java.util.List;
 /**
  * @author hstclair
  * @since 8/22/15 3:33 PM
+ *
+ * TODO finish this code
  */
+@Deprecated
 public class VASComputationExperimental implements VASOperation {
     static final LocalMaxQuadraticLowerBound lowerBoundEstimator = new LocalMaxQuadraticLowerBound();
     static final Polynomial xPlusOne = Polynomial.of(new double[] { 1, 1 });

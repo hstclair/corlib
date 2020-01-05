@@ -4,6 +4,7 @@ import com.stclair.corlib.math.Complex;
 import com.stclair.corlib.math.util.DoubleOperationStrategy;
 import com.stclair.corlib.math.util.OperationStrategy;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.lang.reflect.Array;
@@ -478,19 +479,11 @@ public class TestPolynomial<T extends Double> {
 
     @Test
     public void testApplyComplexToDegreeZero() {
-        Complex root1 = Complex.of(0, 2);
-        Complex root2 = Complex.of(0, -2);
-        Complex[] root = new Complex[] { root1, root2 };
-
         Polynomial<T> polynomial = new Polynomial<T>(op, op.from(new double[] {1}));
 
-        Complex[] pOfRoot = new Complex[root.length];
+        Complex actual = polynomial.apply(Complex.of(10));
 
-        for (int index = 0; index < root.length; index++) {
-            pOfRoot[index] = polynomial.apply(root[index]);
-
-            assertEquals(Complex.ZERO, pOfRoot[index]);
-        }
+        assertEquals(Complex.ONE, actual);
     }
 
     @Test

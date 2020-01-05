@@ -195,6 +195,10 @@ public class DoubleOperationStrategy implements OperationStrategy<Double> {
 
     @Override
     public long significantBits(Double value) {
+
+        if (value == 0d)
+            return 0;
+
         long bits = Double.doubleToLongBits(value);
 
         long mantissa = (bits & 0x000fffffffffffffL) | 0x0010000000000000L;

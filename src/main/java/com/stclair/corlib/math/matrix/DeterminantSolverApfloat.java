@@ -8,7 +8,10 @@ import java.util.List;
 
 /**
  * Created by hstclair on 4/21/17.
+ *
+ * TODO - this appears to be incomplete and needs to be finished or removed
  */
+@Deprecated
 public class DeterminantSolverApfloat {
     class Task {
         final Apfloat coefficient;

@@ -4,6 +4,7 @@ import com.stclair.corlib.math.RealMobiusTransformation;
 import com.stclair.corlib.math.polynomial.Polynomial;
 import com.stclair.corlib.math.polynomial.roots.VASComputationExperimental;
 import com.stclair.corlib.math.polynomial.roots.VASOperation;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.List;
@@ -15,6 +16,7 @@ import static junit.framework.Assert.assertEquals;
  * @author hstclair
  * @since 3/30/16 5:58 PM
  */
+@Ignore
 public class TestVASComputationExperimental {
 
     // the problem is that this code is testing the wrong thing.  The VASComputation algorithm flatly rejects

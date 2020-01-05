@@ -51,12 +51,12 @@ public class TestRealMatrix {
 
         double result = instance.determinant();
 
-        assertEquals(expected, result, .0000001);
+        assertEquals(expected, result, 0);
     }
 
 
     @Test
-    public void test10X10DeterminantIsJustTooBig() {
+    public void testEven10X10DeterminantIsNotTooBig() {
         double[][] members = new double[][] {
                 { 21, 45, 5, 17, 60, 47, 52, 87, 14, 36 },
                 { 81, 20, 84, 48, 66, 10, 86, 74, 5, 0 },
@@ -70,7 +70,7 @@ public class TestRealMatrix {
                 { 61, 82, 45, 16, 29, 39, 65, 75, 98, 22 }
         };
 
-        double expected = -2583406973511125500d;
+        double expected = -2583406973511126500d;
 
         RealMatrix instance = new RealMatrix(members);
 
