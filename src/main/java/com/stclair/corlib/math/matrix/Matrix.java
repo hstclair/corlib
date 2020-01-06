@@ -4,69 +4,50 @@ package com.stclair.corlib.math.matrix;
 import com.stclair.corlib.math.array.Array2D;
 import com.stclair.corlib.math.array.Array2DConcrete;
 import com.stclair.corlib.math.array.Indexor;
+import com.stclair.corlib.math.matrix.determinant.DeterminantSolver;
+import com.stclair.corlib.math.matrix.determinant.LUDeterminantSolver;
 import com.stclair.corlib.math.util.OperationStrategy;
-import com.stclair.corlib.permutation.HalsHeapsAlgorithmPermutation;
-import com.stclair.corlib.permutation.Permutations;
-import com.stclair.corlib.permutation.ReversingPermutations;
 
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 /**
- * Created by hstclair on 4/22/17.
+ * Simple Matrix class
  */
 public class Matrix<T> {
 
-    Array2D<T> members;
-//    private final T[][] members;
+    /** 2D array representing elements of this matrix */
+    private final Array2D<T> elements;
 
-    final int rows;
-    final int columns;
-    final int order;
-    final OperationStrategy<T> op;
+    private final DeterminantSolver determinantSolver = new LUDeterminantSolver();
 
-    Permutations permutations = new HalsHeapsAlgorithmPermutation();
-
-    public Matrix(Array2D<T> members) {
-        this.op = members.getOperationStrategy();
-        this.members = members;
-        rows = members.getHeight();
-        columns = members.getWidth();
-        order = Math.min(rows, columns);
+    public Matrix(Array2D<T> elements) {
+        this.elements = elements;
     }
 
-    public Matrix(double[][] members, OperationStrategy<T> op) {
-        this.op = op;
-        this.members = new Array2DConcrete<T>(op, members[0].length, members.length, indexor -> op.from(members[indexor.getRow()][indexor.getColumn()]));
-        rows = this.members.getHeight();
-        columns = this.members.getWidth();
-        order = Math.min(rows, columns);
+    public Matrix(double[][] elements, OperationStrategy<T> op) {
+        this.elements = new Array2DConcrete<T>(op, elements[0].length, elements.length, indexor -> op.from(elements[indexor.getRow()][indexor.getColumn()]));
     }
 
-    private int columns(T[][] members) {
-        int columns = 0;
-
-        for (T[] row : members) {
-            columns = Math.max(columns, row.length);
-        }
-
-        return columns;
+    public OperationStrategy<T> getOperationStrategy() {
+        return elements.getOperationStrategy();
     }
 
-    private T subtract(T[] minuend, T[] subtrahend, int column) {
-        T subtrahendCoefficient = subtrahend[column];
-        T minuendCoefficient = minuend[column];
+    public int getRows() {
+        return elements.getHeight();
+    }
 
-        for (int index = 0; index < minuend.length; index++) {
-            minuend[index] = op.difference(op.product(minuend[index], subtrahendCoefficient), op.product(subtrahend[index], minuendCoefficient));
-        }
+    public int getColumns() {
+        return elements.getWidth();
+    }
 
-        return subtrahendCoefficient;
+    public Array2D<T> getElements() {
+        return elements;
     }
 
     public T member(int row, int column) {
-        return members.get(column, row);
+        return elements.get(column, row);
     }
 
     public Matrix<T> minor(int mrow, int mcolumn) {
@@ -81,54 +62,29 @@ public class Matrix<T> {
             if (currentRow >= mrow)
                 currentRow++;
 
-            return members.get(currentColumn, currentRow);
+            return elements.get(currentColumn, currentRow);
         };
 
-        Array2D<T> members = new Array2DConcrete<T>(this.op, this.members.getWidth() - 1, this.members.getHeight() - 1, initializer);
+        Array2D<T> members = new Array2DConcrete<T>(this.elements.getOperationStrategy(), this.elements.getWidth() - 1, this.elements.getHeight() - 1, initializer);
 
         return new Matrix<T>(members);
     }
 
 
     public T determinant() {
-
-        T accumulator = op.zero();
-
-        Integer[] sequence = IntStream.range(0, rows).boxed().toArray(Integer[]::new);
-
-        int permutationNum = 0;
-
-        for (Integer[] permutation : permutations.of(sequence)) {
-
-            int row = 0;
-
-            T product = op.one();
-
-            for (int column: permutation) {
-                product = op.product(product, members.get(column, row++));
-            }
-
-            if ((permutationNum & 1) == 0)
-                accumulator = op.sum(accumulator, product);
-            else
-                accumulator = op.difference(accumulator, product);
-
-            permutationNum++;
-        }
-
-        return accumulator;
+        return determinantSolver.determinant(this);
     }
 
-    public static <T> Matrix<T> identity(int order, OperationStrategy<T> op) {
+    public static <T> Matrix<T> identity(int order, OperationStrategy<T> operationStrategy) {
 
-        return new Matrix<>(Matrix.identityArray(order, op));
+        return new Matrix<>(Matrix.identityArray(order, operationStrategy));
     }
 
 
-    public static <T> Array2D<T> identityArray(int order, OperationStrategy<T> op) {
+    public static <T> Array2D<T> identityArray(int order, OperationStrategy<T> operationStrategy) {
 
-        T one = op.one();
-        T zero = op.zero();
+        T one = operationStrategy.one();
+        T zero = operationStrategy.zero();
 
         Function<Indexor<T>, T> initializer = indexor -> {
             int currentRow = indexor.getRow();
@@ -141,16 +97,16 @@ public class Matrix<T> {
             return currentValue;
         };
 
-        return new Array2DConcrete<T>(op, order, order, initializer);
+        return new Array2DConcrete<T>(operationStrategy, order, order, initializer);
     }
 
     @Override
     public String toString() {
 
-        return IntStream.range(0, rows)
+        return IntStream.range(0, elements.getHeight())
                 .mapToObj( row ->
-                        IntStream.range(0, columns)
-                        .mapToObj(col -> members.get(col, row).toString())
+                        IntStream.range(0, elements.getWidth())
+                        .mapToObj(col -> elements.get(col, row).toString())
                         .collect(Collectors.joining(",", "| ", " |\n"))
                 ).collect(Collectors.joining());
     }
@@ -169,12 +125,13 @@ public class Matrix<T> {
 
         Matrix that = (Matrix) obj;
 
-        if (that.order != order)
+        if (that.elements.getHeight() != this.elements.getHeight()
+                || that.elements.getWidth() != this.elements.getWidth())
             return false;
 
-        for (int row = 0; row < order; row ++) {
-            for (int col = 0; col < order; col++) {
-                if (! members.get(col, row).equals(that.members.get(col, row)))
+        for (int row = 0; row < this.elements.getHeight(); row ++) {
+            for (int col = 0; col < this.elements.getWidth(); col++) {
+                if (! elements.get(col, row).equals(that.elements.get(col, row)))
                     return false;
             }
         }

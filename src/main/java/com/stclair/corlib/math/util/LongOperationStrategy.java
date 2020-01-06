@@ -88,6 +88,16 @@ public class LongOperationStrategy implements OperationStrategy<Long> {
     }
 
     @Override
+    public Long from(long longValue) {
+        return longValue;
+    }
+
+    @Override
+    public Long from(String stringValue) {
+        return Long.parseLong(stringValue);
+    }
+
+    @Override
     public Long[] from(double[] dblValues) {
         Long[] longs =  new Long[dblValues.length];
 

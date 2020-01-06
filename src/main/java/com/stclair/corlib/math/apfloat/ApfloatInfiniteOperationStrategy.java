@@ -115,6 +115,16 @@ public class ApfloatInfiniteOperationStrategy implements OperationStrategy<Apflo
     }
 
     @Override
+    public ApfloatInfinite from(long value) {
+        return new ApfloatInfinite(value, precision);
+    }
+
+    @Override
+    public ApfloatInfinite from(String value) {
+        return new ApfloatInfinite(value, precision);
+    }
+
+    @Override
     public ApfloatInfinite[] from(double[] dblValues) {
         return DoubleStream.of(dblValues)
                 .mapToObj(this::from)

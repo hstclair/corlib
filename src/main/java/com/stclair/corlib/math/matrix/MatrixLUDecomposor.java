@@ -6,7 +6,6 @@ import com.stclair.corlib.math.array.Array2DConcrete;
 import com.stclair.corlib.math.array.Indexor;
 import com.stclair.corlib.math.util.OperationStrategy;
 
-import java.util.Timer;
 import java.util.function.Function;
 
 
@@ -204,7 +203,7 @@ public class MatrixLUDecomposor {
      * @return the corresponding Upper Matrix
      */
     public <T> Matrix<T> computeUpper(Matrix<T> matrix) {
-        return computeUpperLower(matrix.members).getUpper();
+        return computeUpperLower(matrix.getElements()).getUpper();
     }
 
     /**
@@ -215,6 +214,6 @@ public class MatrixLUDecomposor {
      */
     public <T> LUMatrixResult<T> computeUpperLower(Matrix<T> matrix) {
 
-        return computeUpperLower(matrix.members);
+        return computeUpperLower(matrix.getElements());
     }
 }

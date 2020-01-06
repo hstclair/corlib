@@ -101,6 +101,16 @@ public class DoubleOperationStrategy implements OperationStrategy<Double> {
     }
 
     @Override
+    public Double from(long longValue) {
+        return (double) longValue;
+    }
+
+    @Override
+    public Double from(String stringValue) {
+        return Double.parseDouble(stringValue);
+    }
+
+    @Override
     public Double[] from(double[] dblValues) {
 
         return DoubleStream.of(dblValues)

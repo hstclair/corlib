@@ -47,6 +47,10 @@ public interface OperationStrategy<T> {
 
     T from(double dblValue);
 
+    T from(long longValue);
+
+    T from(String stringValue);
+
     T[] from(double[] dblValues);
 
     T max(T a, T b);

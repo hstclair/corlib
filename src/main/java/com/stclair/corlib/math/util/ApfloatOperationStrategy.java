@@ -121,6 +121,16 @@ public class ApfloatOperationStrategy implements OperationStrategy<Apfloat> {
     }
 
     @Override
+    public Apfloat from(long longValue) {
+        return new Apfloat(longValue);
+    }
+
+    @Override
+    public Apfloat from(String stringValue) {
+        return new Apfloat(stringValue);
+    }
+
+    @Override
     public Apfloat[] from(double[] dblValues) {
         return DoubleStream.of(dblValues)
                 .mapToObj(Apfloat::new)
