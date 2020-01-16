@@ -1,9 +1,7 @@
-package com.stclair.corlib.math.util;
+package com.stclair.corlib.permutation;
 
-import com.stclair.corlib.permutation.HalsHeapsAlgorithmPermutation;
-import com.stclair.corlib.permutation.HeapsAlgorithmNonrecursive;
-import com.stclair.corlib.permutation.HeapsAlgorithmRecursive;
-import org.junit.Test;
+import com.stclair.corlib.math.util.LongOperationStrategy;
+import com.stclair.corlib.math.util.OperationStrategy;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -11,73 +9,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static org.junit.Assert.*;
-
-public class HeapsAlgorithmTest {
-
-    HeapsAlgorithmRecursive recursivePermutation = new HeapsAlgorithmRecursive();
-
-    HeapsAlgorithmNonrecursive nonrecursivePermutation = new HeapsAlgorithmNonrecursive();
-
-    HalsHeapsAlgorithmPermutation halsPermutation = new HalsHeapsAlgorithmPermutation();
-
-    @Test
-    public void ofReturnsSameResultForRecursiveAndNonRecursive() {
-
-        Integer[] values = { 1, 2, 3, 4 };
-
-        String reportA = report(nonrecursivePermutation.of(values));
-
-        String reportB = report(recursivePermutation.of(values));
-
-        assertEquals(reportA, reportB);
-    }
-
-    @Test
-    public void ofReturnsSameResultForRecursiveAndHals() {
-
-        Integer[] values = { 1, 2, 3, 4, };
-
-
-        String reportA = report(recursivePermutation.of(values));
-
-        String reportB = report(halsPermutation.of(values));
-
-        assertEquals(reportA, reportB);
-    }
-
-    @Test
-    public void reportOutputFromHeapsRecursive() {
-        String[] values = { "A", "B", "C", "D" };
-
-        System.out.println(report(recursivePermutation.of(values)));
-    }
-
-    @Test
-    public void reportOutputFromHalsHeapsAlgorithm() {
-        String[] values = { "A", "B", "C", "D", "E", "F" };
-
-        System.out.println(reportExtraSpecial(halsPermutation.of(values)));
-    }
-
-    @Test
-    public void reportOutputFromHeapsRecursiveAlgorithm() {
-        String[] values = { "A", "B", "C", "D", "E", "F" };
-
-        System.out.println(reportSpecial(recursivePermutation.of(values)));
-    }
-
-    @Test
-    public void testComputeNextPair() {
-        int[] register = new int[4];
-
-        int[] pair;
-
-        while ((pair = halsPermutation.computeNextPair(register)) != null) {
-
-            System.out.printf("swap: %s:%s -> [%s]\n", pair[0], pair[1], join(register));
-        }
-    }
+public class PermutationTestTool {
 
     public <T> String reportSpecial(List<T[]> result) {
 
@@ -97,13 +29,35 @@ public class HeapsAlgorithmTest {
 
 
     public <T> String report(List<T[]> result) {
+        return report(result, ", ");
+    }
+
+    public <T> String reportWithIndex(List<T[]> result) {
+        return reportWithIndex(result, ", ");
+    }
+
+
+
+    public <T> String report(List<T[]> result, String separator) {
         StringBuilder sb = new StringBuilder();
 
         for (T[] permutation : result)
-            sb.append(String.format("[%1s]\n", join(permutation, ", ")));
+            sb.append(String.format("[%1s]\n", join(permutation, separator)));
 
         return sb.toString();
     }
+
+    public <T> String reportWithIndex(List<T[]> result, String separator) {
+        StringBuilder sb = new StringBuilder();
+
+        long permutationIndex = 0;
+
+        for (T[] permutation : result)
+            sb.append(String.format("%s: [%s]\n", permutationIndex++, join(permutation, separator)));
+
+        return sb.toString();
+    }
+
 
 
     public String zeroPad(String str, int width) {
@@ -233,6 +187,4 @@ public class HeapsAlgorithmTest {
 
         return -1;
     }
-
-
 }
