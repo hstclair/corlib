@@ -1,6 +1,6 @@
 package com.stclair.corlib.math.util;
 
-import com.stclair.corlib.permutation.HalsHeapsAlgorithmPermutation;
+import com.stclair.corlib.permutation.HalsHeapsAlgorithmPermutationGenerator;
 import com.stclair.corlib.permutation.HeapsAlgorithmNonrecursive;
 import com.stclair.corlib.permutation.HeapsAlgorithmRecursive;
 import org.junit.Test;
@@ -19,16 +19,16 @@ public class HeapsAlgorithmTest {
 
     HeapsAlgorithmNonrecursive nonrecursivePermutation = new HeapsAlgorithmNonrecursive();
 
-    HalsHeapsAlgorithmPermutation halsPermutation = new HalsHeapsAlgorithmPermutation();
+    HalsHeapsAlgorithmPermutationGenerator halsPermutation = new HalsHeapsAlgorithmPermutationGenerator();
 
     @Test
     public void ofReturnsSameResultForRecursiveAndNonRecursive() {
 
         Integer[] values = { 1, 2, 3, 4 };
 
-        String reportA = report(nonrecursivePermutation.of(values));
+        String reportA = report(nonrecursivePermutation.listPermutationsOf(values));
 
-        String reportB = report(recursivePermutation.of(values));
+        String reportB = report(recursivePermutation.listPermutationsOf(values));
 
         assertEquals(reportA, reportB);
     }
@@ -39,9 +39,9 @@ public class HeapsAlgorithmTest {
         Integer[] values = { 1, 2, 3, 4, };
 
 
-        String reportA = report(recursivePermutation.of(values));
+        String reportA = report(recursivePermutation.listPermutationsOf(values));
 
-        String reportB = report(halsPermutation.of(values));
+        String reportB = report(halsPermutation.listPermutationsOf(values));
 
         assertEquals(reportA, reportB);
     }
@@ -50,34 +50,34 @@ public class HeapsAlgorithmTest {
     public void reportOutputFromHeapsRecursive() {
         String[] values = { "A", "B", "C", "D" };
 
-        System.out.println(report(recursivePermutation.of(values)));
+        System.out.println(report(recursivePermutation.listPermutationsOf(values)));
     }
 
     @Test
     public void reportOutputFromHalsHeapsAlgorithm() {
         String[] values = { "A", "B", "C", "D", "E", "F" };
 
-        System.out.println(reportExtraSpecial(halsPermutation.of(values)));
+        System.out.println(reportExtraSpecial(halsPermutation.listPermutationsOf(values)));
     }
 
     @Test
     public void reportOutputFromHeapsRecursiveAlgorithm() {
         String[] values = { "A", "B", "C", "D", "E", "F" };
 
-        System.out.println(reportSpecial(recursivePermutation.of(values)));
+        System.out.println(reportSpecial(recursivePermutation.listPermutationsOf(values)));
     }
 
-    @Test
-    public void testComputeNextPair() {
-        int[] register = new int[4];
-
-        int[] pair;
-
-        while ((pair = halsPermutation.computeNextPair(register)) != null) {
-
-            System.out.printf("swap: %s:%s -> [%s]\n", pair[0], pair[1], join(register));
-        }
-    }
+//    @Test
+//    public void testComputeNextPair() {
+//        int[] register = new int[4];
+//
+//        int[] pair;
+//
+//        while ((pair = halsPermutation.computeNextPair(register)) != null) {
+//
+//            System.out.printf("swap: %s:%s -> [%s]\n", pair[0], pair[1], join(register));
+//        }
+//    }
 
     public <T> String reportSpecial(List<T[]> result) {
 

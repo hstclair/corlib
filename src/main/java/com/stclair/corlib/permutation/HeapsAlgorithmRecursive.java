@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class HeapsAlgorithmRecursive implements Permutations {
+public class HeapsAlgorithmRecursive {
 
 
 
@@ -35,7 +35,7 @@ public class HeapsAlgorithmRecursive implements Permutations {
     /**
      * translation of pseudocode for recursive implementation of Heap's Algorithm (harvested from wikipedia page)
      */
-    public <T> List<T[]> of(T[] values) {
+    public <T> List<T[]> listPermutationsOf(T[] values) {
 
         List<T[]> result = new ArrayList<>();
 

@@ -1,14 +1,13 @@
 package com.stclair.corlib.permutation;
 
 import com.stclair.corlib.collection.Tuple;
-import com.stclair.corlib.permutation.Permutations;
 
 import java.util.*;
 import java.util.function.Function;
 
-public class ReversingPermutations implements Permutations {
+public class ReversingPermutationGenerator {
 
-    public <T> List<T[]> of(T[] values) {
+    public <T> List<T[]> listPermutationsOf(T[] values) {
         List<Function<T[], T[]>> functions = new ArrayList<>();
 
         functions = permutations(values.length);

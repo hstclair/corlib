@@ -1,7 +1,7 @@
 package com.stclair.corlib.math.util;
 
-import com.stclair.corlib.permutation.HalsHeapsAlgorithmPermutation;
-import com.stclair.corlib.permutation.Permutations;
+import com.stclair.corlib.permutation.HalsHeapsAlgorithmPermutationGenerator;
+import com.stclair.corlib.permutation.PermutationGenerator;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -10,7 +10,7 @@ import java.util.List;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
-public class SwappingPermutationsTest {
+public class SwappingPermutationGeneratorTest {
 
     @Test
     public void of() {
@@ -25,9 +25,9 @@ public class SwappingPermutationsTest {
                 new Integer[]{ 3, 1, 2 },
                 new Integer[]{ 3, 2, 1 });
 
-        Permutations permutations = new HalsHeapsAlgorithmPermutation();
+        PermutationGenerator permutationGenerator = new HalsHeapsAlgorithmPermutationGenerator();
 
-        List<Integer[]> actual = permutations.of(array);
+        List<Integer[]> actual = permutationGenerator.listPermutationsOf(array);
 
         for (int index = 0; index < actual.size(); index++)
             assertArrayEquals(expected.get(index), actual.get(index));

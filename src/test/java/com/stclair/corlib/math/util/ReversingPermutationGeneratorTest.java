@@ -1,6 +1,6 @@
 package com.stclair.corlib.math.util;
 
-import com.stclair.corlib.permutation.ReversingPermutations;
+import com.stclair.corlib.permutation.ReversingPermutationGenerator;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -9,9 +9,9 @@ import java.util.function.Function;
 
 import static org.junit.Assert.*;
 
-public class ReversingPermutationsTest {
+public class ReversingPermutationGeneratorTest {
 
-    ReversingPermutations instance = new ReversingPermutations();
+    ReversingPermutationGenerator instance = new ReversingPermutationGenerator();
 
     @Test
     public void ofTwoValues() {
@@ -23,7 +23,7 @@ public class ReversingPermutationsTest {
                 { 2, 1 },
         };
 
-        List<Integer[]> result = instance.of(original);
+        List<Integer[]> result = instance.listPermutationsOf(original);
 
         assertEquals(expected.length, result.size());
 
@@ -45,7 +45,7 @@ public class ReversingPermutationsTest {
                 { 3, 2, 1 }
         };
 
-        List<Integer[]> result = instance.of(original);
+        List<Integer[]> result = instance.listPermutationsOf(original);
 
         assertEquals(expected.length, result.size());
 
@@ -85,7 +85,7 @@ public class ReversingPermutationsTest {
                 { 4, 3, 2, 1 }
         };
 
-        List<Integer[]> result = instance.of(original);
+        List<Integer[]> result = instance.listPermutationsOf(original);
 
         assertEquals(expected.length, result.size());
 
@@ -98,7 +98,7 @@ public class ReversingPermutationsTest {
 
         Integer[] original = new Integer[] {1, 2, 3};
 
-        Function<Integer[], Integer[]> func = ReversingPermutations.permutation(2);
+        Function<Integer[], Integer[]> func = ReversingPermutationGenerator.permutation(2);
 
         Integer[] result = func.apply(original);
 
@@ -111,7 +111,7 @@ public class ReversingPermutationsTest {
 
         Integer[] original = new Integer[] {1, 2, 3, 4};
 
-        Function<Integer[], Integer[]> func = ReversingPermutations.permutation(3);
+        Function<Integer[], Integer[]> func = ReversingPermutationGenerator.permutation(3);
 
         Integer[] result = func.apply(original);
 
@@ -124,7 +124,7 @@ public class ReversingPermutationsTest {
 
         Integer[] original = new Integer[] {1, 2, 3, 4, 5};
 
-        Function<Integer[], Integer[]> func = ReversingPermutations.permutation(4);
+        Function<Integer[], Integer[]> func = ReversingPermutationGenerator.permutation(4);
 
         Integer[] result = func.apply(original);
 
@@ -139,7 +139,7 @@ public class ReversingPermutationsTest {
 
         Integer[] original = new Integer[] {1, 2, 3, 4, 5, 6};
 
-        Function<Integer[], Integer[]> func = ReversingPermutations.permutation(5);
+        Function<Integer[], Integer[]> func = ReversingPermutationGenerator.permutation(5);
 
         Integer[] result = func.apply(original);
 

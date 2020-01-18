@@ -2,14 +2,6 @@ package com.stclair.corlib.math.matrix.determinant;
 
 import com.stclair.corlib.math.matrix.Matrix;
 import com.stclair.corlib.math.util.*;
-import com.stclair.corlib.permutation.HalsHeapsAlgorithmPermutation;
-import com.stclair.corlib.permutation.Permutations;
-import org.apfloat.Apfloat;
-import org.apfloat.ApfloatMath;
-import org.junit.Test;
-
-import java.math.RoundingMode;
-import java.util.List;
 
 import static junit.framework.Assert.assertTrue;
 import static junit.framework.TestCase.assertEquals;
