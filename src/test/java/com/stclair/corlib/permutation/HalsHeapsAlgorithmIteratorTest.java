@@ -3,8 +3,10 @@ package com.stclair.corlib.permutation;
 import com.stclair.corlib.math.util.MoreMath;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.junit.Assert.*;
 
@@ -704,5 +706,42 @@ public class HalsHeapsAlgorithmIteratorTest {
         generator.streamPermutationsOf(start)
                 .forEach(it ->
                         assertArrayEquals(it, instance.reconstructStartState(permutationIndex[0]++, start)));
+    }
+
+    @Test
+    public void testStartPermutationsOf24AtOffset3() {
+
+        int startIndex = 23;
+
+        String initialString = "abcd";
+
+        Character[] initialValues = initialString.chars()
+                .mapToObj(it -> (char) it)
+                .toArray(Character[]::new);
+
+        PermutationGenerator generator = new HalsHeapsAlgorithmPermutationGenerator();
+
+        List<String> expected =
+                generator
+                        .streamPermutationsOf(initialValues)
+                        .map(HalsHeapsAlgorithmIteratorTest::characterArrayToString)
+                        .skip(startIndex)
+                .collect(Collectors.toList());
+
+        HalsHeapsAlgorithmIterator<Character> instance = new HalsHeapsAlgorithmIterator<>(initialValues, startIndex);
+
+        List<String> actual = new ArrayList<>();
+
+        for (Character[] current = instance.getSeed(initialValues); instance.hasNext(current); current = instance.next(current))
+            actual.add(characterArrayToString(current));
+
+        assertEquals(expected, actual);
+        assertEquals(expected.size(), actual.size());
+    }
+
+    public static String characterArrayToString(Character[] array) {
+        return Arrays.stream(array)
+            .reduce(new StringBuilder(), StringBuilder::append, StringBuilder::append)
+            .toString();
     }
 }
