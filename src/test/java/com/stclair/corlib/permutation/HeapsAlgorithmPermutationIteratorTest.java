@@ -1,6 +1,5 @@
 package com.stclair.corlib.permutation;
 
-import com.stclair.corlib.math.util.MoreMath;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -11,8 +10,6 @@ import java.util.stream.Collectors;
 import static org.junit.Assert.*;
 
 public class HeapsAlgorithmPermutationIteratorTest {
-
-    ReversingPermutationGenerator reversing = new ReversingPermutationGenerator();
 
     PermutationTestTool testTool = new PermutationTestTool();
 
@@ -28,7 +25,7 @@ public class HeapsAlgorithmPermutationIteratorTest {
                 .mapToObj(it -> (char) it)
                 .toArray(Character[]::new);
 
-        PermutationGenerator generator = new HeapsAlgorithmPermutationGenerator();
+        PermutationGenerator generator = new PermutationGenerator(new HeapsAlgorithmPermutationConstructor(), new HeapsAlgorithmPermutationIteratorFactory());
 
         List<String> expected =
                 generator

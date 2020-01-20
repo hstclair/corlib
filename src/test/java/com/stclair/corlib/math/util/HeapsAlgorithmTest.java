@@ -1,8 +1,6 @@
 package com.stclair.corlib.math.util;
 
-import com.stclair.corlib.permutation.HeapsAlgorithmPermutationGenerator;
-import com.stclair.corlib.permutation.HeapsAlgorithmNonrecursive;
-import com.stclair.corlib.permutation.HeapsAlgorithmRecursive;
+import com.stclair.corlib.permutation.*;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -19,7 +17,7 @@ public class HeapsAlgorithmTest {
 
     HeapsAlgorithmNonrecursive nonrecursivePermutation = new HeapsAlgorithmNonrecursive();
 
-    HeapsAlgorithmPermutationGenerator halsPermutation = new HeapsAlgorithmPermutationGenerator();
+    PermutationGenerator halsPermutation = new PermutationGenerator(new HeapsAlgorithmPermutationConstructor(), new HeapsAlgorithmPermutationIteratorFactory());
 
     @Test
     public void ofReturnsSameResultForRecursiveAndNonRecursive() {
@@ -66,18 +64,6 @@ public class HeapsAlgorithmTest {
 
         System.out.println(reportSpecial(recursivePermutation.listPermutationsOf(values)));
     }
-
-//    @Test
-//    public void testComputeNextPair() {
-//        int[] register = new int[4];
-//
-//        int[] pair;
-//
-//        while ((pair = halsPermutation.computeNextPair(register)) != null) {
-//
-//            System.out.printf("swap: %s:%s -> [%s]\n", pair[0], pair[1], join(register));
-//        }
-//    }
 
     public <T> String reportSpecial(List<T[]> result) {
 

@@ -1,52 +1,28 @@
 package com.stclair.corlib.permutation;
 
+import com.stclair.corlib.collection.Tuple;
 import com.stclair.corlib.math.BaseFCounter;
 
-import java.util.Arrays;
+import java.sql.Ref;
+import java.util.*;
+import java.util.function.Function;
 
-import static com.stclair.corlib.validation.Validation.inRange;
-
-/**
- * implementation of class to support the Stream.iterate() method
- * to generate a series of permutations via Heap's Algorithm
- */
-public class HeapsAlgorithmPermutationIterator implements PermutationIterator {
+public class ReversingPermutationIterator implements PermutationIterator {
 
     BaseFCounter counter = new BaseFCounter();
 
-    HeapsAlgorithmPermutationConstructor permutationConstructor = new HeapsAlgorithmPermutationConstructor();
+    PermutationConstructor permutationConstructor = new ReversingPermutationConstructor();
 
-    /**
-     * constructor
-     * @param counter the "base F" counter representing the index at
-     *               which to start the permutations returned by this
-     *               iterator
-     */
-    public HeapsAlgorithmPermutationIterator(BaseFCounter counter) {
+    public ReversingPermutationIterator() {
+    }
+
+    public ReversingPermutationIterator(long count) {
+        counter.set(count);
+    }
+
+    public ReversingPermutationIterator(BaseFCounter counter) {
         this.counter = counter;
     }
-
-    /**
-     * constructor
-     * @param index the offset index at which to start the permutations
-     *              returned by this iterator
-     */
-    public HeapsAlgorithmPermutationIterator(long index) {
-
-        counter.set(index);
-    }
-
-    /**
-     * constructor
-     */
-    public HeapsAlgorithmPermutationIterator() {
-    }
-
-    // The three arguments to the Stream.iterate() method map to the three arguments
-    // required by a for loop, where the test method executes at the top of the loop
-    // and the generator method executes at the bottom of the loop.  For this reason,
-    // this function must be permitted to generate an "invalid" result that will then
-    // be refuted by the hasNext() method.
 
     /**
      * get the seed value for the offset specified by this iterator
@@ -103,7 +79,7 @@ public class HeapsAlgorithmPermutationIterator implements PermutationIterator {
      * would have been valid and makes no attempt to inspect
      * the contents of the supplied <b>currentValue</b> argument.
      */
-    public <T> boolean hasNext(T[] currentValue) {  // per java docs, this method invoked BEFORE currentValue appended to Stream
+    public <T> boolean hasNext(T[] currentValue) {
 
         return counter.mostSignificantDigit() < currentValue.length - 1;
     }
@@ -151,97 +127,43 @@ public class HeapsAlgorithmPermutationIterator implements PermutationIterator {
      */
     public <T> T[] next(T[] currentValue) {  // per java docs, this method invoked AFTER currentValue appended to stream
 
-        counter.increment();
-
-        int[] pair = computeNextPair(counter);
-
-        if (counter.isZero() || counter.mostSignificantDigit() == currentValue.length - 1)
+        if (! hasNext(currentValue))
             return currentValue;
 
-        currentValue = cloneAndSwap(currentValue, pair[0], pair[1]);
+        counter.increment();
 
-        return currentValue;
+        if (! hasNext(currentValue))
+            return currentValue;
+
+        return reverse(currentValue, counter.leastSignificantDigit() + 2);
     }
 
     /**
-     * determine the next pair of elements to swap according to
-     * Heap's Algorithm
+     * create a copy of the provided sequence of values with
+     * the last (length) elements reversed
      *
-     * @param counter the "base F" counter representing the
-     *                current state of the permutation
-     * @return a pair of integers containing the indexes of
-     * the two elements to swap
+     * @param values the original sequence
+     * @param length the number of trailing elements to reverse
+     * @param <T> the type of element
+     * @return a copy of the original values with the last (length) elements reversed
      */
-    public int[] computeNextPair(BaseFCounter counter) {
-
-        if (counter.isZero())
-            return new int[] { 0, 0 };  // don't change anything
-
-        int leastSignificantDigit = counter.leastSignificantDigit();
-
-        // the element to be "swapped in" to the permutation
-        // is the one that lies outside of the permutation that
-        // we've just completed
-        //
-        // For example, if we've just completed a permutation of
-        // three elements, the state of the counter will be:
-        //
-        // (subpermutationIndex), 0, 0
-        //
-        // The least significant digit has rank 2 so that the
-        // element that we want to "swap in" is rank + 1
-        // elements from the end of the array.  Therefore,
-        // we set elementPos to leastSignificantDigit + 1
-        int elementPos = leastSignificantDigit + 1;
-
-
-        // For even "parity" swap operations, Heap's
-        // Algorithm specifies that we must exchange
-        // the selected element with the last element
-        // (alternateElementPos = 0).  We will start by
-        // trying this case because it requires no
-        // additional computation...
-        if ((elementPos & 1) == 0)
-            return new int[] { elementPos, 0 };
-
-        // However, for odd "parity", Heap's Algorithm
-        // requires that we swap the last element with
-        // element specified by one less than the value
-        // of the least significant digit (keep in mind
-        // that the value of the least significant digit
-        // can never be zero).  Looking again at the
-        // state of our "base F" counter, this value is
-        // represented as "subpermutationIndex":
-        //
-        // (subpermutationIndex), 0, 0
-        //
-        return new int[] { elementPos, counter.getDigit(leastSignificantDigit) - 1 };
-    }
-
-    /**
-     * construct a copy of the provided sequence of values
-     * with the two specified elements exchanged
-     *
-     * @param values the original sequence of elements
-     * @param a the index of the first element to swap
-     * @param b the index of the second element to swap
-     * @param <T> the type of elements in the sequence
-     * @return a new array containing the original sequence
-     * but having the two selected elements exchanged
-     */
-    public <T> T[] cloneAndSwap(T[] values, int a, int b) {
+    public <T> T[] reverse(T[] values, int length) {
 
         values = Arrays.copyOf(values, values.length);
 
-        b = values.length - b - 1;
+        int count = length >> 1;
 
-        a = values.length - a - 1;
+        int a = values.length - 1;
+        int b = values.length - length;
 
-        T temp = values[a];
+        while (count-- != 0) {
+            T temp = values[a];
+            values[a] = values[b];
+            values[b] = temp;
 
-        values[a] = values[b];
-
-        values[b] = temp;
+            a--;
+            b++;
+        }
 
         return values;
     }
