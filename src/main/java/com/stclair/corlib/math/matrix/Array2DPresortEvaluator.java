@@ -1,5 +1,6 @@
 package com.stclair.corlib.math.matrix;
 
+import com.stclair.corlib.collection.Tuple;
 import com.stclair.corlib.math.array.Array2D;
 import com.stclair.corlib.math.array.Array2DConcrete;
 import com.stclair.corlib.math.array.Indexor;
@@ -11,6 +12,7 @@ import com.stclair.corlib.permutation.PermutationGenerator;
 
 import java.util.*;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 /**
  * A class implementing presort logic to be applied prior to solving a matrix.
@@ -33,17 +35,21 @@ public class Array2DPresortEvaluator {
 
         Array2D<Long> significantBits = buildSignificantBitsArray(original);
 
-        List<Integer[]> permutations = buildPermutations(original.getHeight());
+        Stream<Integer[]> permutations = buildPermutations(original.getHeight());
 
-        int selectedPermutation = selectPermutation(significantBits, permutations);
+        Tuple<Integer, Integer[]> result = selectPermutation(significantBits, permutations);
 
-        if (selectedPermutation == -1)
+        int selectedPermutationIndex = result.getA();
+
+        if (selectedPermutationIndex == -1)
             return null;
 
-        if (selectedPermutation == 0)
+        if (selectedPermutationIndex == 0)
             return original;
 
-        return applyPermutation(original, permutations, selectedPermutation);
+        Integer[] selectedPermutationArray = result.getB();
+
+        return applyPermutation(original, selectedPermutationArray, selectedPermutationIndex);
     }
 
     /**
@@ -51,11 +57,11 @@ public class Array2DPresortEvaluator {
      * @param matrixOrder the Order of the matrix to be solved
      * @return list of permutation arrays
      */
-    public List<Integer[]> buildPermutations(int matrixOrder) {
+    public Stream<Integer[]> buildPermutations(int matrixOrder) {
 
         Integer[] sequence = sequenceOf(matrixOrder);
 
-        return this.permutationGenerator.listPermutationsOf(sequence);
+        return this.permutationGenerator.streamPermutationsOf(sequence);
     }
 
     /**
@@ -70,13 +76,11 @@ public class Array2DPresortEvaluator {
     /**
      * apply the selected permutation to the source array
      * @param original the source array that will be re-ordered
-     * @param permutations the list of permutation arrays
+     * @param permutation the selected permutation array
      * @param selectedPermutation the index of the permutation array selected
      * @return the source array with rows re-ordered
      */
-    public <T> Array2D<T> applyPermutation(Array2D<T> original, List<Integer[]> permutations, int selectedPermutation) {
-
-        Integer[] permutation = permutations.get(selectedPermutation);
+    public <T> Array2D<T> applyPermutation(Array2D<T> original, Integer[] permutation, int selectedPermutation) {
 
         Function<Indexor<T>, T> baseAccessor = (indexor) -> original.get(indexor.getColumn(), permutation[indexor.getRow()]);
 
@@ -98,27 +102,45 @@ public class Array2DPresortEvaluator {
      * choose the permutation that requires the least estimated precision
      * @param significantBits the 2D array representing the significant bits of the 2D array to be sorted
      * @param permutations the list of all possible permutations
-     * @return the index of the "optimal" permutation
+     * @return a Tuple containing the index of the "optimal" permutation and the values of that permutation
      */
-    public int selectPermutation(Array2D<Long> significantBits, List<Integer[]> permutations) {
+    public Tuple<Integer, Integer[]> selectPermutation(Array2D<Long> significantBits, Stream<Integer[]> permutations) {
 
         long magnitude = Long.MAX_VALUE;
 
-        int selectedPermutation = -1;
+        Integer[] selectedPermutationArray = null;
+        int selectedPermutationIndex = -1;
+        int indexArray = 0;
 
-        for (int index = 0; index < permutations.size(); index++) {
 
-            Integer[] permutation = permutations.get(index);
+//        return permutations
+//                .map(permutation -> new Tuple<>(indexArray[0]++, permutation))
+//                .map(tuple -> new Tuple<>(magnitudeOf(significantBits, tuple.getB()), tuple))
+//                .filter(tuple -> tuple.getA() != Long.MAX_VALUE)
+//                .min((a, b) -> (int) (b.getA() - a.getA()) )
+//                .map(Tuple::getB)
+//                .orElse(new Tuple<>(0, null));
 
+        for (Iterator<Integer[]> it = permutations.iterator(); it.hasNext(); ) {
+
+            Integer[] permutation = it.next();
+
+            int index = indexArray++;
+
+            // TODO: refine magnitudeOf() so that it provides a true upper limit of the bits required to represent the result
             long currentMagnitude = magnitudeOf(significantBits, permutation);
 
             if (magnitude > currentMagnitude) {
                 magnitude = currentMagnitude;
-                selectedPermutation = index;
+                selectedPermutationArray = permutation;
+                selectedPermutationIndex = index;
             }
+
+//            if (magnitude < 25)
+//                break;
         }
 
-        return selectedPermutation;
+        return new Tuple<>(selectedPermutationIndex, selectedPermutationArray);
     }
 
     /**
