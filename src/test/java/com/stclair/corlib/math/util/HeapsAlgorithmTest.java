@@ -1,6 +1,6 @@
 package com.stclair.corlib.math.util;
 
-import com.stclair.corlib.permutation.HalsHeapsAlgorithmPermutationGenerator;
+import com.stclair.corlib.permutation.HeapsAlgorithmPermutationGenerator;
 import com.stclair.corlib.permutation.HeapsAlgorithmNonrecursive;
 import com.stclair.corlib.permutation.HeapsAlgorithmRecursive;
 import org.junit.Test;
@@ -19,7 +19,7 @@ public class HeapsAlgorithmTest {
 
     HeapsAlgorithmNonrecursive nonrecursivePermutation = new HeapsAlgorithmNonrecursive();
 
-    HalsHeapsAlgorithmPermutationGenerator halsPermutation = new HalsHeapsAlgorithmPermutationGenerator();
+    HeapsAlgorithmPermutationGenerator halsPermutation = new HeapsAlgorithmPermutationGenerator();
 
     @Test
     public void ofReturnsSameResultForRecursiveAndNonRecursive() {

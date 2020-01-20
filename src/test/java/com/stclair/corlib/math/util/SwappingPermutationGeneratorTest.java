@@ -1,6 +1,6 @@
 package com.stclair.corlib.math.util;
 
-import com.stclair.corlib.permutation.HalsHeapsAlgorithmPermutationGenerator;
+import com.stclair.corlib.permutation.HeapsAlgorithmPermutationGenerator;
 import com.stclair.corlib.permutation.PermutationGenerator;
 import org.junit.Test;
 
@@ -25,7 +25,7 @@ public class SwappingPermutationGeneratorTest {
                 new Integer[]{ 3, 1, 2 },
                 new Integer[]{ 3, 2, 1 });
 
-        PermutationGenerator permutationGenerator = new HalsHeapsAlgorithmPermutationGenerator();
+        PermutationGenerator permutationGenerator = new HeapsAlgorithmPermutationGenerator();
 
         List<Integer[]> actual = permutationGenerator.listPermutationsOf(array);
 

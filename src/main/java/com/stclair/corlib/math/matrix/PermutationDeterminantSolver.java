@@ -2,14 +2,14 @@ package com.stclair.corlib.math.matrix;
 
 import com.stclair.corlib.math.matrix.determinant.DeterminantSolver;
 import com.stclair.corlib.math.util.OperationStrategy;
-import com.stclair.corlib.permutation.HalsHeapsAlgorithmPermutationGenerator;
+import com.stclair.corlib.permutation.HeapsAlgorithmPermutationGenerator;
 import com.stclair.corlib.permutation.PermutationGenerator;
 
 import java.util.stream.IntStream;
 
 public class PermutationDeterminantSolver implements DeterminantSolver {
 
-    private static final PermutationGenerator PERMUTATION_GENERATOR = new HalsHeapsAlgorithmPermutationGenerator();
+    private static final PermutationGenerator PERMUTATION_GENERATOR = new HeapsAlgorithmPermutationGenerator();
 
     @Override
     public <T> T determinant(Matrix<T> matrix) {

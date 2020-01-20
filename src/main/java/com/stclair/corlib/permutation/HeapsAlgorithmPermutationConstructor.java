@@ -1,5 +1,7 @@
 package com.stclair.corlib.permutation;
 
+import com.stclair.corlib.math.BaseFCounter;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -7,33 +9,18 @@ import java.util.function.Function;
 
 import static com.stclair.corlib.validation.Validation.inRange;
 
-public class HalsHeapsAlgorithmIterator<T> {
+public class HeapsAlgorithmPermutationConstructor implements PermutationConstructor {
 
-    public int[] pair;
-
-    long index;
-
-    public int[] register;
-
-    boolean depleted;
-
-    boolean finalValue;
-
-    public HalsHeapsAlgorithmIterator(T[] values, long index) {
-
-        this.register = Arrays.copyOf(toBaseF(index), values.length);
-
-        this.index = index;
-
-        pair = computeNextPair(register);
+    @Override
+    public <T> T[] constructPermutation(T[] initialSequence, long iteration) {
+        return reconstructStartState(iteration, initialSequence);
     }
 
-    public HalsHeapsAlgorithmIterator(T[] values) {
-
-        this.register = new int[values.length];
-
-        pair = computeNextPair(register);
+    @Override
+    public <T> T[] constructPermutation(T[] initialSequence, BaseFCounter baseF) {
+        return null;
     }
+
 
     /**
      * Construct a "base F" representation of the provided index
@@ -74,93 +61,6 @@ public class HalsHeapsAlgorithmIterator<T> {
         return digits.stream()
                 .mapToInt(digit -> digit)
                 .toArray();
-    }
-
-    public T[] getSeed(T[] start) {
-
-        if (index == 0)
-            return start;
-
-        return reconstructStartState(index, start);
-    }
-
-    public boolean hasNext(T[] currentValue) {  // per java docs, this method invoked BEFORE currentValue appended to Stream
-
-        return ! depleted;
-    }
-
-    public T[] next(T[] currentValue) {  // per java docs, this method invoked AFTER currentValue appended to stream
-
-        // this logic looks odd but it is here to support the Stream.iterate() behavior
-        // required by java.  The method expects a seed value (provided by getSeed()),
-        // a test method (provided by hasNext()), and a generator method (provided by this function).
-        //
-        // The three arguments to the Stream.iterate() method map to the three arguments
-        // required by a for loop, where the test method executes at the top of the loop
-        // and the generator method executes at the bottom of the loop.  For this reason,
-        // this function must be permitted to generate an "invalid" result that will then
-        // be refuted by the hasNext() method.
-        //
-        // As an extra precaution, this implementation does not attempt to validated the
-        // supplied value (in case it is subsequently mutated by the caller) and instead
-        // simply tests to see whether all available results have been emitted and
-        // accepted before allowing the hasNext() method to return false.
-        if (register[register.length - 1] != 0) {
-
-            depleted = true;
-
-            return currentValue;
-        }
-
-        currentValue = heapsAlgorithmSwapAndStore(currentValue, pair[0], pair[1]);
-
-        pair = computeNextPair(register);
-
-        index++;
-
-        return currentValue;
-    }
-
-    public int[] computeNextPair(int[] alternateElementPosRegister) {
-
-        int index = 0;
-
-        while (index < alternateElementPosRegister.length) {
-
-            int alternateElementPos = alternateElementPosRegister[index];
-
-            int elementPos = index + 1;
-
-            if (alternateElementPos < elementPos) {
-                alternateElementPosRegister[index] = alternateElementPos + 1;
-
-                return new int[] {elementPos, alternateElementPos};
-            }
-
-            alternateElementPosRegister[index++] = 0;
-        }
-
-        return null;
-    }
-
-    public T[] heapsAlgorithmSwapAndStore(T[] values, int a, int b) {
-
-        values = Arrays.copyOf(values, values.length);
-
-        if ((a & 1) == 0)
-            b = values.length - 1;
-        else
-            b = values.length - b - 1;
-
-        a = values.length - a - 1;
-
-        T temp = values[a];
-
-        values[a] = values[b];
-
-        values[b] = temp;
-
-        return values;
     }
 
 
@@ -468,5 +368,4 @@ public class HalsHeapsAlgorithmIterator<T> {
 
         return sequence;
     }
-
 }

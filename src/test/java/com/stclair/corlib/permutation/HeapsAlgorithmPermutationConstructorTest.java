@@ -3,18 +3,18 @@ package com.stclair.corlib.permutation;
 import com.stclair.corlib.math.util.MoreMath;
 import org.junit.Test;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
 
-public class HalsHeapsAlgorithmIteratorTest {
+public class HeapsAlgorithmPermutationConstructorTest {
 
-    ReversingPermutationGenerator reversing = new ReversingPermutationGenerator();
+    HeapsAlgorithmPermutationIterator iterator = new HeapsAlgorithmPermutationIterator();
 
-    PermutationTestTool testTool = new PermutationTestTool();
+    HeapsAlgorithmPermutationConstructor instance = new HeapsAlgorithmPermutationConstructor();
+
 
     @Test
     public void testReconstructSubpermutationsStartStateEven() {
@@ -22,8 +22,6 @@ public class HalsHeapsAlgorithmIteratorTest {
         Character[] start = "abcdefgh".chars()
                 .mapToObj(it -> (char) it)
                 .toArray(Character[]::new);
-
-        HalsHeapsAlgorithmIterator<Character> iterator = new HalsHeapsAlgorithmIterator<>(start);
 
         int permutationIndex = 0;
 
@@ -37,7 +35,7 @@ public class HalsHeapsAlgorithmIteratorTest {
 
                 String expected = String.join("", Arrays.stream(current).reduce(new StringBuilder(), StringBuilder::append, StringBuilder::append));
 
-                Character[] computed = iterator.reconstructSubpermutationStartStateEven(start.length, subpermutationIndex, start);
+                Character[] computed = instance.reconstructSubpermutationStartStateEven(start.length, subpermutationIndex, start);
 
                 String actual = String.join("", Arrays.stream(computed).reduce(new StringBuilder(), StringBuilder::append, StringBuilder::append));
 
@@ -57,8 +55,6 @@ public class HalsHeapsAlgorithmIteratorTest {
                 .mapToObj(it -> (char) it)
                 .toArray(Character[]::new);
 
-        HalsHeapsAlgorithmIterator<Character> iterator = new HalsHeapsAlgorithmIterator<>(start);
-
         int permutationIndex = 0;
 
         int subpermutationIndex = 0;
@@ -71,7 +67,7 @@ public class HalsHeapsAlgorithmIteratorTest {
 
                 String expected = String.join("", Arrays.stream(current).reduce(new StringBuilder(), StringBuilder::append, StringBuilder::append));
 
-                Character[] computed = iterator.reconstructSubpermutationStartStateOdd(start.length, subpermutationIndex, start);
+                Character[] computed = instance.reconstructSubpermutationStartStateOdd(start.length, subpermutationIndex, start);
 
                 String actual = String.join("", Arrays.stream(computed).reduce(new StringBuilder(), StringBuilder::append, StringBuilder::append));
 
@@ -93,9 +89,7 @@ public class HalsHeapsAlgorithmIteratorTest {
                 .mapToObj(it -> (char) it)
                 .toArray(Character[]::new);
 
-        HalsHeapsAlgorithmIterator<Character> iterator = new HalsHeapsAlgorithmIterator<>(start);
-
-        PermutationGenerator generator = new HalsHeapsAlgorithmPermutationGenerator();
+        PermutationGenerator generator = new HeapsAlgorithmPermutationGenerator();
 
         List<Character[]> expectedResults = generator.listPermutationsOf(start);
 
@@ -103,7 +97,7 @@ public class HalsHeapsAlgorithmIteratorTest {
 
             Character[] expected = expectedResults.get(index);
 
-            assertArrayEquals(expected, iterator.reconstructStartState(index, start));
+            assertArrayEquals(expected, instance.reconstructStartState(index, start));
         }
 
     }
@@ -115,9 +109,7 @@ public class HalsHeapsAlgorithmIteratorTest {
                 .mapToObj(it -> (char) it)
                 .toArray(Character[]::new);
 
-        HalsHeapsAlgorithmIterator<Character> iterator = new HalsHeapsAlgorithmIterator<>(start);
-
-        PermutationGenerator generator = new HalsHeapsAlgorithmPermutationGenerator();
+        PermutationGenerator generator = new HeapsAlgorithmPermutationGenerator();
 
         List<Character[]> expectedResults = generator.listPermutationsOf(start);
 
@@ -127,7 +119,7 @@ public class HalsHeapsAlgorithmIteratorTest {
 
             String expected = String.join("", Arrays.stream(expectedArray).reduce(new StringBuilder(), StringBuilder::append, StringBuilder::append));
 
-            String actual = String.join("", Arrays.stream(iterator.reconstructStartState(index, start)).reduce(new StringBuilder(), StringBuilder::append, StringBuilder::append));
+            String actual = String.join("", Arrays.stream(instance.reconstructStartState(index, start)).reduce(new StringBuilder(), StringBuilder::append, StringBuilder::append));
 
             assertEquals(expected, actual);
         }
@@ -141,7 +133,7 @@ public class HalsHeapsAlgorithmIteratorTest {
                 .mapToObj(it -> (char) it)
                 .toArray(Character[]::new);
 
-        PermutationGenerator generator = new HalsHeapsAlgorithmPermutationGenerator();
+        PermutationGenerator generator = new HeapsAlgorithmPermutationGenerator();
 
         List<Character[]> actual = generator.listPermutationsOf(start);
 
@@ -150,21 +142,6 @@ public class HalsHeapsAlgorithmIteratorTest {
             Character[] array = actual.get(index);
         }
 
-    }
-
-
-    @Test
-    public void convert23toBaseF() {
-
-        long value = 23;
-
-        int[] expected = { 1, 2, 3 };
-
-        HalsHeapsAlgorithmIterator<Object> instance = new HalsHeapsAlgorithmIterator<>(new Object[1]);
-
-        int[] actual = instance.toBaseF(value);
-
-        assertArrayEquals(expected, actual);
     }
 
     @Test
@@ -177,8 +154,6 @@ public class HalsHeapsAlgorithmIteratorTest {
         Character[] expected = "ba".chars()
                 .mapToObj(it -> (char) it)
                 .toArray(Character[]::new);
-
-        HalsHeapsAlgorithmIterator<Character> instance = new HalsHeapsAlgorithmIterator<>(start);
 
         Character[] actual = instance.reconstructEndState(start.length, start);
 
@@ -196,8 +171,6 @@ public class HalsHeapsAlgorithmIteratorTest {
                 .mapToObj(it -> (char) it)
                 .toArray(Character[]::new);
 
-        HalsHeapsAlgorithmIterator<Character> instance = new HalsHeapsAlgorithmIterator<>(start);
-
         Character[] actual = instance.reconstructEndState(start.length, start);
 
         assertArrayEquals(expected, actual);
@@ -213,8 +186,6 @@ public class HalsHeapsAlgorithmIteratorTest {
         Character[] expected = "dabc".chars()
                 .mapToObj(it -> (char) it)
                 .toArray(Character[]::new);
-
-        HalsHeapsAlgorithmIterator<Character> instance = new HalsHeapsAlgorithmIterator<>(start);
 
         Character[] actual = instance.reconstructEndState(start.length, start);
 
@@ -232,8 +203,6 @@ public class HalsHeapsAlgorithmIteratorTest {
                 .mapToObj(it -> (char) it)
                 .toArray(Character[]::new);
 
-        HalsHeapsAlgorithmIterator<Character> instance = new HalsHeapsAlgorithmIterator<>(start);
-
         Character[] actual = instance.reconstructEndState(start.length, start);
 
         assertArrayEquals(expected, actual);
@@ -249,8 +218,6 @@ public class HalsHeapsAlgorithmIteratorTest {
         Character[] expected = "fadebc".chars()
                 .mapToObj(it -> (char) it)
                 .toArray(Character[]::new);
-
-        HalsHeapsAlgorithmIterator<Character> instance = new HalsHeapsAlgorithmIterator<>(start);
 
         Character[] actual = instance.reconstructEndState(start.length, start);
 
@@ -268,8 +235,6 @@ public class HalsHeapsAlgorithmIteratorTest {
                 .mapToObj(it -> (char) it)
                 .toArray(Character[]::new);
 
-        HalsHeapsAlgorithmIterator<Character> instance = new HalsHeapsAlgorithmIterator<>(start);
-
         Character[] actual = instance.reconstructEndState(start.length, start);
 
         assertArrayEquals(expected, actual);
@@ -285,8 +250,6 @@ public class HalsHeapsAlgorithmIteratorTest {
         Character[] expected = "hadefgbc".chars()
                 .mapToObj(it -> (char) it)
                 .toArray(Character[]::new);
-
-        HalsHeapsAlgorithmIterator<Character> instance = new HalsHeapsAlgorithmIterator<>(start);
 
         Character[] actual = instance.reconstructEndState(start.length, start);
 
@@ -304,8 +267,6 @@ public class HalsHeapsAlgorithmIteratorTest {
                 .mapToObj(it -> (char) it)
                 .toArray(Character[]::new);
 
-        HalsHeapsAlgorithmIterator<Character> instance = new HalsHeapsAlgorithmIterator<>(start);
-
         Character[] actual = instance.reconstructSubpermutationStartState(4, 1, start);
 
         assertArrayEquals(expected, actual);
@@ -321,8 +282,6 @@ public class HalsHeapsAlgorithmIteratorTest {
         Character[] expected = "abcdgefh".chars()
                 .mapToObj(it -> (char) it)
                 .toArray(Character[]::new);
-
-        HalsHeapsAlgorithmIterator<Character> instance = new HalsHeapsAlgorithmIterator<>(start);
 
         Character[] actual = instance.reconstructSubpermutationStartState(4, 2, start);
 
@@ -340,8 +299,6 @@ public class HalsHeapsAlgorithmIteratorTest {
                 .mapToObj(it -> (char) it)
                 .toArray(Character[]::new);
 
-        HalsHeapsAlgorithmIterator<Character> instance = new HalsHeapsAlgorithmIterator<>(start);
-
         Character[] actual = instance.reconstructSubpermutationStartState(4, 3, start);
 
         assertArrayEquals(expected, actual);
@@ -357,8 +314,6 @@ public class HalsHeapsAlgorithmIteratorTest {
         Character[] expected = "abcghefd".chars()
                 .mapToObj(it -> (char) it)
                 .toArray(Character[]::new);
-
-        HalsHeapsAlgorithmIterator<Character> instance = new HalsHeapsAlgorithmIterator<>(start);
 
         Character[] actual = instance.reconstructSubpermutationStartState(5, 1, start);
 
@@ -376,8 +331,6 @@ public class HalsHeapsAlgorithmIteratorTest {
                 .mapToObj(it -> (char) it)
                 .toArray(Character[]::new);
 
-        HalsHeapsAlgorithmIterator<Character> instance = new HalsHeapsAlgorithmIterator<>(start);
-
         Character[] actual = instance.reconstructSubpermutationStartState(5, 2, start);
 
         assertArrayEquals(expected, actual);
@@ -393,8 +346,6 @@ public class HalsHeapsAlgorithmIteratorTest {
         Character[] expected = "abcegdhf".chars()
                 .mapToObj(it -> (char) it)
                 .toArray(Character[]::new);
-
-        HalsHeapsAlgorithmIterator<Character> instance = new HalsHeapsAlgorithmIterator<>(start);
 
         Character[] actual = instance.reconstructSubpermutationStartState(5, 3, start);
 
@@ -412,8 +363,6 @@ public class HalsHeapsAlgorithmIteratorTest {
                 .mapToObj(it -> (char) it)
                 .toArray(Character[]::new);
 
-        HalsHeapsAlgorithmIterator<Character> instance = new HalsHeapsAlgorithmIterator<>(start);
-
         Character[] actual = instance.reconstructSubpermutationStartState(5, 4, start);
 
         assertArrayEquals(expected, actual);
@@ -430,8 +379,6 @@ public class HalsHeapsAlgorithmIteratorTest {
                 .mapToObj(it -> (char) it)
                 .toArray(Character[]::new);
 
-        HalsHeapsAlgorithmIterator<Character> instance = new HalsHeapsAlgorithmIterator<>(start);
-
         Character[] actual = instance.reconstructSubpermutationStartState(5, 5, start);
 
         assertArrayEquals(expected, actual);
@@ -443,8 +390,6 @@ public class HalsHeapsAlgorithmIteratorTest {
         Character[] start = "abcd".chars()
                 .mapToObj(it -> (char) it)
                 .toArray(Character[]::new);
-
-        HalsHeapsAlgorithmIterator<Character> instance = new HalsHeapsAlgorithmIterator<>(start);
 
         Character[] actual = instance.reconstructStartState(0, start);
 
@@ -462,8 +407,6 @@ public class HalsHeapsAlgorithmIteratorTest {
                 .mapToObj(it -> (char) it)
                 .toArray(Character[]::new);
 
-        HalsHeapsAlgorithmIterator<Character> instance = new HalsHeapsAlgorithmIterator<>(start);
-
         Character[] actual = instance.reconstructStartState(1, start);
 
         assertArrayEquals(expected, actual);
@@ -479,8 +422,6 @@ public class HalsHeapsAlgorithmIteratorTest {
         Character[] expected = "acdb".chars()
                 .mapToObj(it -> (char) it)
                 .toArray(Character[]::new);
-
-        HalsHeapsAlgorithmIterator<Character> instance = new HalsHeapsAlgorithmIterator<>(start);
 
         Character[] actual = instance.reconstructStartState(2, start);
 
@@ -498,8 +439,6 @@ public class HalsHeapsAlgorithmIteratorTest {
                 .mapToObj(it -> (char) it)
                 .toArray(Character[]::new);
 
-        HalsHeapsAlgorithmIterator<Character> instance = new HalsHeapsAlgorithmIterator<>(start);
-
         Character[] actual = instance.reconstructStartState(3, start);
 
         assertArrayEquals(expected, actual);
@@ -515,8 +454,6 @@ public class HalsHeapsAlgorithmIteratorTest {
         Character[] expected = "adbc".chars()
                 .mapToObj(it -> (char) it)
                 .toArray(Character[]::new);
-
-        HalsHeapsAlgorithmIterator<Character> instance = new HalsHeapsAlgorithmIterator<>(start);
 
         Character[] actual = instance.reconstructStartState(4, start);
 
@@ -534,8 +471,6 @@ public class HalsHeapsAlgorithmIteratorTest {
                 .mapToObj(it -> (char) it)
                 .toArray(Character[]::new);
 
-        HalsHeapsAlgorithmIterator<Character> instance = new HalsHeapsAlgorithmIterator<>(start);
-
         Character[] actual = instance.reconstructStartState(5, start);
 
         assertArrayEquals(expected, actual);
@@ -552,8 +487,6 @@ public class HalsHeapsAlgorithmIteratorTest {
                 .mapToObj(it -> (char) it)
                 .toArray(Character[]::new);
 
-        HalsHeapsAlgorithmIterator<Character> instance = new HalsHeapsAlgorithmIterator<>(start);
-
         Character[] actual = instance.reconstructStartState(6, start);
 
         assertArrayEquals(expected, actual);
@@ -569,8 +502,6 @@ public class HalsHeapsAlgorithmIteratorTest {
         Character[] expected = "bca".chars()
                 .mapToObj(it -> (char) it)
                 .toArray(Character[]::new);
-
-        HalsHeapsAlgorithmIterator<Character> instance = new HalsHeapsAlgorithmIterator<>(start);
 
         Character[] actual = instance.reconstructStartState(2, start);
 
@@ -590,8 +521,6 @@ public class HalsHeapsAlgorithmIteratorTest {
                 .mapToObj(it -> (char) it)
                 .toArray(Character[]::new);
 
-        HalsHeapsAlgorithmIterator<Character> instance = new HalsHeapsAlgorithmIterator<>(start);
-
         Character[] actual = instance.reconstructStartState(0, start);
 
         assertArrayEquals(expected, actual);
@@ -609,8 +538,6 @@ public class HalsHeapsAlgorithmIteratorTest {
                 .mapToObj(it -> (char) it)
                 .toArray(Character[]::new);
 
-        HalsHeapsAlgorithmIterator<Character> instance = new HalsHeapsAlgorithmIterator<>(start);
-
         Character[] actual = instance.reconstructStartState(1, start);
 
         assertArrayEquals(expected, actual);
@@ -626,13 +553,13 @@ public class HalsHeapsAlgorithmIteratorTest {
                 .mapToObj(it -> (char) it)
                 .toArray(Character[]::new);
 
-        PermutationGenerator generator = new HalsHeapsAlgorithmPermutationGenerator();
-
-        HalsHeapsAlgorithmIterator<Character> instance = new HalsHeapsAlgorithmIterator<>(start);
+        PermutationGenerator generator = new HeapsAlgorithmPermutationGenerator();
 
         generator.streamPermutationsOf(start)
                 .forEach(it ->
                         assertArrayEquals(it, instance.reconstructStartState(permutationIndex[0]++, start)));
+
+        assertEquals(24, permutationIndex[0]);
     }
 
     @Test
@@ -644,9 +571,7 @@ public class HalsHeapsAlgorithmIteratorTest {
                 .mapToObj(it -> (char) it)
                 .toArray(Character[]::new);
 
-        PermutationGenerator generator = new HalsHeapsAlgorithmPermutationGenerator();
-
-        HalsHeapsAlgorithmIterator<Character> instance = new HalsHeapsAlgorithmIterator<>(start);
+        PermutationGenerator generator = new HeapsAlgorithmPermutationGenerator();
 
         generator.streamPermutationsOf(start)
                 .forEach(it ->
@@ -662,9 +587,7 @@ public class HalsHeapsAlgorithmIteratorTest {
                 .mapToObj(it -> (char) it)
                 .toArray(Character[]::new);
 
-        PermutationGenerator generator = new HalsHeapsAlgorithmPermutationGenerator();
-
-        HalsHeapsAlgorithmIterator<Character> instance = new HalsHeapsAlgorithmIterator<>(start);
+        PermutationGenerator generator = new HeapsAlgorithmPermutationGenerator();
 
         generator.streamPermutationsOf(start)
                 .forEach(it ->
@@ -681,9 +604,7 @@ public class HalsHeapsAlgorithmIteratorTest {
                 .mapToObj(it -> (char) it)
                 .toArray(Character[]::new);
 
-        PermutationGenerator generator = new HalsHeapsAlgorithmPermutationGenerator();
-
-        HalsHeapsAlgorithmIterator<Character> instance = new HalsHeapsAlgorithmIterator<>(start);
+        PermutationGenerator generator = new HeapsAlgorithmPermutationGenerator();
 
         generator.streamPermutationsOf(start)
                 .forEach(it ->
@@ -699,49 +620,10 @@ public class HalsHeapsAlgorithmIteratorTest {
                 .mapToObj(it -> (char) it)
                 .toArray(Character[]::new);
 
-        PermutationGenerator generator = new HalsHeapsAlgorithmPermutationGenerator();
-
-        HalsHeapsAlgorithmIterator<Character> instance = new HalsHeapsAlgorithmIterator<>(start);
+        PermutationGenerator generator = new HeapsAlgorithmPermutationGenerator();
 
         generator.streamPermutationsOf(start)
                 .forEach(it ->
                         assertArrayEquals(it, instance.reconstructStartState(permutationIndex[0]++, start)));
-    }
-
-    @Test
-    public void testStartPermutationsOf24AtOffset3() {
-
-        int startIndex = 23;
-
-        String initialString = "abcd";
-
-        Character[] initialValues = initialString.chars()
-                .mapToObj(it -> (char) it)
-                .toArray(Character[]::new);
-
-        PermutationGenerator generator = new HalsHeapsAlgorithmPermutationGenerator();
-
-        List<String> expected =
-                generator
-                        .streamPermutationsOf(initialValues)
-                        .map(HalsHeapsAlgorithmIteratorTest::characterArrayToString)
-                        .skip(startIndex)
-                .collect(Collectors.toList());
-
-        HalsHeapsAlgorithmIterator<Character> instance = new HalsHeapsAlgorithmIterator<>(initialValues, startIndex);
-
-        List<String> actual = new ArrayList<>();
-
-        for (Character[] current = instance.getSeed(initialValues); instance.hasNext(current); current = instance.next(current))
-            actual.add(characterArrayToString(current));
-
-        assertEquals(expected, actual);
-        assertEquals(expected.size(), actual.size());
-    }
-
-    public static String characterArrayToString(Character[] array) {
-        return Arrays.stream(array)
-            .reduce(new StringBuilder(), StringBuilder::append, StringBuilder::append)
-            .toString();
     }
 }

@@ -5,7 +5,7 @@ import com.stclair.corlib.math.array.Array2DConcrete;
 import com.stclair.corlib.math.array.Indexor;
 import com.stclair.corlib.math.util.LongOperationStrategy;
 import com.stclair.corlib.math.util.OperationStrategy;
-import com.stclair.corlib.permutation.HalsHeapsAlgorithmPermutationGenerator;
+import com.stclair.corlib.permutation.HeapsAlgorithmPermutationGenerator;
 import com.stclair.corlib.permutation.PermutationGenerator;
 
 import java.util.*;
@@ -19,7 +19,7 @@ import java.util.function.Function;
 public class Array2DPresortEvaluator {
 
     /** implementation of Permutations interface that will be used to synthesize the permutation matrices to be tested */
-    PermutationGenerator permutationGenerator = new HalsHeapsAlgorithmPermutationGenerator();
+    PermutationGenerator permutationGenerator = new HeapsAlgorithmPermutationGenerator();
 
     /**
      * sort the rows of the provided Array2D instance (representing elements of a Matrix)
