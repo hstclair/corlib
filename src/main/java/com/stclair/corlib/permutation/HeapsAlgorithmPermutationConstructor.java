@@ -1,141 +1,160 @@
 package com.stclair.corlib.permutation;
 
 import com.stclair.corlib.math.BaseFCounter;
-
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.function.Function;
 
 import static com.stclair.corlib.validation.Validation.inRange;
 
+/**
+ * Implementation of PermutationConstructor to generate a specific permutation
+ * result using Heap's Algorithm
+ */
 public class HeapsAlgorithmPermutationConstructor implements PermutationConstructor {
 
     @Override
     public <T> T[] constructPermutation(T[] initialSequence, long iteration) {
-        return reconstructStartState(iteration, initialSequence);
+        return construct(new BaseFCounter().set(iteration), initialSequence);
     }
 
     @Override
     public <T> T[] constructPermutation(T[] initialSequence, BaseFCounter baseF) {
-        return null;
+        return construct(baseF, initialSequence);
     }
 
 
     /**
-     * Construct a "base F" representation of the provided index
-     * This is simply an array of values representing a series
-     * of digits whose values are denominated in a variable base
-     * determined by the factorial of digit order (i.e. 1, 2, 3...)
+     * returns a function that maps an index to the corresponding value in the
+     * "generator" permutation for the selected number of trailing elements of
+     * the supplied sequence
      *
-     * For example, the following mappings show the "Base F"
-     * equivalent for various numbers:
-     *
-     * 1     int[] { 1 }
-     * 2     int[] { 0, 1 }
-     * 3     int[] { 1, 1 }
-     * 4     int[] { 0, 2 }
-     * 5     int[] { 1, 2 }
-     * 6     int[] { 0, 0, 1 }
-     *
-     * @param value the value to be converted to "base F"
-     * @return
+     * @param length the length of the segment for which the generator function will map
+     * @param sequence the original sequence of elements for which the generator function
+     *                 will be created
+     * @param <T> the type of object in the array
+     * @return a function that accepts an index and returns the corresponding element
+     *         of the "generator" permutation
      */
-    public int[] toBaseF(long value) {
+    public <T> Function<Integer, T> getGeneratorFunction(int length, T[] sequence) {
 
-        long divisor = 2;
+        // for an odd-length sequence, each top-level permutation consists of a simple
+        // rotation of each of the constituent values through a specific, easily-constructed
+        // "generator" which is a permutation of the original values (though the behavior
+        // is slightly different when the initial sequence has length three).
+        //
+        // In general, given a sequence:
+        //
+        //    first, second, third, others..., last
+        //
+        // the generator follows the pattern:
+        //
+        //    first, others..., second, third, last
+        //
+        // However, for a sequence containing only three elements, the generator is:
+        //
+        //    first, second, last
+        //
+        // the generator function below has been carefully constructed to handle
+        // both cases correctly.
 
-        List<Integer> digits = new ArrayList<>();
+        inRange(length, 0, sequence.length, "length");
 
-        while (value > 0) {
+        int generatorOffset = sequence.length - length;
 
-            int modulus = (int) (value % divisor);
+        return (index) -> {
 
-            digits.add(modulus);
+            inRange(index, 0, length - 1, "index");
 
-            value = value / divisor;
+            if (index == 0)
+                return sequence[generatorOffset];
 
-            divisor++;
-        }
+            if (index == length - 1)
+                return sequence[sequence.length - 1];
 
-        return digits.stream()
-                .mapToInt(digit -> digit)
-                .toArray();
-    }
+            if (index == length - 2)
+                return sequence[generatorOffset + 1];
 
+            if (index < length - 3)
+                return sequence[generatorOffset + index + 2];
 
-    /**
-     * reconstruct the state at the end of a single set of permutations
-     * for the given length
-     * @param length the length of the series of elements in the permutation
-     * @param sequence the sequence of elements before the permutation
-     * @param <T> the type of element
-     * @return the sequence of elements following the permutation
-     */
-    public <T> T[] reconstructEndState(int length, T[] sequence) {
+            if (index == length - 3)
+                return sequence[generatorOffset + 2];
 
-        int lastPos = sequence.length - 1;
-        int firstPos = lastPos - (length-1);
-
-        T[] result = Arrays.copyOf(sequence, sequence.length);
-
-        result[firstPos] = sequence[lastPos];
-
-        if ((length & 1) != 0) {
-            result[lastPos] = sequence[firstPos];
-
-            return result;
-        }
-
-        result[firstPos+1] = sequence[firstPos];
-
-        if (lastPos == firstPos + 1)
-            return result;
-
-        result[lastPos-1] = sequence[firstPos+1];
-        result[lastPos] = sequence[firstPos+2];
-
-        if (lastPos == firstPos + 3)
-            return result;
-
-        for (int index = firstPos+2; index < lastPos - 1; index++)
-            result[index] = sequence[index+1];
-
-        return result;
+            throw new IllegalArgumentException();
+        };
     }
 
     /**
-     * Generate an array containing the starting state of the requested subpermutation
-     * using Heap's Algorithm
+     * get a function that will map the index in a result sequence to the
+     * corresponding element in the generator sequence for the selected
+     * permutation index.
      *
-     * @param length
-     * the number of array elements involved in the subpermutation
-     * (this must be equal to the number of elements in the implied
-     * inner subpermutation plus one) and must be less than
-     * or equal to the length of the provided <b>sequence</b>
-     * @param subpermutationIndex
-     * the zero-relative index of the desired subpermutation
-     * (this must be less than or equal to length - 1)
-     * @param sequence
-     * the sequence of elements to which the subpermutation is to be applied
-     * @param <T> the type of element
-     *
-     * @return a new array containing the state of the original sequence following
-     * <b>subpermutationIndex * factorial(length - 1)</b> iterations of
-     * Heap's Algorithm
+     * @param subpermutationIndex the index of the subpermutation to be applied
+     * @param length the number of elements affected by the subpermutation
+     * @return the mapped index
      */
-    public <T> T[] reconstructSubpermutationStartState(int length, int subpermutationIndex, T[] sequence) {
+    public Function<Integer, Integer> getGeneratorIndexFunction(int subpermutationIndex, int length) {
 
-        if (subpermutationIndex < 0)
-            subpermutationIndex = length - (subpermutationIndex % length);
+        // each element in the result maps to a rotation of the elements in
+        // the corresponding "generator" sequence.
+        //
+        // To illustrate, for the sequence:
+        //
+        //   abcde
+        //
+        // the corresponding generator is:
+        //
+        //   adbce
+        //
+        // for subpermutation (0), the index must map to the positions of
+        // the original values in the generator so this function must
+        // implement the following mapping:
+        //
+        //   0=>0, 1=>2, 2=>2, 3=>1, 4=>4
+        //
+        // each subsequent subpermutation effectively rotates through the
+        // members of the generator so that the series of subpermutation
+        // results for our original sequence is:
+        //
+        //    abcde
+        //    dceba
+        //    beacd
+        //    cadeb
+        //    edbac
+        //
+        // Observe that the sequence in the first column is the sequence
+        // in our generator: adbce
+        // Likewise, the sequence in the second column is the sequence
+        // in our generator if we were to start at 'b' and to wrap at the
+        // end of the generator: bcead
+        // This same pattern can be observed in each of the other columns
+        // and holds true for all odd-length subpermutations
+        //
+        // the function that follows simply implements this idea by first
+        // computing the reverse mapping used to construct the "generator"
+        // (in order to find the original element's position within the
+        // generator sequence) and then adds the offset for the selected
+        // subpermutation
 
-        if (subpermutationIndex >= length)
-            subpermutationIndex %= length;
+        return (index) -> {
 
-        if ((length & 1) == 0)
-            return reconstructSubpermutationStartStateEven(length, subpermutationIndex, sequence);
+            if (index == length - 1)
+                return (subpermutationIndex + length - 1) % length;
 
-        return reconstructSubpermutationStartStateOdd(length, subpermutationIndex, sequence);
+            switch(index) {
+
+                case 0:
+                    return subpermutationIndex;
+
+                case 1:
+                    return (subpermutationIndex + length - 2) % length;
+
+                case 2:
+                    return (subpermutationIndex + length - 3) % length;
+            }
+
+            return (subpermutationIndex + index - 2) % length;
+        };
     }
 
 
@@ -159,7 +178,7 @@ public class HeapsAlgorithmPermutationConstructor implements PermutationConstruc
      * <b>subpermutationIndex * factorial(length - 1)</b> iterations of
      * Heap's Algorithm
      */
-    public <T> T[] reconstructSubpermutationStartStateOdd(int length, int subpermutationIndex, T[] sequence) {
+    public <T> T[] constructPermutationOdd(int length, int subpermutationIndex, T[] sequence) {
 
         inRange(length, 0, Integer.MAX_VALUE, "length");
 
@@ -173,57 +192,13 @@ public class HeapsAlgorithmPermutationConstructor implements PermutationConstruc
         if (subpermutationIndex == 0)
             return result;
 
-        T[] generator = Arrays.copyOfRange(sequence, sequence.length - (length - 2), sequence.length);
+        Function<Integer, T> generatorFunction = getGeneratorFunction(length, sequence);
 
-        if (generator.length != length)
-            generator = Arrays.copyOf(generator, length);
 
-        if (length == 3) {
-            generator[0] = sequence[sequence.length - 3];
-            generator[1] = sequence[sequence.length - 2];
-            generator[2] = sequence[sequence.length - 1];
-        } else {  // adcbe => debca
-            generator[0] = sequence[sequence.length - length];
-            generator[generator.length - 1] = sequence[sequence.length - 1];
-            generator[generator.length - 2] = sequence[sequence.length - (length - 1)];
-            generator[generator.length - 3] = sequence[sequence.length - (length - 2)];
-        }
-
-        Function<Integer, Integer> generatorIndex = (index) -> {
-
-            if (length == 3) {
-                switch (index) {
-                    case 0:
-                        return subpermutationIndex;
-
-                    case 1:
-                        return (subpermutationIndex + 1) % length;
-
-                    case 2:
-                        return (subpermutationIndex + 2) % length;
-                }
-            }
-
-            switch(index) {
-
-                case 0:
-                    return subpermutationIndex;
-
-                case 1:
-                    return (subpermutationIndex + length - 2) % length;
-
-                case 2:
-                    return (subpermutationIndex + length - 3) % length;
-            }
-
-            if (index == length - 1)
-                return (subpermutationIndex + length - 1) % length;
-
-            return (subpermutationIndex + index - 2) % length;
-        };
+        Function<Integer, Integer> generatorIndex = getGeneratorIndexFunction(subpermutationIndex, length);
 
         for (int index = 0; index < length; index++)
-            result[sequence.length - length + index] = generator[generatorIndex.apply(index)];
+            result[sequence.length - length + index] = generatorFunction.apply(generatorIndex.apply(index));
 
         return result;
     }
@@ -248,7 +223,7 @@ public class HeapsAlgorithmPermutationConstructor implements PermutationConstruc
      * <b>subpermutationIndex * factorial(length - 1)</b> iterations of
      * Heap's Algorithm
      */
-    public <T> T[] reconstructSubpermutationStartStateEven(int length, int subpermutationIndex, T[] sequence) {
+    public <T> T[] constructPermutationEven(int length, int subpermutationIndex, T[] sequence) {
 
         inRange(length, 0, Integer.MAX_VALUE, "length");
 
@@ -346,25 +321,58 @@ public class HeapsAlgorithmPermutationConstructor implements PermutationConstruc
     }
 
     /**
+     * Generate an array containing the starting state of the requested subpermutation
+     * using Heap's Algorithm
+     *
+     * @param length
+     * the number of array elements involved in the subpermutation
+     * (this must be equal to the number of elements in the implied
+     * inner subpermutation plus one) and must be less than
+     * or equal to the length of the provided <b>sequence</b>
+     * @param subpermutationIndex
+     * the zero-relative index of the desired subpermutation
+     * (this must be less than or equal to length - 1)
+     * @param sequence
+     * the sequence of elements to which the subpermutation is to be applied
+     * @param <T> the type of element
+     *
+     * @return a new array containing the state of the original sequence following
+     * <b>subpermutationIndex * factorial(length - 1)</b> iterations of
+     * Heap's Algorithm
+     */
+    public <T> T[] constructPermutation(int length, int subpermutationIndex, T[] sequence) {
+
+        if (subpermutationIndex < 0)
+            subpermutationIndex = length - (subpermutationIndex % length);
+
+        if (subpermutationIndex >= length)
+            subpermutationIndex %= length;
+
+        if ((length & 1) == 0)
+            return constructPermutationEven(length, subpermutationIndex, sequence);
+
+        return constructPermutationOdd(length, subpermutationIndex, sequence);
+    }
+
+    /**
      * Compute a Heap's Algorithm result non-iteratively
      * (this method can be used to compute the output of Heap's Algorithm after any arbitrary number of iterations)
      *
-     * @param permutationIndex the number of iterations for which a result is to be computed
+     * @param counter the "base F" encoding of the number of iterations for which a result is to be computed
      * @param sequence the starting sequence
      * @param <T> the type of result
      * @return a new array containing the Heap's Algorithm output corresponding to the specified number of iterations.
      */
-    public <T> T[] reconstructStartState(long permutationIndex, T[] sequence) {
+    public <T> T[] construct(BaseFCounter counter, T[] sequence) {
 
-        // limit to valid permutation index:
-        // permutationIndex = permutationIndex % MoreMath.factorial(sequence.length) ?
-        //
-        // probably less expensive to simply apply some sort of truncation to the baseF value in startRegister
+        if (counter.isZero())
+            return sequence;
 
-        int[] startRegister = toBaseF(permutationIndex);
+        if (counter.mostSignificantDigit() + 2 > sequence.length)
+            throw new IllegalArgumentException("permutationIndex is outside the range of possible values for the provided sequence");
 
-        for (int index = 0; index < startRegister.length; index++)
-            sequence = reconstructSubpermutationStartState(startRegister.length + 1 - index, startRegister[startRegister.length - 1 - index], sequence);
+        for (int index = counter.mostSignificantDigit(); index >= 0; index--)
+            sequence = constructPermutation(index + 2, counter.getDigit(index), sequence);
 
         return sequence;
     }

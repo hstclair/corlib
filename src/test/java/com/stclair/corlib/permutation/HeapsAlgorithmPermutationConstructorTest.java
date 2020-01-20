@@ -35,7 +35,7 @@ public class HeapsAlgorithmPermutationConstructorTest {
 
                 String expected = String.join("", Arrays.stream(current).reduce(new StringBuilder(), StringBuilder::append, StringBuilder::append));
 
-                Character[] computed = instance.reconstructSubpermutationStartStateEven(start.length, subpermutationIndex, start);
+                Character[] computed = instance.constructPermutationEven(start.length, subpermutationIndex, start);
 
                 String actual = String.join("", Arrays.stream(computed).reduce(new StringBuilder(), StringBuilder::append, StringBuilder::append));
 
@@ -67,7 +67,7 @@ public class HeapsAlgorithmPermutationConstructorTest {
 
                 String expected = String.join("", Arrays.stream(current).reduce(new StringBuilder(), StringBuilder::append, StringBuilder::append));
 
-                Character[] computed = instance.reconstructSubpermutationStartStateOdd(start.length, subpermutationIndex, start);
+                Character[] computed = instance.constructPermutationOdd(start.length, subpermutationIndex, start);
 
                 String actual = String.join("", Arrays.stream(computed).reduce(new StringBuilder(), StringBuilder::append, StringBuilder::append));
 
@@ -97,7 +97,7 @@ public class HeapsAlgorithmPermutationConstructorTest {
 
             Character[] expected = expectedResults.get(index);
 
-            assertArrayEquals(expected, instance.reconstructStartState(index, start));
+            assertArrayEquals(expected, instance.constructPermutation(start, index));
         }
 
     }
@@ -119,7 +119,7 @@ public class HeapsAlgorithmPermutationConstructorTest {
 
             String expected = String.join("", Arrays.stream(expectedArray).reduce(new StringBuilder(), StringBuilder::append, StringBuilder::append));
 
-            String actual = String.join("", Arrays.stream(instance.reconstructStartState(index, start)).reduce(new StringBuilder(), StringBuilder::append, StringBuilder::append));
+            String actual = String.join("", Arrays.stream(instance.constructPermutation(start, index)).reduce(new StringBuilder(), StringBuilder::append, StringBuilder::append));
 
             assertEquals(expected, actual);
         }
@@ -145,118 +145,6 @@ public class HeapsAlgorithmPermutationConstructorTest {
     }
 
     @Test
-    public void testReconstructEndStateAfterPermutationsOfTwo() {
-
-        Character[] start = "ab".chars()
-                .mapToObj(it -> (char) it)
-                .toArray(Character[]::new);
-
-        Character[] expected = "ba".chars()
-                .mapToObj(it -> (char) it)
-                .toArray(Character[]::new);
-
-        Character[] actual = instance.reconstructEndState(start.length, start);
-
-        assertArrayEquals(expected, actual);
-    }
-
-    @Test
-    public void testReconstructEndStateAfterPermutationOfThree() {
-
-        Character[] start = "abc".chars()
-                .mapToObj(it -> (char) it)
-                .toArray(Character[]::new);
-
-        Character[] expected = "cba".chars()
-                .mapToObj(it -> (char) it)
-                .toArray(Character[]::new);
-
-        Character[] actual = instance.reconstructEndState(start.length, start);
-
-        assertArrayEquals(expected, actual);
-    }
-
-    @Test
-    public void testReconstructEndStateAfterPermutationOfFour() {
-
-        Character[] start = "abcd".chars()
-                .mapToObj(it -> (char) it)
-                .toArray(Character[]::new);
-
-        Character[] expected = "dabc".chars()
-                .mapToObj(it -> (char) it)
-                .toArray(Character[]::new);
-
-        Character[] actual = instance.reconstructEndState(start.length, start);
-
-        assertArrayEquals(expected, actual);
-    }
-
-    @Test
-    public void testReconstructEndStateAfterPermutationOfFive() {
-
-        Character[] start = "abcde".chars()
-                .mapToObj(it -> (char) it)
-                .toArray(Character[]::new);
-
-        Character[] expected = "ebcda".chars()
-                .mapToObj(it -> (char) it)
-                .toArray(Character[]::new);
-
-        Character[] actual = instance.reconstructEndState(start.length, start);
-
-        assertArrayEquals(expected, actual);
-    }
-
-    @Test
-    public void testReconstructEndStateAfterPermutationOfSix() {
-
-        Character[] start = "abcdef".chars()
-                .mapToObj(it -> (char) it)
-                .toArray(Character[]::new);
-
-        Character[] expected = "fadebc".chars()
-                .mapToObj(it -> (char) it)
-                .toArray(Character[]::new);
-
-        Character[] actual = instance.reconstructEndState(start.length, start);
-
-        assertArrayEquals(expected, actual);
-    }
-
-    @Test
-    public void testReconstructEndStateAfterPermutationOfSeven() {
-
-        Character[] start = "abcdefg".chars()
-                .mapToObj(it -> (char) it)
-                .toArray(Character[]::new);
-
-        Character[] expected = "gbcdefa".chars()
-                .mapToObj(it -> (char) it)
-                .toArray(Character[]::new);
-
-        Character[] actual = instance.reconstructEndState(start.length, start);
-
-        assertArrayEquals(expected, actual);
-    }
-
-    @Test
-    public void testReconstructEndStateAfterPermutationOfEight() {
-
-        Character[] start = "abcdefgh".chars()
-                .mapToObj(it -> (char) it)
-                .toArray(Character[]::new);
-
-        Character[] expected = "hadefgbc".chars()
-                .mapToObj(it -> (char) it)
-                .toArray(Character[]::new);
-
-        Character[] actual = instance.reconstructEndState(start.length, start);
-
-        assertArrayEquals(expected, actual);
-    }
-
-    @Test
     public void testReconstructSubpermutationEndStateOneOfThreeElements() {
 
         Character[] start = "abcdefgh".chars()
@@ -267,7 +155,7 @@ public class HeapsAlgorithmPermutationConstructorTest {
                 .mapToObj(it -> (char) it)
                 .toArray(Character[]::new);
 
-        Character[] actual = instance.reconstructSubpermutationStartState(4, 1, start);
+        Character[] actual = instance.constructPermutation(4, 1, start);
 
         assertArrayEquals(expected, actual);
     }
@@ -283,7 +171,7 @@ public class HeapsAlgorithmPermutationConstructorTest {
                 .mapToObj(it -> (char) it)
                 .toArray(Character[]::new);
 
-        Character[] actual = instance.reconstructSubpermutationStartState(4, 2, start);
+        Character[] actual = instance.constructPermutation(4, 2, start);
 
         assertArrayEquals(expected, actual);
     }
@@ -299,7 +187,7 @@ public class HeapsAlgorithmPermutationConstructorTest {
                 .mapToObj(it -> (char) it)
                 .toArray(Character[]::new);
 
-        Character[] actual = instance.reconstructSubpermutationStartState(4, 3, start);
+        Character[] actual = instance.constructPermutation(4, 3, start);
 
         assertArrayEquals(expected, actual);
     }
@@ -315,7 +203,7 @@ public class HeapsAlgorithmPermutationConstructorTest {
                 .mapToObj(it -> (char) it)
                 .toArray(Character[]::new);
 
-        Character[] actual = instance.reconstructSubpermutationStartState(5, 1, start);
+        Character[] actual = instance.constructPermutation(5, 1, start);
 
         assertArrayEquals(expected, actual);
     }
@@ -331,7 +219,7 @@ public class HeapsAlgorithmPermutationConstructorTest {
                 .mapToObj(it -> (char) it)
                 .toArray(Character[]::new);
 
-        Character[] actual = instance.reconstructSubpermutationStartState(5, 2, start);
+        Character[] actual = instance.constructPermutation(5, 2, start);
 
         assertArrayEquals(expected, actual);
     }
@@ -347,7 +235,7 @@ public class HeapsAlgorithmPermutationConstructorTest {
                 .mapToObj(it -> (char) it)
                 .toArray(Character[]::new);
 
-        Character[] actual = instance.reconstructSubpermutationStartState(5, 3, start);
+        Character[] actual = instance.constructPermutation(5, 3, start);
 
         assertArrayEquals(expected, actual);
     }
@@ -363,7 +251,7 @@ public class HeapsAlgorithmPermutationConstructorTest {
                 .mapToObj(it -> (char) it)
                 .toArray(Character[]::new);
 
-        Character[] actual = instance.reconstructSubpermutationStartState(5, 4, start);
+        Character[] actual = instance.constructPermutation(5, 4, start);
 
         assertArrayEquals(expected, actual);
     }
@@ -379,7 +267,7 @@ public class HeapsAlgorithmPermutationConstructorTest {
                 .mapToObj(it -> (char) it)
                 .toArray(Character[]::new);
 
-        Character[] actual = instance.reconstructSubpermutationStartState(5, 5, start);
+        Character[] actual = instance.constructPermutation(5, 5, start);
 
         assertArrayEquals(expected, actual);
     }
@@ -391,7 +279,7 @@ public class HeapsAlgorithmPermutationConstructorTest {
                 .mapToObj(it -> (char) it)
                 .toArray(Character[]::new);
 
-        Character[] actual = instance.reconstructStartState(0, start);
+        Character[] actual = instance.constructPermutation(start, 0);
 
         assertArrayEquals(start, actual);
     }
@@ -407,7 +295,7 @@ public class HeapsAlgorithmPermutationConstructorTest {
                 .mapToObj(it -> (char) it)
                 .toArray(Character[]::new);
 
-        Character[] actual = instance.reconstructStartState(1, start);
+        Character[] actual = instance.constructPermutation(start, 1);
 
         assertArrayEquals(expected, actual);
     }
@@ -423,7 +311,7 @@ public class HeapsAlgorithmPermutationConstructorTest {
                 .mapToObj(it -> (char) it)
                 .toArray(Character[]::new);
 
-        Character[] actual = instance.reconstructStartState(2, start);
+        Character[] actual = instance.constructPermutation(start, 2);
 
         assertArrayEquals(expected, actual);
     }
@@ -439,7 +327,7 @@ public class HeapsAlgorithmPermutationConstructorTest {
                 .mapToObj(it -> (char) it)
                 .toArray(Character[]::new);
 
-        Character[] actual = instance.reconstructStartState(3, start);
+        Character[] actual = instance.constructPermutation(start, 3);
 
         assertArrayEquals(expected, actual);
     }
@@ -455,7 +343,7 @@ public class HeapsAlgorithmPermutationConstructorTest {
                 .mapToObj(it -> (char) it)
                 .toArray(Character[]::new);
 
-        Character[] actual = instance.reconstructStartState(4, start);
+        Character[] actual = instance.constructPermutation(start, 4);
 
         assertArrayEquals(expected, actual);
     }
@@ -471,7 +359,7 @@ public class HeapsAlgorithmPermutationConstructorTest {
                 .mapToObj(it -> (char) it)
                 .toArray(Character[]::new);
 
-        Character[] actual = instance.reconstructStartState(5, start);
+        Character[] actual = instance.constructPermutation(start, 5);
 
         assertArrayEquals(expected, actual);
     }
@@ -487,7 +375,7 @@ public class HeapsAlgorithmPermutationConstructorTest {
                 .mapToObj(it -> (char) it)
                 .toArray(Character[]::new);
 
-        Character[] actual = instance.reconstructStartState(6, start);
+        Character[] actual = instance.constructPermutation(start, 6);
 
         assertArrayEquals(expected, actual);
     }
@@ -503,7 +391,7 @@ public class HeapsAlgorithmPermutationConstructorTest {
                 .mapToObj(it -> (char) it)
                 .toArray(Character[]::new);
 
-        Character[] actual = instance.reconstructStartState(2, start);
+        Character[] actual = instance.constructPermutation(start, 2);
 
         assertArrayEquals(expected, actual);
     }
@@ -521,7 +409,7 @@ public class HeapsAlgorithmPermutationConstructorTest {
                 .mapToObj(it -> (char) it)
                 .toArray(Character[]::new);
 
-        Character[] actual = instance.reconstructStartState(0, start);
+        Character[] actual = instance.constructPermutation(start, 0);
 
         assertArrayEquals(expected, actual);
     }
@@ -538,7 +426,7 @@ public class HeapsAlgorithmPermutationConstructorTest {
                 .mapToObj(it -> (char) it)
                 .toArray(Character[]::new);
 
-        Character[] actual = instance.reconstructStartState(1, start);
+        Character[] actual = instance.constructPermutation(start, 1);
 
         assertArrayEquals(expected, actual);
     }
@@ -557,7 +445,7 @@ public class HeapsAlgorithmPermutationConstructorTest {
 
         generator.streamPermutationsOf(start)
                 .forEach(it ->
-                        assertArrayEquals(it, instance.reconstructStartState(permutationIndex[0]++, start)));
+                        assertArrayEquals(it, instance.constructPermutation(start, permutationIndex[0]++)));
 
         assertEquals(24, permutationIndex[0]);
     }
@@ -575,7 +463,7 @@ public class HeapsAlgorithmPermutationConstructorTest {
 
         generator.streamPermutationsOf(start)
                 .forEach(it ->
-                        assertArrayEquals(it, instance.reconstructStartState(permutationIndex[0]++, start)));
+                        assertArrayEquals(it, instance.constructPermutation(start, permutationIndex[0]++)));
     }
 
     @Test
@@ -591,7 +479,7 @@ public class HeapsAlgorithmPermutationConstructorTest {
 
         generator.streamPermutationsOf(start)
                 .forEach(it ->
-                        assertArrayEquals(it, instance.reconstructStartState(permutationIndex[0]++, start)));
+                        assertArrayEquals(it, instance.constructPermutation(start, permutationIndex[0]++)));
     }
 
 
@@ -608,7 +496,7 @@ public class HeapsAlgorithmPermutationConstructorTest {
 
         generator.streamPermutationsOf(start)
                 .forEach(it ->
-                        assertArrayEquals(it, instance.reconstructStartState(permutationIndex[0]++, start)));
+                        assertArrayEquals(it, instance.constructPermutation(start, permutationIndex[0]++)));
     }
 
     @Test
@@ -624,6 +512,6 @@ public class HeapsAlgorithmPermutationConstructorTest {
 
         generator.streamPermutationsOf(start)
                 .forEach(it ->
-                        assertArrayEquals(it, instance.reconstructStartState(permutationIndex[0]++, start)));
+                        assertArrayEquals(it, instance.constructPermutation(start, permutationIndex[0]++)));
     }
 }
