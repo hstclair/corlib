@@ -36,9 +36,11 @@ public class Array2DPresortEvaluatorTest {
     @Test
     public void presortTransposesFirstTwoRowsAndNegatesLastRow() {
 
-        double[] finalRow = { -sortedValues[2][0], -sortedValues[2][1], -sortedValues[2][2] };
+        double[] firstRow = { 0, sortedValues[0][1], sortedValues[0][2] };
 
-        double[][] values = new double[][] { sortedValues[1], sortedValues[0], finalRow };
+        double[][] values = new double[][] { firstRow, sortedValues[1], sortedValues[0] };
+
+        double[][] expected = { sortedValues[1], sortedValues[0], firstRow };
 
         Array2D<Double> matrix = new Array2DConcrete<>(new DoubleOperationStrategy(), 3, 3, indexor -> values[indexor.getRow()][indexor.getColumn()]);
 
@@ -46,7 +48,7 @@ public class Array2DPresortEvaluatorTest {
 
         double[][] actual = extract(result);
 
-        assertArrayEquals(sortedValues, actual);
+        assertArrayEquals(expected, actual);
     }
 
     @Test

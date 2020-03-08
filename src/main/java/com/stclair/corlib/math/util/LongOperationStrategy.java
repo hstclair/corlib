@@ -211,4 +211,42 @@ public class LongOperationStrategy implements OperationStrategy<Long> {
     public long significantBits(Long value) {
         return Long.highestOneBit(value) - Long.numberOfTrailingZeros(value);
     }
+
+    @Override
+    public long maxPrecision() {
+        return 63;
+    }
+
+    @Override
+    public long exponent(Long value) {
+        return 0;
+    }
+
+    @Override
+    public long mantissa(Long value) {
+
+        if (value < 0)
+            value = -value;
+
+        int zeros = Long.numberOfLeadingZeros(value);
+
+        return value << (zeros - 1);
+    }
+
+    @Override
+    public long leastSignificantBit(Long value) {
+        return Long.numberOfTrailingZeros(value);
+    }
+
+    @Override
+    public long mostSignificantBit(Long value) {
+
+        if (value == 0)
+            return -1;
+
+        if (value < 0)
+            value = -value;
+
+        return Long.numberOfLeadingZeros(value);
+    }
 }

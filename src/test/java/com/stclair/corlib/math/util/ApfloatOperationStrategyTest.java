@@ -1,19 +1,20 @@
 package com.stclair.corlib.math.util;
 
+import org.apfloat.Apfloat;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
-public class DoubleOperationStrategyTest {
+public class ApfloatOperationStrategyTest {
 
-    DoubleOperationStrategy instance = new DoubleOperationStrategy();
+    ApfloatOperationStrategy instance = new ApfloatOperationStrategy();
 
     @Test
     public void significantBitsOf1() {
 
         long expected = 1;
 
-        double value = 1;
+        Apfloat value = new Apfloat(1);
 
         long actual = instance.significantBits(value);
 
@@ -25,7 +26,7 @@ public class DoubleOperationStrategyTest {
 
         long expected = 1;
 
-        double value = -1;
+        Apfloat value = new Apfloat(-1);
 
         long actual = instance.significantBits(value);
 
@@ -37,7 +38,7 @@ public class DoubleOperationStrategyTest {
 
         long expected = 1;
 
-        double value = 2;
+        Apfloat value = new Apfloat(2);
 
         long actual = instance.significantBits(value);
 
@@ -49,7 +50,7 @@ public class DoubleOperationStrategyTest {
 
         long expected = 1;
 
-        double value = 4;
+        Apfloat value = new Apfloat(4);
 
         long actual = instance.significantBits(value);
 
@@ -61,7 +62,7 @@ public class DoubleOperationStrategyTest {
 
         long expected = 1;
 
-        double value = 65536;
+        Apfloat value = new Apfloat(65536);
 
         long actual = instance.significantBits(value);
 
@@ -73,7 +74,7 @@ public class DoubleOperationStrategyTest {
 
         long expected = 2;
 
-        double value = 3;
+        Apfloat value = new Apfloat(3);
 
         long actual = instance.significantBits(value);
 
@@ -85,7 +86,7 @@ public class DoubleOperationStrategyTest {
 
         long expected = 2;
 
-        double value = 6;
+        Apfloat value = new Apfloat(6);
 
         long actual = instance.significantBits(value);
 
@@ -97,7 +98,7 @@ public class DoubleOperationStrategyTest {
 
         long expected = 3;
 
-        double value = 7;
+        Apfloat value = new Apfloat(7);
 
         long actual = instance.significantBits(value);
 
@@ -109,7 +110,7 @@ public class DoubleOperationStrategyTest {
 
         long expected = 0;
 
-        double value = 1;
+        Apfloat value = new Apfloat(1);
 
         long actual = instance.mostSignificantBit(value);
 
@@ -121,7 +122,7 @@ public class DoubleOperationStrategyTest {
 
         long expected = 1;
 
-        double value = 2;
+        Apfloat value = new Apfloat(2);
 
         long actual = instance.mostSignificantBit(value);
 
@@ -133,7 +134,7 @@ public class DoubleOperationStrategyTest {
 
         long expected = 16;
 
-        double value = 65536;
+        Apfloat value = new Apfloat(65536);
 
         long actual = instance.mostSignificantBit(value);
 
@@ -145,7 +146,7 @@ public class DoubleOperationStrategyTest {
 
         long expected = 0;
 
-        double value = 1;
+        Apfloat value = new Apfloat(1);
 
         long actual = instance.leastSignificantBit(value);
 
@@ -157,7 +158,7 @@ public class DoubleOperationStrategyTest {
 
         long expected = 1;
 
-        double value = 2;
+        Apfloat value = new Apfloat(2);
 
         long actual = instance.leastSignificantBit(value);
 
@@ -169,7 +170,7 @@ public class DoubleOperationStrategyTest {
 
         long expected = 0;
 
-        double value = 5;
+        Apfloat value = new Apfloat(5);
 
         long actual = instance.leastSignificantBit(value);
 
@@ -181,7 +182,7 @@ public class DoubleOperationStrategyTest {
 
         long expected = 2;
 
-        double value = 5;
+        Apfloat value = new Apfloat(5);
 
         long actual = instance.mostSignificantBit(value);
 
@@ -193,7 +194,7 @@ public class DoubleOperationStrategyTest {
 
         long expected = 15;
 
-        double value = 65535;
+        Apfloat value = new Apfloat(65535);
 
         long actual = instance.mostSignificantBit(value);
 
@@ -205,7 +206,7 @@ public class DoubleOperationStrategyTest {
 
         long expected = 0;
 
-        double value = 65535;
+        Apfloat value = new Apfloat(65535);
 
         long actual = instance.leastSignificantBit(value);
 
@@ -217,7 +218,7 @@ public class DoubleOperationStrategyTest {
 
         long expected = -1;
 
-        double value = .5;
+        Apfloat value = new Apfloat(.5);
 
         long actual = instance.leastSignificantBit(value);
 
@@ -229,7 +230,7 @@ public class DoubleOperationStrategyTest {
 
         long expected = -1;
 
-        double value = .5;
+        Apfloat value = new Apfloat(.5);
 
         long actual = instance.mostSignificantBit(value);
 

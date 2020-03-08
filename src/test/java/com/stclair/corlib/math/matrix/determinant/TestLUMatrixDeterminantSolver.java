@@ -106,7 +106,7 @@ public class TestLUMatrixDeterminantSolver {
     @Test
     public void test10X10DeterminantBDouble() {
 
-        doubleTests.test10X10DeterminantB(4500d);
+        doubleTests.test10X10DeterminantB(45000d);
     }
 
     @Test

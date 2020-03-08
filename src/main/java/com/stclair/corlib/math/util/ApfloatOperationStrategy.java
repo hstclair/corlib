@@ -236,4 +236,36 @@ public class ApfloatOperationStrategy implements OperationStrategy<Apfloat> {
     public long significantBits(Apfloat value) {
         return value.toRadix(2).size();
     }
+
+    @Override
+    public long maxPrecision() {
+        return precision;
+    }
+
+    @Override
+    public long exponent(Apfloat value) {
+        return mostSignificantBit(value);
+    }
+
+    @Override
+    public long mantissa(Apfloat value) {
+        return value.toRadix(2).longValue();
+    }
+
+    @Override
+    public long leastSignificantBit(Apfloat value) {
+
+        Apfloat radix2 = value.toRadix(2);
+
+        return radix2.scale() - radix2.size();
+    }
+
+    @Override
+    public long mostSignificantBit(Apfloat value) {
+
+        if (value.equals(Apfloat.ZERO))
+            return -1;
+
+        return value.toRadix(2).scale() - 1;
+    }
 }

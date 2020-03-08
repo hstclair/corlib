@@ -233,4 +233,37 @@ public class ApfloatInfiniteOperationStrategy implements OperationStrategy<Apflo
 
         return apfloat.size();
     }
+
+    @Override
+    public long maxPrecision() {
+        return precision;
+    }
+
+    @Override
+    public long exponent(ApfloatInfinite value) {
+        return mostSignificantBit(value);
+    }
+
+    @Override
+    public long mantissa(ApfloatInfinite value) {
+
+        return value.value.toRadix(2).longValue();
+    }
+
+    @Override
+    public long leastSignificantBit(ApfloatInfinite value) {
+
+        Apfloat radix2 = value.value.toRadix(2);
+
+        return radix2.scale() - radix2.size();
+    }
+
+    @Override
+    public long mostSignificantBit(ApfloatInfinite value) {
+
+        if (value.equals(ApfloatInfinite.ZERO))
+            return -1;
+
+        return value.value.toRadix(2).scale() - 1;
+    }
 }

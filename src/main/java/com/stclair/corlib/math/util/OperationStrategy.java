@@ -103,6 +103,16 @@ public interface OperationStrategy<T> {
      */
     long significantBits(T value);
 
+    long maxPrecision();
+
+    long exponent(T value);
+
+    long mantissa(T value);
+
+    long leastSignificantBit(T value);
+
+    long mostSignificantBit(T value);
+
     default String toBaseF(T value) {
 
         final String digits = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";

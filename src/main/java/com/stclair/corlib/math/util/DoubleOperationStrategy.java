@@ -209,11 +209,58 @@ public class DoubleOperationStrategy implements OperationStrategy<Double> {
         if (value == 0d)
             return 0;
 
-        long bits = Double.doubleToLongBits(value);
-
-        long mantissa = (bits & 0x000fffffffffffffL) | 0x0010000000000000L;
+        long mantissa = mantissa(value);
 
         return 64 - Long.numberOfLeadingZeros(mantissa) - Long.numberOfTrailingZeros(mantissa);
+    }
+
+    @Override
+    public long maxPrecision() {
+        return 53;
+    }
+
+    @Override
+    public long exponent(Double value) {
+
+        long bits = Double.doubleToLongBits(value);
+
+        long exponent = (bits >> 52 ) & 0x7FF;
+
+        if (exponent == 0 || exponent == 0x7ff)
+            return 0;
+
+        return exponent - 1023;
+    }
+
+    @Override
+    public long mantissa(Double value) {
+
+        if (value == 0d)
+            return 0;
+
+        long bits = Double.doubleToLongBits(value);
+
+        return ((bits & 0x000fffffffffffffL) | 0x0010000000000000L) << 10;
+    }
+
+    @Override
+    public long leastSignificantBit(Double value) {
+
+        if (value == 0)
+            return 0;
+
+        long mantissa = mantissa(value);
+
+        return exponent(value) - (62 - Long.numberOfTrailingZeros(mantissa));
+    }
+
+    @Override
+    public long mostSignificantBit(Double value) {
+
+        if (value == 0)
+            return -1;
+
+        return exponent(value);
     }
 
     @Override
