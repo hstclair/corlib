@@ -2,6 +2,8 @@ package com.stclair.corlib.math.fractal.curve.hilbert;
 
 import com.stclair.corlib.permutation.GrayCodeFunction;
 
+import static com.stclair.corlib.validation.Validation.equalTo;
+
 /**
  * Somewhat more efficient implementation of Hilbert curve
  */
@@ -70,6 +72,8 @@ public class HilbertCurveImpl implements HilbertCurve {
 
     @Override
     public long coordsToDistance(long[] coords) {
+
+        equalTo(coords.length, dimension, "coords.length");
 
         long reflection = 0L;
         int rotation = 0;
