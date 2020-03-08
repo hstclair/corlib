@@ -51,12 +51,12 @@ public class SegmentedHilbertCurveTest {
 
     @Test
     public void dumpCoordinates3dFirstOrder() {
-        HilbertCurve h = new SegmentedHilbertCurve(2);
+        HilbertCurve h = new SegmentedHilbertCurve(3);
 
         for (long distance = 0; distance < 64; distance++) {
             long[] coords = h.distanceToCoords(distance);
 
-            System.out.printf("%s\t%s\n", coords[1], coords[0]);
+            System.out.printf("%s\t%s\t%s\n", coords[2], coords[1], coords[0]);
         }
     }
 }
